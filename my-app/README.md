@@ -1,3 +1,12 @@
+# Folder structure
+├── my-app
+│   ├── src
+│   │   ├── components #stores the components
+│   │   ├── pages #stores the pages
+│   │   ├── hooks #stores the common hooks that are being used in a  component 
+│   │   ├── utils #stores the common functions that are being used in a  component
+│   │   ├── Types #stores typescript type/interface definitions
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
