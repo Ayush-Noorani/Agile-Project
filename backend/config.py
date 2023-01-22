@@ -2,7 +2,7 @@ import os
 from webapp import app
 import datetime
 app.config['SECRET_KEY']='' #secret key
-app.config['MONGO_URI']='' #uri
+app.config['MONGO_URI']='mongodb+srv://ayush:ayush@msc-sem-4.ix9cnu7.mongodb.net/?retryWrites=true&w=majority' #uri
 app.config['JWT_ACCESSS_TOKEN_EXPIRES']=datetime.timedelta(days=300)
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
@@ -13,8 +13,8 @@ app.config['UPLOAD_FOLDER'] =os.path.join(os.path.dirname(app.instance_path), 's
 
 app.config['JWT_TOKEN_LOCATION']=['headers']
 app.config['JWT_SESSION_COOKIE']=False
-app.config['MONGODB_SETTINGS']={
-    'db':'portfolio',
-    'host':'localhost',
-    'port':'27017'
-}
+# app.config['MONGODB_SETTINGS']={
+#     'db':'portfolio',
+#     'host':'localhost',
+#     'port':'27017'
+# }
