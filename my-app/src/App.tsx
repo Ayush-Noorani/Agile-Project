@@ -6,11 +6,14 @@ import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { SideBar } from "./components/SiderBar/Siderbar";
 function App() {
   return (
     <Provider store={store}>
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <RouterProvider router={Routes} />
+        <SideBar>
+          <RouterProvider router={Routes} />
+        </SideBar>
       </LocalizationProvider>
     </Provider>
   );
