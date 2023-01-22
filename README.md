@@ -1,5 +1,8 @@
+# each folder has an Readme related to that folder
+
 # start project
 # frontend
+cd my-app
 npm install
 npm start
 
