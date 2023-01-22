@@ -72,38 +72,49 @@ export const Register = () => {
           width: "50%",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-around",
+          justifyContent: "space-between",
         }}
       >
-        {form.map((item, index) => (
-          <TextField
-            id="filled-basic"
-            label={item.label}
-            value={value[item.name as keyof Form]}
-            onChange={(e: { target: { value: any } }) =>
-              onChange(e.target.value, item.name, setValue)
-            }
-            variant="outlined"
-          />
-        ))}
-        <DesktopDatePicker
-          label="Dob"
-          inputFormat="MM/DD/YYYY"
-          value={value.dob}
-          onChange={(e) => {
-            onChange(e, "dob", setValue);
+        <h4 style={{ alignSelf: "center" }}>Register</h4>
+
+        <form
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+            height: "90%",
           }}
-          renderInput={(params) => <TextField {...params} />}
-        />
-        <Button
-          disabled={loading}
-          onClick={() => {
-            onSubmit(value, setLoading);
-          }}
-          variant="contained"
         >
-          Submit
-        </Button>
+          {form.map((item, index) => (
+            <TextField
+              id="filled-basic"
+              label={item.label}
+              value={value[item.name as keyof Form]}
+              onChange={(e: { target: { value: any } }) =>
+                onChange(e.target.value, item.name, setValue)
+              }
+              variant="outlined"
+            />
+          ))}
+          <DesktopDatePicker
+            label="Dob"
+            inputFormat="MM/DD/YYYY"
+            value={value.dob}
+            onChange={(e) => {
+              onChange(e, "dob", setValue);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+          <Button
+            disabled={loading}
+            onClick={() => {
+              onSubmit(value, setLoading);
+            }}
+            variant="contained"
+          >
+            Submit
+          </Button>
+        </form>
       </Box>
     </Container>
   );

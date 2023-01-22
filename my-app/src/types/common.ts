@@ -3,3 +3,9 @@ export type FormType={
     label:string,
     type:string,
 }
+
+export interface SideBarItemProps {
+    path: string;
+    icon: React.ReactNode;
+    label: string;
+  }

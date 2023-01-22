@@ -4,7 +4,8 @@ export const useLogin = () => {
   
   const onSubmit = (
     value: any,
-    setLoader: React.Dispatch<React.SetStateAction<boolean>>
+    setLoader: React.Dispatch<React.SetStateAction<boolean>>,
+    setError:Function
   ) => {
     setLoader(true);
     console.log(value);

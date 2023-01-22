@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FormType } from "../../types/common";
 import { onChange } from "../../utils/Common";
-import { Box, Button, Container, TextField } from "@mui/material";
+import { Alert, Box, Button, Container, TextField } from "@mui/material";
 import { useLogin } from "../../hooks/useLogin";
 import "../../css/common.css";
 
@@ -27,6 +27,7 @@ export const Login = () => {
     email: "",
     password: "",
   });
+  const [error, setError] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
   const { onSubmit } = useLogin();
   return (
@@ -49,6 +50,7 @@ export const Login = () => {
           justifyContent: "space-around",
         }}
       >
+        <h4 style={{ alignSelf: "center" }}>Login</h4>
         {form.map((item, index) => (
           <TextField
             id="filled-basic"
@@ -60,10 +62,12 @@ export const Login = () => {
             variant="outlined"
           />
         ))}
+
+        {error ? <Alert severity="error">{error}</Alert> : <></>}
         <Button
           disabled={loading}
           onClick={() => {
-            onSubmit(value, setLoading);
+            onSubmit(value, setLoading, setError);
           }}
           variant="contained"
         >
