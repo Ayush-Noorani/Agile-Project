@@ -54,7 +54,6 @@ alembic==1.7.1
 bcrypt==3.2.0
 bidict==0.22.0
 certifi==2021.5.30
-cffi==1.14.6
 charset-normalizer==2.0.4
 click==8.0.1
 colorama==0.4.4
@@ -116,7 +115,6 @@ alembic==1.7.1
 bcrypt==3.2.0
 bidict==0.22.0
 certifi==2021.5.30
-cffi==1.14.6
 charset-normalizer==2.0.4
 click==8.0.1
 colorama==0.4.4
@@ -179,7 +177,6 @@ bcrypt==3.2.0
 bidict==0.22.0
 cachetools==5.2.0
 certifi==2021.5.30
-cffi==1.14.6
 charset-normalizer==2.0.4
 click==8.0.1
 colorama==0.4.4
@@ -197,7 +194,6 @@ Flask-Migrate==3.1.0
 flask-mongoengine==1.0.0
 Flask-PyMongo==2.3.0
 Flask-SocketIO==5.1.1
-Flask-SQLAlchemy==2.5.1
 Flask-WTF==0.15.1
 future==0.18.2
 gevent==21.8.0
@@ -220,10 +216,8 @@ mailjet-rest==1.3.4
 Mako==1.1.5
 MarkupSafe==2.0.1
 mongoengine==0.23.1
-numpy==1.22.3
 oauth2client==4.1.3
 oauthlib==3.2.0
-opencv-python==4.5.5.64
 Pillow==9.1.0
 protobuf==3.20.1
 pyasn1==0.4.8
