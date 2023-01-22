@@ -14,3 +14,12 @@ python3 -m venv .venv
 pip3 install -r requirements.txt
 python3 app.py
 
+
+
+# git instructions
+Whenever master is updated
+do 
+git checkout master
+git pull
+git checkout <your branch>
+git rebase master
