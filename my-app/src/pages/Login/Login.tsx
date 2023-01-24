@@ -4,6 +4,7 @@ import { onChange } from "../../utils/Common";
 import { Alert, Box, Button, Container, TextField } from "@mui/material";
 import { useLogin } from "../../hooks/useLogin";
 import "../../css/common.css";
+import { NavBar } from "../../components/NavBar/NavBar";
 
 const form: FormType[] = [
   {
@@ -40,6 +41,7 @@ export const Login = () => {
         justifyContent: "center",
       }}
     >
+      <NavBar />
       <Box
         className="formbg"
         sx={{
