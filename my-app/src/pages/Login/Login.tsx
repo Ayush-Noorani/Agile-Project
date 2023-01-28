@@ -8,7 +8,7 @@ import { NavBar } from "../../components/NavBar/NavBar";
 
 const form: FormType[] = [
   {
-    label: "Email",
+    label: "Email or Username",
     type: "email",
     name: "email",
   },
@@ -41,7 +41,6 @@ export const Login = () => {
         justifyContent: "center",
       }}
     >
-      <NavBar />
       <Box
         className="formbg"
         sx={{
