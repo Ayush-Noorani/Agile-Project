@@ -10,36 +10,31 @@ from flask_migrate import Migrate
 from flask_socketio import SocketIO, send, emit
 
 app = Flask(__name__)
+
 import config
-
-
 
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 # mongodb_client = PyMongo(app)
 # db=mongodb_client.db
-# #file storage part 
+# #file storage part
 # fs=gridfs.GridFS(db)
-    
+
 CORS(app)
 socketio = SocketIO(app)
 
 
-socketio =  SocketIO(app,cors_allowed_origins='*')
+socketio = SocketIO(app, cors_allowed_origins='*')
 
-#all models,view,forms are imported here
-#model
-
-
+# all models,view,forms are imported here
+# model
 
 
-#views
-
-#all end points need to be  inside view folder 
-#create a file for end points related to a particular model
+# views
+import webapp.views.user
+import webapp.views.test
+# all end points need to be  inside view folder
+# create a file for end points related to a particular model
 #example: user.py
 
-import webapp.views.user
-
-
-#forms
+# forms
