@@ -75,7 +75,11 @@ const test = [
   },
 ];
 
-function NavBar() {
+interface NavBarProps {
+  show: boolean;
+  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const NavBar = ({ show, setShow }: NavBarProps) => {
   return (
     <Box sx={{ width: "100vw" }}>
       <AppBar position="absolute">
@@ -89,6 +93,7 @@ function NavBar() {
             <IconButton
               size="large"
               edge="start"
+              onClick={() => setShow(!show)}
               aria-label="open drawer"
               sx={{ mr: 2 }}
             >
@@ -138,6 +143,6 @@ function NavBar() {
       </AppBar>
     </Box>
   );
-}
+};
 
 export { NavBar };

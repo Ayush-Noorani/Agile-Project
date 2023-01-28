@@ -4,13 +4,14 @@ import "../../css/sidebar.css";
 
 import { Item } from "./Item";
 import { items } from "./Routes";
+import { NavBar } from "../NavBar/NavBar";
 interface SideBarProps {
   children: React.ReactNode | React.ReactNode[];
 }
 
 export const SideBar = ({ children }: SideBarProps) => {
   let token = localStorage.getItem("token");
-
+  const [open, setOpen] = React.useState(false);
   if (!token) {
     return <>{children}</>;
   }
@@ -20,18 +21,34 @@ export const SideBar = ({ children }: SideBarProps) => {
       style={{
         display: "flex",
         flex: 1,
-        flexDirection: "row",
+        flexDirection: "column",
         width: "100rem",
         height: "100vh",
       }}
     >
-      <Box className="sidebar">
-        {items.map((value) => (
-          <Item icon={value.icon} label={value.label} path={value.path} />
-        ))}
-      </Box>
+      <NavBar show={open} setShow={setOpen} />
 
-      {children}
+      <div
+        style={{
+          display: "flex",
+          flex: 1,
+          flexDirection: "row",
+          marginTop: "4rem",
+          height: "95%",
+        }}
+      >
+        {open ? (
+          <Box className="sidebar">
+            {items.map((value) => (
+              <Item icon={value.icon} label={value.label} path={value.path} />
+            ))}
+          </Box>
+        ) : (
+          <></>
+        )}
+
+        {children}
+      </div>
     </div>
   );
 };

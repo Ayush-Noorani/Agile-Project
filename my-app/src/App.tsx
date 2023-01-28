@@ -11,9 +11,7 @@ function App() {
   return (
     <Provider store={store}>
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <SideBar>
-          <RouterProvider router={Routes} />
-        </SideBar>
+        <RouterProvider router={Routes} />
       </LocalizationProvider>
     </Provider>
   );

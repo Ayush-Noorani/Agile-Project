@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = process.env.SERVER_URL;
+const url = process.env.SERVER_URL || "http://localhost:8000";
 
 export const axiosInstance = axios.create({
   baseURL: url,

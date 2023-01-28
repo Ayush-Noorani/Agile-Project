@@ -1,12 +1,11 @@
 
 .sidebar{
-    width: 12%;
+    width: 8%;
     height: 100%;
     background-color:white;
     padding: 5px;
     display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
+    flex-direction: column;
     overflow-y: auto;
     overflow-x: hidden;
     left:0;
@@ -22,6 +21,6 @@
     padding: 2px;
     justify-content: space-between;
     align-items: center;
-    height: 10%;
-    width: 50%;
+    height: 5%;
+    width: 80%;
 }
