@@ -9,15 +9,17 @@ export const useLogin = () => {
     setLoader: React.Dispatch<React.SetStateAction<boolean>>,
     setError:Function
   ) => {
+    setError("")
+
     setLoader(true);
     axiosInstance.post("/user/login", value).then((res) => {
 
-      if (res.data.error) {
-        setError(res.data.error);
-      } else {
+
         localStorage.setItem("token", res.data.token);
-        navigate("/home")
-      }
+        navigate("/dashboard")
+      
+    }).catch((err) => {
+      setError(err.response.data.message);
     })
     setLoader(false);
   };

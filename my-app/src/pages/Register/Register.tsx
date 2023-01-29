@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FormType } from "../../types/common";
 import { onChange } from "../../utils/Common";
 import dayjs, { Dayjs } from "dayjs";
-import { Box, Button, Container, TextField } from "@mui/material";
+import { Alert, Box, Button, Container, TextField } from "@mui/material";
 import { useRegister } from "../../hooks/useRegister";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import "../../css/common.css";
@@ -54,6 +54,7 @@ export const Register = () => {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const { onSubmit } = useRegister();
+  const [error, setError] = useState<any>(null);
 
   return (
     <Container
@@ -105,10 +106,12 @@ export const Register = () => {
             }}
             renderInput={(params) => <TextField {...params} />}
           />
+          {error ? <Alert severity="error">{error}</Alert> : <></>}
+
           <Button
             disabled={loading}
             onClick={() => {
-              onSubmit(value, setLoading);
+              onSubmit(value, setLoading, setError);
             }}
             variant="contained"
           >

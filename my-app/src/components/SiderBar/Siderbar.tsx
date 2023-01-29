@@ -22,8 +22,9 @@ export const SideBar = ({ children }: SideBarProps) => {
         display: "flex",
         flex: 1,
         flexDirection: "column",
-        width: "100rem",
+        width: "100vw",
         height: "100vh",
+        overflow: "hidden",
       }}
     >
       <NavBar show={open} setShow={setOpen} />
@@ -35,6 +36,7 @@ export const SideBar = ({ children }: SideBarProps) => {
           flexDirection: "row",
           marginTop: "4rem",
           height: "95%",
+          width: "100%",
         }}
       >
         {open ? (

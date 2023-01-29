@@ -22,16 +22,16 @@ def root():
 @app.route('/user/login', methods=['POST'])
 def login():
     data = request.get_json()
-    username = data['email']
+    name = data['name']
     password = data['password']
-    print(username, password)
+    print(name, password)
     record = collection.find_one(
-        {"email" if '@' in username else 'username': username}, {"_id": 1, "password": 1})
+        {"email" if '@' in name else 'username': name}, {"_id": 1, "password": 1})
 
     if(record and bcrypt.check_password_hash(record['password'], password)):
         return {"data": "User found - Login successful", "token": generateToken(str(record['_id']))}, 200
     else:
-        return {"data": "No such user found - Login Failed"}, 400
+        return {"message": "Invalid Credentials - Login Failed"}, 400
 
 
 @app.route('/user/register', methods=['POST'])
@@ -42,7 +42,7 @@ def register():
     if(is_registered):
         return {"data": "Registered", "token": generateToken(str(is_registered.inserted_id))}, 200
     else:
-        return {"data": "Failed"}, 400
+        return {"message": "Invalid Details"}, 400
 
 
 #  example

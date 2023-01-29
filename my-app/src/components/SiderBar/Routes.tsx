@@ -4,9 +4,9 @@ import { SideBarItemProps } from "../../types/common";
 import { AccountTree, Home, List } from "@mui/icons-material";
 export const items: SideBarItemProps[] = [
   {
-    label: "Home",
+    label: "Dashboard",
     icon: <Home />,
-    path: "/home",
+    path: "/dashboard",
   },
   {
     label: "Projects",
