@@ -6,7 +6,9 @@ import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { SideBar } from "./components/SiderBar/Siderbar";
+import "./css/common.css";
+import "react-date-range/dist/styles.css"; // main css file
+import "react-date-range/dist/theme/default.css"; // theme css file
 function App() {
   return (
     <Provider store={store}>

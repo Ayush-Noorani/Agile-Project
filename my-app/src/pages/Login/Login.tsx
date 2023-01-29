@@ -4,13 +4,12 @@ import { onChange } from "../../utils/Common";
 import { Alert, Box, Button, Container, TextField } from "@mui/material";
 import { useLogin } from "../../hooks/useLogin";
 import "../../css/common.css";
-import { NavBar } from "../../components/NavBar/NavBar";
 
 const form: FormType[] = [
   {
     label: "Email or Username",
     type: "email",
-    name: "email",
+    name: "name",
   },
   {
     label: "Password",
@@ -20,12 +19,12 @@ const form: FormType[] = [
 ];
 
 type Form = {
-  email: string;
+  name: string;
   password: string;
 };
 export const Login = () => {
   const [value, setValue] = useState<Form>({
-    email: "",
+    name: "",
     password: "",
   });
   const [error, setError] = useState<string | undefined>("");
@@ -44,7 +43,7 @@ export const Login = () => {
       <Box
         className="formbg"
         sx={{
-          height: "30%",
+          height: "35%",
           width: "50%",
           display: "flex",
           flexDirection: "column",

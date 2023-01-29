@@ -1,3 +1,7 @@
 backend/.venv 
 my-app/node_modules/
 my-app/package-lock.json
+backend/__pycache__
+backend/webapp/__pycache__
+backend/webapp/views/__pycache__
+backend/webapp/views/__pycache__
