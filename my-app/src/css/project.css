@@ -29,5 +29,12 @@
     width: 100%;
     overflow-y: auto;
     overflow-x: auto;
+
 }
 
+.member-section{
+    background-color: rgb(241, 239, 239);
+    border-radius: 5px;
+    padding: 5px;
+    height: 60%;
+}

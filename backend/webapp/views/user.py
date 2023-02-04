@@ -3,8 +3,7 @@ from flask import request
 from pymongo import MongoClient
 from webapp.helpers.jwt import generateToken
 from webapp import bcrypt
-client = MongoClient(app.config['MONGO_URI'])
-db = client.Users
+from webapp import db
 collection = db.user_details
 # from webapp.models.user_model import user_model
 # make an end point private by

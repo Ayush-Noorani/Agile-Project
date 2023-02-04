@@ -2,24 +2,16 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../css/project.css";
 import { FormType } from "../../types/common";
-import { Autocomplete, Box, Button, Fab, TextField } from "@mui/material";
-import { onChange } from "../../utils/Common";
+import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import { FormTextField, WeightLabel } from "../../components/Common/Common";
 import { DateRange } from "react-date-range";
 import { addDays } from "date-fns";
-import { Add } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
+import { ProjectData, useProject } from "./hooks/useProject";
+import { ListView } from "../../components/ListView";
+
 interface ProjectDetailProps {}
 
-interface ProjectData {
-  name: string;
-  description: string;
-  members: string[];
-  img: string;
-  startDate: Date;
-  expectedEndDate: Date;
-  category: string;
-  lead: string;
-}
 type state = {
   selection: {
     startDate: Date;
@@ -40,8 +32,12 @@ const form: FormType[] = [
     name: "description",
   },
 ];
+
 export const ProjectDetail = ({}: ProjectDetailProps) => {
-  const { type, id } = useParams();
+  const { id } = useParams();
+
+  const { members, value, updateState, fetchExistingData, fetchMembers } =
+    useProject(id);
   const [state, setState] = useState<any[]>([
     {
       startDate: new Date(),
@@ -49,28 +45,15 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
       key: "selection",
     },
   ]);
-  const [value, setValue] = useState<ProjectData>({
-    name: "",
-    description: "",
-    members: [],
-    img: "",
-    startDate: new Date(),
-    expectedEndDate: new Date(),
-    category: "",
-    lead: "",
-  });
-  useEffect(() => {
-    if (type === "edit") {
-      getExistingData();
-    }
-  }, [type]);
 
-  const getExistingData = () => {
-    // get existing data from server
-  };
+  useEffect(() => {
+    fetchExistingData(id);
+    fetchMembers();
+  }, [fetchExistingData, fetchMembers, id]);
+
   return (
     <div className="create-view">
-      <div style={{ position: "relative", width: "50%" }}>
+      <div style={{ position: "relative", width: "100%", marginBottom: "5px" }}>
         <img
           alt="img"
           src={
@@ -79,7 +62,7 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
               : "https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YmxvYnxlbnwwfHwwfHw%3D&w=1000&q=80"
           }
           height="200px"
-          width="100%"
+          width="70%"
           style={{ borderRadius: "10px" }}
           className="box-shadow"
         />
@@ -98,68 +81,98 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
           <Add />
         </Fab> */}
       </div>
-      <form className="form" style={{ width: "400px" }}>
-        {form.map((item, index) => (
-          <FormTextField
-            id="filled-basic"
-            label={item.label}
-            sx={{ width: "400px" }}
-            value={value[item.name as keyof ProjectData]}
-            onChange={(e: { target: { value: any } }) =>
-              onChange(e.target.value, item.name, setValue)
-            }
-            variant="outlined"
+      <form className="row" style={{ justifyContent: "space-evenly" }}>
+        <div className="form" style={{ width: "400px" }}>
+          {form.map((item, index) => (
+            <FormTextField
+              id="filled-basic"
+              label={item.label}
+              sx={{ width: "400px" }}
+              value={value[item.name as keyof ProjectData]}
+              onChange={(e: { target: { value: any } }) =>
+                updateState(e.target.value, item.name as keyof ProjectData)
+              }
+              variant="outlined"
+              required
+            />
+          ))}
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            className="margin"
+            onChange={(e) => {}}
+            sx={{ width: 400 }}
+            renderInput={(params) => <TextField {...params} label="Category" />}
+            options={[]}
           />
-        ))}
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          className="margin"
-          onChange={(e) => {}}
-          sx={{ width: 400 }}
-          renderInput={(params) => <TextField {...params} label="Category" />}
-          options={[]}
-        />
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          className="margin"
-          onChange={(e) => {}}
-          sx={{ width: 400 }}
-          renderInput={(params) => <TextField {...params} label="Team Lead" />}
-          options={[]}
-        />
-        <Box
-          className="margin"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "350px",
-          }}
-        >
-          <WeightLabel weight={600}>
-            Project start - expected end date
-          </WeightLabel>
-          <DateRange
-            editableDateInputs={true}
-            onChange={(item: any) => {
-              onChange(item.selection.startDate, "startDate", setValue);
-              onChange(item.selection.endDate, "expectedEndDate", setValue);
-
-              setState([item.selection]);
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            className="margin"
+            onChange={(e) => {}}
+            sx={{ width: 400 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Team Lead" />
+            )}
+            options={[]}
+          />
+          <Box
+            className="margin"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "350px",
             }}
-            moveRangeOnFirstSelection={false}
-            ranges={state}
+          >
+            <WeightLabel weight={600}>
+              Project start - expected end date
+            </WeightLabel>
+            <DateRange
+              minDate={new Date()}
+              editableDateInputs={true}
+              startDatePlaceholder="Start Date"
+              onChange={(item: any) => {
+                updateState(item.selection.startDate, "startDate");
+
+                updateState(item.selection.expectedEndDate, "expectedEndDate");
+
+                setState([item.selection]);
+              }}
+              moveRangeOnFirstSelection={false}
+              ranges={state}
+            />
+          </Box>
+        </div>
+        <div className="column member-section">
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            className="margin"
+            onChange={(e) => {}}
+            sx={{ width: 400 }}
+            renderInput={(params) => <TextField {...params} label="Members" />}
+            options={[]}
           />
-        </Box>
-        <Button
-          variant="contained"
-          className="margin"
-          style={{ width: "80px", alignSelf: "flex-end" }}
-        >
-          {type === "edit" ? "Update" : "Create"}
-        </Button>
+
+          <ListView
+            data={value.members}
+            action={[
+              (id: any) => (
+                <Button onClick={(id) => {}} color="error">
+                  <Delete />
+                </Button>
+              ),
+            ]}
+          />
+        </div>
       </form>
+      <Button
+        variant="contained"
+        className="margin"
+        style={{ width: "80px", alignSelf: "center" }}
+      >
+        {id !== "0" ? "Update" : "Create"}
+      </Button>
     </div>
   );
 };
