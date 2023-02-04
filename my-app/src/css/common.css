@@ -18,10 +18,22 @@
     flex-direction: column;
     justify-content: space-between;
     padding: 5px;
-    ;
+    
 }
 
 .margin{
     margin-top: 5px;
     margin-bottom: 5px;
 }
+
+.column{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+}
+

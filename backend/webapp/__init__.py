@@ -1,3 +1,5 @@
+from pymongo import MongoClient
+
 from flask import Flask
 from flask_pymongo import PyMongo
 import gridfs
@@ -12,7 +14,6 @@ from flask_socketio import SocketIO, send, emit
 app = Flask(__name__)
 
 import config
-
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 # mongodb_client = PyMongo(app)
@@ -25,16 +26,19 @@ socketio = SocketIO(app)
 
 
 socketio = SocketIO(app, cors_allowed_origins='*')
+client = MongoClient(app.config['MONGO_URI'])
+db = client.Users
 
 # all models,view,forms are imported here
 # model
 
 
 # views
-import webapp.views.user
-import webapp.views.test
 # all end points need to be  inside view folder
 # create a file for end points related to a particular model
 #example: user.py
+import webapp.views.test
+import webapp.views.project
+import webapp.views.user
 
 # forms

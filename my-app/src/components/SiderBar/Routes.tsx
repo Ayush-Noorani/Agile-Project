@@ -8,14 +8,4 @@ export const items: SideBarItemProps[] = [
     icon: <Home />,
     path: "/dashboard",
   },
-  {
-    label: "Projects",
-    icon: <AccountTree />,
-    path: "/projects",
-  },
-  {
-    label: "Tasks",
-    icon: <List />,
-    path: "/tasks",
-  },
 ];

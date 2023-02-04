@@ -2,9 +2,10 @@ import { DragAndDrop } from "../../components/DragAndDrop";
 import data from "../../res/initial-data";
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
 import { Create, Info } from "@mui/icons-material";
-interface HomeProps {}
 
-export const Home = ({}: HomeProps) => {
+interface TaskProps {}
+
+export const Task = ({}: TaskProps) => {
   const actions: {
     icon: JSX.Element;
     name: string;
