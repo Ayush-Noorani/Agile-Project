@@ -43,6 +43,22 @@ def register():
     else:
         return {"message": "Invalid Details"}, 400
 
+@app.route('/user/update-details', methods=['POST'])
+def updateDetails():
+    data = request.get_json()
+    username = data['username']
+    if(username == '' or username == null):
+        return {'message': 'Username cannot be empty'}, 304
+    else:
+        password = bcrypt.generate_password_hash(data['password'])
+        record = collection.find_one({"email": data['email']})
+        if (record and bcrypt.check_password_hash(record['password'], password)):
+            return {"message": "New password and Old password cannot be the same"}, 304
+        else:
+            result = collections.update_one({"email": data['email']}, data)
+            newData = collection.find_one({"email": data['email']})
+            return {"message": "User details updated successfully", "data": newData}, 200
+
 
 #  example
 # @app.route('/api/v1/private', methods=['GET'])
