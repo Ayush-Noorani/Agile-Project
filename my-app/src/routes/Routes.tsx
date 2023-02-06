@@ -5,6 +5,7 @@ import { Protected } from "../components/Protected";
 import { ProjectsList } from "../pages/Projects/ProjectsList";
 import { ProjectDetail } from "../pages/Projects/ProjectDetail";
 import { Task } from "../pages/Task/Task";
+import { Profile } from "../components/Profile/Profile";
 
 export const Routes = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ export const Routes = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Protected children={<ProjectsList />} />,
+  },
+  {
+    path: "/user/update-profile",
+    element: <Protected children={<Profile />} />,
   },
   {
     path: "/projects",
