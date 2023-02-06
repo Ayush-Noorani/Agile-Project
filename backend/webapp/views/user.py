@@ -55,7 +55,7 @@ def updateDetails():
         if (record and bcrypt.check_password_hash(record['password'], password)):
             return {"message": "New password and Old password cannot be the same"}, 304
         else:
-            result = collections.update_one({"email": data['email']}, data)
+            result = collection.update_one({"email": data['email']}, data)
             newData = collection.find_one({"email": data['email']})
             return {"message": "User details updated successfully", "data": newData}, 200
 
