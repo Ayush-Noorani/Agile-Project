@@ -82,7 +82,7 @@ interface NavBarProps {
 const NavBar = ({ show, setShow }: NavBarProps) => {
   return (
     <Box sx={{ width: "100vw" }}>
-      <AppBar position="absolute">
+      <AppBar position="static">
         <Toolbar sx={{ justifyContent: "space-between", bgcolor: "white" }}>
           <Box
             sx={{
