@@ -7,6 +7,7 @@ import {
   ListItemText,
   Button,
 } from "@mui/material";
+import { url } from "../helper/axios";
 export interface ListProps {
   data: any[];
   action: Function[];
@@ -26,7 +27,7 @@ export const ListView = ({ data, action }: ListProps) => {
         >
           <ListItemAvatar>
             <Avatar>
-              <img alt={"img"} src={item.url} />
+              <img alt={"img"} src={`${url}/static/users/${item.url}.png`} />
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary={item.name} />

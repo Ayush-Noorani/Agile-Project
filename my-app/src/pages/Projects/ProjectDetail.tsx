@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../css/project.css";
-import { FormType } from "../../types/common";
+import { FormType, ProjectData } from "../../types/common";
 import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import { FormTextField, WeightLabel } from "../../components/Common/Common";
 import { DateRange } from "react-date-range";
 import { addDays } from "date-fns";
 import { Delete } from "@mui/icons-material";
-import { ProjectData, useProject } from "./hooks/useProject";
 import { ListView } from "../../components/ListView";
+import { useProject } from "./hooks/useProject";
 
 interface ProjectDetailProps {}
 

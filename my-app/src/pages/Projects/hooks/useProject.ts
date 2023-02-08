@@ -1,59 +1,16 @@
+import { axiosInstance } from "../../../helper/axios";
+import { ProjectData, Member } from "../../../types/common";
 import { onChange } from "./../../../utils/Common";
 import { useState } from "react";
 
-type Member = {
-  name: string;
-  id: string;
-  url: string;
-};
-export type ProjectData = {
-  id?: any;
-  name: string;
-  description: string;
-  members: Member[];
-  img: string;
-  startDate: Date;
-  expectedEndDate: Date;
-  category: string;
-  lead: string;
-};
-
-export type ProjectType = {
-  id: number;
-  name: string;
-  description: string;
-  members: number;
-  img: string;
-  totalTasks: number;
-};
-
 export const useProject = (id?: string) => {
-  const [data, setData] = useState<ProjectType[]>([
-    {
-      id: 1,
-      name: "Project 1",
-      description: "This is a project",
-      members: 10,
-      img: "https://picsum.photos/200",
-      totalTasks: 10,
-    },
-  ]);
+  const [data, setData] = useState<ProjectData[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [value, setValue] = useState<ProjectData>({
+    id: undefined,
     name: "",
     description: "",
-    members: [
-      {
-        name: "fury",
-        id: "1",
-        url: "https://picsum.photos/200",
-      },
-      {
-        name: "rajeev",
-        id: "3",
-        url: "https://picsum.photos/200",
-      },
-    ],
+    members: [],
     img: "",
     startDate: new Date(),
     expectedEndDate: new Date(),
@@ -62,21 +19,65 @@ export const useProject = (id?: string) => {
   });
 
   const fetchMembers = () => {
-    //api call to fetch members
+    axiosInstance.get("/project/members").then((res) => {
+      setMembers(res.data);
+    });
   };
 
+  const fetchAllProjects = () => {
+    axiosInstance.get("/project/list").then((res) => {
+      setData(res.data.projects);
+    });
+  };
   const fetchExistingData = (id: any) => {
-    // get existing data from server
+    axiosInstance.get(`/project/${id}`).then((res) => {
+      console.log(res.data);
+      setData(res.data);
+    });
   };
 
-  const fetchData = () => {
-    //api call to fetch data
-  };
   const updateState = (data: any, key: keyof ProjectData) =>
     onChange(data, key, setValue);
 
+  const uploadImage = (id: any) => {
+    console.log(id);
+    if (typeof value.img == "object") {
+      let img = new FormData();
+      img.append("img", value.img);
+      axiosInstance.put(`/project/image/${id}`, img).then((res) => {
+        console.log(res);
+      });
+    }
+  };
   const submitData = () => {
-    //api call to save data
+    let request: any = { ...value };
+    request.img = value.img ? true : false;
+
+    let data = new FormData();
+    if (value.img as unknown as File) {
+      data.append("img", value.img as unknown as File);
+    }
+    data.append("data", JSON.stringify(request));
+    if (value.id) {
+      axiosInstance
+        .put(`/project/${id}`, data)
+        .then((res) => {
+          console.log(res.data);
+          uploadImage(res.data.id);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      axiosInstance
+        .post("/project/create", data)
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
   return {
     data,
@@ -84,8 +85,8 @@ export const useProject = (id?: string) => {
     members,
     updateState,
     submitData,
-    fetchData,
     fetchExistingData,
     fetchMembers,
+    fetchAllProjects,
   };
 };

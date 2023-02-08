@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../../css/project.css";
 import { Fab, MenuItem, Menu } from "@mui/material";
 import { Card } from "../../components/Common/Card";
@@ -13,8 +13,10 @@ export const ProjectsList = () => {
   const [show, setShow] = useState(false);
   const [eTarget, setETarget] = useState<any>(null);
 
-  const { data } = useProject();
-
+  const { data, fetchAllProjects } = useProject();
+  useEffect(() => {
+    fetchAllProjects();
+  }, [fetchAllProjects]);
   return (
     <div className="project-container">
       {data?.map((item) => (

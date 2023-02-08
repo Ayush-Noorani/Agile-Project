@@ -13,7 +13,10 @@ export const useUpdateProfile = () => {
     setError("");
     setLoader(true);
     axiosInstance
-      .post("/user/update-details", value)
+      .post("/user/update-details", {
+        username: value.username,
+        passwod: value.password,
+      })
       .then((res) => {
         navigate("/user-details");
       })
