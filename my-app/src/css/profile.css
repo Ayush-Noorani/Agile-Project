@@ -1,7 +1,6 @@
 .profile_form_fields {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
   width: 100%;
   border-bottom: 1px solid black;
   margin-top: 10px;

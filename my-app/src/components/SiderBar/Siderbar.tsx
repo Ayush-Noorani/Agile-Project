@@ -34,8 +34,8 @@ export const SideBar = ({ children }: SideBarProps) => {
           display: "flex",
           flex: 1,
           flexDirection: "row",
-          marginTop: "4rem",
-          height: "95%",
+          marginTop: "0.5%",
+          height: "100%",
           width: "100%",
         }}
       >

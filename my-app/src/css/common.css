@@ -9,6 +9,14 @@
     flex-direction: column;
     box-shadow: rgba(60, 66, 87, 0.12) 0px 7px 14px 0px, rgba(0, 0, 0, 0.12) 0px 3px 6px 0px;
 }
+
+.member-section{
+    background-color: #ebecf0;
+    border-radius: 5px;
+    padding: 5px;
+    height: 60%;
+    margin-top: 5px;
+}
 .box-shadow{
     box-shadow: rgba(60, 66, 87, 0.12) 0px 7px 14px 0px, rgba(0, 0, 0, 0.12) 0px 3px 6px 0px;
 

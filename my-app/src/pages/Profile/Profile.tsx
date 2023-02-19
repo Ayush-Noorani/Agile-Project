@@ -1,13 +1,16 @@
-import { Box, Button, Avatar, Alert } from "@mui/material";
+import { Box, Button, Avatar, Alert, TextField } from "@mui/material";
 import React, { ChangeEvent, useState } from "react";
-import { useUpdateProfile } from "../../hooks/useUpdateProfile";
+import { useUpdateProfile } from "./hooks/useUpdateProfile";
 import "../../css/profile.css";
+import { onChange } from "../../utils/Common";
+import { Role } from "../../types/common";
 
 interface formFields {
   username: string;
   password: string;
   email: string;
   phoneNumber: number;
+  role: Role;
 }
 
 export const Profile = () => {
@@ -16,19 +19,21 @@ export const Profile = () => {
     password: "",
     email: "",
     phoneNumber: 0,
+    role: "user",
   });
   const [error, setError] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
   const { onSubmit } = useUpdateProfile();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormFields((prevVal) => {
-      return {
-        ...prevVal,
-        [e.target.name]: e.target.value,
-      };
-    });
-  };
+  //Not required
+  // const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setFormFields((prevVal) => {
+  //     return {
+  //       ...prevVal,
+  //       [e.target.name]: e.target.value,
+  //     };
+  //   });
+  // };
 
   //   const updateDetails = () => {
 
@@ -60,13 +65,13 @@ export const Profile = () => {
           sx={{
             alignItems: "center",
             gap: "20px",
-            marginTop: '5px'
+            marginTop: "5px",
           }}
         >
           <Avatar
             alt="profile image"
             src="https://loremflickr.com/320/240"
-            sx={{ width: 200, height: 200}}
+            sx={{ width: 200, height: 200 }}
           />
           <Box className="flex_column">
             <h2 style={{ margin: "0" }}>Profile</h2>
@@ -87,42 +92,56 @@ export const Profile = () => {
         </Box>
       </Box>
       {error ? <Alert severity="error">{error}</Alert> : <></>}
-      <Box className="fields_container" >
+      <Box className="column" style={{ justifyContent: "space-between" }}>
         <Box className="profile_form_fields">
-          <label className="label">Username</label>
-          <input
-            className="inputField"
-            type="text"
-            name="username"
-            onChange={handleChange}
+          <TextField
+            label={"Username"}
+            onChange={(e) =>
+              onChange(e.target.value, "username", setFormFields)
+            }
+            style={{
+              width: "70%",
+            }}
+            id="outlined-basic"
+            value={formFields.username}
+            variant="outlined"
           />
         </Box>
         <Box className="profile_form_fields">
-          <label className="label">Password</label>
-          <input
-            className="inputField"
-            type="text"
-            name="password"
-            onChange={handleChange}
+          <TextField
+            label={"Password"}
+            onChange={(e) =>
+              onChange(e.target.value, "password", setFormFields)
+            }
+            style={{
+              width: "70%",
+            }}
+            value={formFields.password}
+            id="outlined-basic"
+            variant="outlined"
           />
         </Box>
         <Box className="profile_form_fields">
-          <label className="label">Email</label>
-          <input
-            className="inputField"
-            type="text"
-            name="email"
-            value={""}
+          <TextField
+            label={"Email"}
+            style={{
+              width: "70%",
+            }}
+            value={formFields.email}
+            id="outlined-basic"
+            variant="outlined"
             disabled
           />
         </Box>
         <Box className="profile_form_fields">
-          <label className="label">Role</label>
-          <input
-            className="inputField"
-            type="text"
-            name="role"
-            value={""}
+          <TextField
+            label={"Role"}
+            style={{
+              width: "70%",
+            }}
+            value={formFields.role}
+            id="outlined-basic"
+            variant="outlined"
             disabled
           />
         </Box>

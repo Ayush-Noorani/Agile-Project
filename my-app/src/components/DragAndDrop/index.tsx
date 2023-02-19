@@ -1,10 +1,15 @@
+import { useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { Columnlist } from "./Components/ColumnList";
 
 interface DragAndDropProps {
   data: any;
+  order: any[] | undefined;
 }
-export const DragAndDrop = ({ data }: DragAndDropProps) => {
+export const DragAndDrop = ({ data, order }: DragAndDropProps) => {
+  let defaultOrder = ["toDo", "inProgress"];
+  const [columnOrder, setColumnOrder] = useState<string[]>(defaultOrder);
+
   const onDragEnd = (result: any) => {
     const { destination, source, draggableId, type } = result;
 
@@ -19,43 +24,34 @@ export const DragAndDrop = ({ data }: DragAndDropProps) => {
       return;
     }
 
-    // if (type === 'column') {
-    //   const newColumnOrder = Array.from(this.state.columnOrder);
-    //   newColumnOrder.splice(source.index, 1);
-    //   newColumnOrder.splice(destination.index, 0, draggableId);
+    if (type === "column") {
+      const newColumnOrder = Array.from(columnOrder);
+      newColumnOrder.splice(source.index, 1);
+      newColumnOrder.splice(destination.index, 0, draggableId);
+      setColumnOrder(newColumnOrder);
+      localStorage.setItem("columnOrder", JSON.stringify(newColumnOrder));
+    }
+    console.log(source);
+    const home = source.droppableId;
+    const foreign = destination.droppableId;
 
-    //   const newState = {
-    //     ...this.state,
-    //     columnOrder: newColumnOrder,
-    //   };
-    //   this.setState(newState);
-    //   return;
-    // }
+    if (home === foreign) {
+      const newTaskIds = Array.from(
+        data.filter((value: any) => value.id == home)
+      );
+      newTaskIds.splice(source.index, 1);
+      newTaskIds.splice(destination.index, 0, draggableId);
+      if (home === foreign) {
+        const newTaskIds = Array.from(
+          data.filter((value: any) => value.id == home)
+        );
+        newTaskIds.splice(source.index, 1);
+        newTaskIds.splice(destination.index, 0, draggableId);
 
-    // const home = this.state.columns[source.droppableId];
-    // const foreign = this.state.columns[destination.droppableId];
-
-    // if (home === foreign) {
-    //   const newTaskIds = Array.from(home.taskIds);
-    //   newTaskIds.splice(source.index, 1);
-    //   newTaskIds.splice(destination.index, 0, draggableId);
-
-    //   const newHome = {
-    //     ...home,
-    //     taskIds: newTaskIds,
-    //   };
-
-    //   const newState = {
-    //     ...this.state,
-    //     columns: {
-    //       ...this.state.columns,
-    //       [newHome.id]: newHome,
-    //     },
-    //   };
-
-    //   this.setState(newState);
-    //   return;
-    // }
+        return;
+      }
+      return;
+    }
 
     // moving from one list to another
     // const homeTaskIds = Array.from(home.taskIds);
@@ -97,17 +93,21 @@ export const DragAndDrop = ({ data }: DragAndDropProps) => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {data.columnOrder.map((columnId: string | number, index: any) => {
-                const column = data.columns[columnId];
-                return (
-                  <Columnlist
-                    key={column.id}
-                    column={column}
-                    taskMap={data.tasks}
-                    index={index}
-                  />
-                );
-              })}
+              {(order ? order : columnOrder).map(
+                (columnId: string | number, index: any) => {
+                  const columnData = data
+                    .filter((task: any) => task.id == columnId)
+                    .map((task: { data: any }) => task.data);
+                  return (
+                    <Columnlist
+                      key={columnId}
+                      columnId={columnId}
+                      taskMap={columnData}
+                      index={index}
+                    />
+                  );
+                }
+              )}
               {provided.placeholder}
             </div>
           )}

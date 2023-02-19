@@ -12,6 +12,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Button from "@mui/material/Button";
+import { useCommon } from "../../hooks/useCommon";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -80,6 +81,7 @@ interface NavBarProps {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const NavBar = ({ show, setShow }: NavBarProps) => {
+  const { navigate } = useCommon();
   return (
     <Box sx={{ width: "100vw" }}>
       <AppBar position="static">
@@ -135,7 +137,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            <IconButton onClick={() => {}}>
+            <IconButton onClick={() => navigate("/user/update-profile")}>
               <AccountCircle />
             </IconButton>
           </Box>
