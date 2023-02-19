@@ -1,6 +1,6 @@
 import { Box, Button, Avatar, Alert, TextField } from "@mui/material";
 import React, { ChangeEvent, useState } from "react";
-import { useUpdateProfile } from "../../hooks/useUpdateProfile";
+import { useUpdateProfile } from "./hooks/useUpdateProfile";
 import "../../css/profile.css";
 import { onChange } from "../../utils/Common";
 import { Role } from "../../types/common";

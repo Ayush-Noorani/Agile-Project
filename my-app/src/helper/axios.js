@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export const url = process.env.SERVER_URL || "http://localhost:8000";
+export const baseURL = process.env.SERVER_URL || "http://localhost:8000";
 
 export const axiosInstance = axios.create({
-  baseURL: url,
+  baseURL: baseURL,
 });
 axiosInstance.interceptors.request.use(async (config) => {
   if (["post", "get", "put", "delete"].includes(config.method)) {

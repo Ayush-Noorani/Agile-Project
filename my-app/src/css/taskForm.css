@@ -1,0 +1,57 @@
+.task-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    padding: 20px;
+    border: 1px solid #eaeaea;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .task-form h1 {
+    margin-top: 0;
+  }
+  
+  .task-form button {
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  .MuiFormControl-root {
+    margin-top: 20px;
+  }
+  
+  .MuiInputBase-input {
+    font-size: 16px;
+  }
+  
+  .MuiInput-underline:before {
+    border-bottom: 2px solid #1976d2;
+  }
+  
+  .MuiInput-underline:hover:not(.Mui-disabled):before {
+    border-bottom: 2px solid #2196f3;
+  }
+  
+  .MuiInput-underline:after {
+    border-bottom: 2px solid #2196f3;
+  }
+
+
+  .create-task-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    }
+    
+    .create-task-form form {
+    width: 100%;
+    max-width: 600px;
+    }
+    
+    .create-task-form button[type="submit"] {
+    margin-top: 20px;
+    }

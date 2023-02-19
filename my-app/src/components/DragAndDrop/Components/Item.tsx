@@ -49,7 +49,7 @@ export const Item = ({ ...props }: any) => {
               alignItems: "center",
             }}
           >
-            <h5>{props.task.data.title}</h5>
+            <h5>{props.task.title}</h5>
             <IconButton
               aria-label="more"
               id="long-button"
@@ -75,7 +75,7 @@ export const Item = ({ ...props }: any) => {
               <MenuItem onClick={() => setOpen(false)}>Delete</MenuItem>
             </Menu>
           </div>
-          <Assigned data={props.task.data.members} />
+          <Assigned data={props.task.members} />
         </Container>
       )}
     </Draggable>
