@@ -49,7 +49,6 @@ def updateDetails():
     data = request.get_json()
     username = data['username']
     if (username == '' or username == None):
-    if (username == '' or username == None):
         return {'message': 'Username cannot be empty'}, 304
     else:
         password = bcrypt.generate_password_hash(data['password'])
