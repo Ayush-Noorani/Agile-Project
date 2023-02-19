@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { WeightLabel } from "./Common";
 import "../../css/project.css";
 import { IconButton } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
+import { baseURL } from "../../helper/axios";
 
 export const Card = ({ data, onClick }: { data: any; onClick: Function }) => {
   return (
     <div key={data.id} className="project">
       <img
-        src={data?.img ? data.img : "https://picsum.photos/200"}
+        src={
+          data?.img
+            ? `${baseURL}/image/project/${data.id}.png`
+            : "https://picsum.photos/200"
+        }
         alt="img"
         style={{
           alignSelf: "center",
@@ -37,9 +42,10 @@ export const Card = ({ data, onClick }: { data: any; onClick: Function }) => {
       <p className="desc">{data.description}</p>
       <div
         style={{
+          alignSelf: "flex-end",
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: "flex-end",
         }}
       >
         <label>

@@ -2,10 +2,14 @@ import { axiosInstance } from "../../../helper/axios";
 import { ProjectData, Member } from "../../../types/common";
 import { onChange } from "./../../../utils/Common";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/store";
+import produce from "immer";
 
 export const useProject = (id?: string) => {
-  const [data, setData] = useState<ProjectData[]>([]);
-  const [members, setMembers] = useState<Member[]>([]);
+  const projects = useSelector((state: RootState) => state.project.projects);
+
+  const [data, setData] = useState<ProjectData[]>(projects);
   const [value, setValue] = useState<ProjectData>({
     id: undefined,
     name: "",
@@ -19,8 +23,12 @@ export const useProject = (id?: string) => {
   });
 
   const fetchMembers = () => {
-    axiosInstance.get("/project/members").then((res) => {
-      setMembers(res.data);
+    axiosInstance.get(`/project/members/${id}`).then((res) => {
+      setValue(
+        produce(value, (draft) => {
+          draft.members = res.data.members;
+        })
+      );
     });
   };
 
@@ -30,9 +38,10 @@ export const useProject = (id?: string) => {
     });
   };
   const fetchExistingData = (id: any) => {
-    axiosInstance.get(`/project/${id}`).then((res) => {
-      console.log(res.data);
-      setData(res.data);
+    console.log(id);
+    axiosInstance.get(`/project/get/${id}`).then((res) => {
+      console.log(res.data.project);
+      setValue(res.data.project);
     });
   };
 
@@ -51,11 +60,15 @@ export const useProject = (id?: string) => {
   };
   const submitData = () => {
     let request: any = { ...value };
-    request.img = value.img ? true : false;
-
+    delete request.img;
     let data = new FormData();
-    if (value.img as unknown as File) {
-      data.append("img", value.img as unknown as File);
+    console.log("HERE", value.img);
+    if (value.img && typeof value.img == "object") {
+      request["img"] = true;
+      data.append("img", value.img);
+      console.log(data);
+    } else {
+      request["img"] = false;
     }
     data.append("data", JSON.stringify(request));
     if (value.id) {
@@ -82,7 +95,6 @@ export const useProject = (id?: string) => {
   return {
     data,
     value,
-    members,
     updateState,
     submitData,
     fetchExistingData,

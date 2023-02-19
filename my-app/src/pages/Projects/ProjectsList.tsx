@@ -16,7 +16,7 @@ export const ProjectsList = () => {
   const { data, fetchAllProjects } = useProject();
   useEffect(() => {
     fetchAllProjects();
-  }, [fetchAllProjects]);
+  }, []);
   return (
     <div className="project-container">
       {data?.map((item) => (
@@ -27,7 +27,7 @@ export const ProjectsList = () => {
             onClick={(e: any) => {
               let target = eTarget;
               setETarget((prev: any) => (prev === e.target ? null : e.target));
-              setShow((prev) => (e.target !== target ? true : false));
+              setShow((_prev) => (e.target !== target ? true : false));
             }}
           />
           <Menu
@@ -54,7 +54,7 @@ export const ProjectsList = () => {
       ))}
       <Fab
         color="primary"
-        onClick={() => navigate("/project/create/0")}
+        onClick={() => navigate("/project/create")}
         sx={{ position: "absolute", bottom: 16, right: 16 }}
       >
         <Add />

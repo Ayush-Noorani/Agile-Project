@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Item } from "./Item";
+import { columTitle } from "../utils/data";
 
 const Container = styled.div`
   margin: 8px;
@@ -36,15 +37,17 @@ const InnerList = ({ ...props }: any) => {
 export const Column = ({ ...props }: any) => {
   console.log(props);
   return (
-    <Draggable draggableId={props.column.id} index={props.index}>
+    <Draggable draggableId={props.columnId} index={props.index}>
       {(provided: {
         draggableProps: any;
         innerRef: any;
         dragHandleProps: any;
       }) => (
         <Container {...provided.draggableProps} ref={provided.innerRef}>
-          <Title {...provided.dragHandleProps}>{props.column.title}</Title>
-          <Droppable droppableId={props.column.id} type="task">
+          <Title {...provided.dragHandleProps}>
+            {columTitle[props.columnId]}
+          </Title>
+          <Droppable droppableId={props.columnId} type="task">
             {(
               provided: {
                 innerRef: any;

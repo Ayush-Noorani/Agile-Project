@@ -18,7 +18,8 @@ export interface SideBarItemProps {
 }
 export type Member = {
   id: string;
-  name: string;
+  username: string;
+  role?: Role;
   img?: string;
 };
 export type ProjectData = {
@@ -26,7 +27,7 @@ export type ProjectData = {
   name: string;
   description: string;
   members: Member[];
-  img: string;
+  img: string | boolean | File;
   startDate: Date;
   expectedEndDate: Date;
   category: string;

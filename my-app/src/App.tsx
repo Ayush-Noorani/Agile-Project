@@ -9,7 +9,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import "./css/common.css";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import { Profile } from "./components/Profile/Profile";
+import { Profile } from "./pages/Profile/Profile";
 function App() {
   return (
     <Provider store={store}>

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import produce from 'immer'
 type initialStateType={
     isLoggedIn:boolean,
     userName:string,
@@ -18,9 +19,13 @@ const userSlice=createSlice({
             state.isLoggedIn=action.payload
         },
         setUser:(state,action)=>{
-            state.userName=action.payload.userName
-            state.email=action.payload.email
-            state.isLoggedIn=true
+           state= produce(state,(draft)=>{
+
+            draft.userName=action.payload.userName
+            draft.email=action.payload.email
+            draft.isLoggedIn=true
+            })
+       
         },
         discardUserData:(state)=>{
             state.isLoggedIn=false
