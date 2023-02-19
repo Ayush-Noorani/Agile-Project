@@ -8,9 +8,8 @@ interface DragAndDropProps {
 }
 export const DragAndDrop = ({ data, order }: DragAndDropProps) => {
   let defaultOrder = ["toDo", "inProgress"];
-  const [columnOrder, setColumnOrder] = useState<string[]>(
-    order ? order : defaultOrder
-  );
+  const [columnOrder, setColumnOrder] = useState<string[]>(defaultOrder);
+
   const onDragEnd = (result: any) => {
     const { destination, source, draggableId, type } = result;
 
@@ -42,7 +41,15 @@ export const DragAndDrop = ({ data, order }: DragAndDropProps) => {
       );
       newTaskIds.splice(source.index, 1);
       newTaskIds.splice(destination.index, 0, draggableId);
+      if (home === foreign) {
+        const newTaskIds = Array.from(
+          data.filter((value: any) => value.id == home)
+        );
+        newTaskIds.splice(source.index, 1);
+        newTaskIds.splice(destination.index, 0, draggableId);
 
+        return;
+      }
       return;
     }
 

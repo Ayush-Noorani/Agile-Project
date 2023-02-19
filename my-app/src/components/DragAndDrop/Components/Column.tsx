@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Item } from "./Item";
-import { columTitle } from "../utils/data";
+import { columTitle } from "../../utils/data";
 
 const Container = styled.div`
   margin: 8px;
@@ -35,7 +35,7 @@ const InnerList = ({ ...props }: any) => {
 };
 
 export const Column = ({ ...props }: any) => {
-  console.log(props);
+  console.log(props, columTitle[props.columnId]);
   return (
     <Draggable draggableId={props.columnId} index={props.index}>
       {(provided: {

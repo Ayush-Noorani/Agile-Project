@@ -27,7 +27,7 @@ def login():
     record = collection.find_one(
         {"email" if '@' in name else 'username': name}, {"_id": 1, "password": 1})
 
-    if(record and bcrypt.check_password_hash(record['password'], password)):
+    if (record and bcrypt.check_password_hash(record['password'], password)):
         return {"data": "User found - Login successful", "token": generateToken(str(record['_id']))}, 200
     else:
         return {"message": "Invalid Credentials - Login Failed"}, 400
@@ -38,16 +38,18 @@ def register():
     data = request.get_json()
     data['password'] = bcrypt.generate_password_hash(data['password'])
     is_registered = collection.insert_one(data)
-    if(is_registered):
+    if (is_registered):
         return {"data": "Registered", "token": generateToken(str(is_registered.inserted_id))}, 200
     else:
         return {"message": "Invalid Details"}, 400
+
 
 @app.route('/user/update-details', methods=['POST'])
 def updateDetails():
     data = request.get_json()
     username = data['username']
-    if(username == '' or username == None):
+    if (username == '' or username == None):
+    if (username == '' or username == None):
         return {'message': 'Username cannot be empty'}, 304
     else:
         password = bcrypt.generate_password_hash(data['password'])

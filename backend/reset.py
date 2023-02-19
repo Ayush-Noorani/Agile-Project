@@ -1,12 +1,14 @@
 # script to  format the database
+from flask_pymongo import PyMongo
 from pymongo import MongoClient
 
 
-client = MongoClient("mongodb+srv://ayush:ayush@msc-sem-4.ix9cnu7.mongodb.net/?retryWrites=true&w=majority")
+import config
+client = MongoClient(app.config['MONGO_URI'])
 db = client.Users
 # delete all collections in the database
-#db.drop_collection('users')
+db.drop_collection('users')
 db.drop_collection('projects')
 
-#db['users']
+db['users']
 db['projects']
