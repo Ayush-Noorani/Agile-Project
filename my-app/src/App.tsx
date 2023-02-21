@@ -9,12 +9,14 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import "./css/common.css";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import { Profile } from "./pages/Profile/Profile";
+import { ToastContextProvider } from "./context/ToastContext";
 function App() {
   return (
     <Provider store={store}>
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <RouterProvider router={Routes} />
+        <ToastContextProvider>
+          <RouterProvider router={Routes} />
+        </ToastContextProvider>
       </LocalizationProvider>
     </Provider>
   );

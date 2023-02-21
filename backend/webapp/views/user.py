@@ -25,10 +25,10 @@ def login():
     password = data['password']
     print(name, password)
     record = collection.find_one(
-        {"email" if '@' in name else 'username': name}, {"_id": 1, "password": 1})
+        {"email" if '@' in name else 'username': name}, {"_id": 1, "password": 1, 'email': 1, 'username': 1})
 
     if (record and bcrypt.check_password_hash(record['password'], password)):
-        return {"data": "User found - Login successful", "token": generateToken(str(record['_id']))}, 200
+        return {"data": "User found - Login successful", "token": generateToken(str(record['_id'])), 'username': record['username'], 'email': record['email']}, 200
     else:
         return {"message": "Invalid Credentials - Login Failed"}, 400
 

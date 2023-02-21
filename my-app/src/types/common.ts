@@ -9,7 +9,8 @@ export type User = {
   name: string;
   img?: string;
   email: string;
-  role: string;
+  username?: string;
+  roles: string[];
 };
 export interface SideBarItemProps {
   path: string;

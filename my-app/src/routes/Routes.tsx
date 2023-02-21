@@ -8,7 +8,6 @@ import { ProjectDetail } from "../pages/Projects/ProjectDetail";
 import { Task } from "../pages/Task/Task";
 import { Profile } from "../pages/Profile/Profile";
 
-import { rows } from "../pages/UserList/TestData";
 import { TaskForm } from "../pages/Task/TaskForm";
 
 export const Routes = createBrowserRouter([
@@ -44,12 +43,13 @@ export const Routes = createBrowserRouter([
     path: "/project/:id",
     element: <Protected children={<ProjectDetail />} />,
   },
-  {
-    path: "/employee-list",
-    element: <UserTable data={rows} />,
-  },
+
   {
     path: "/form",
     element: <TaskForm />,
+  },
+  {
+    path: "/employee-list",
+    element: <UserTable />,
   },
 ]);

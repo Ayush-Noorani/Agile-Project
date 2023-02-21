@@ -4,6 +4,7 @@ import { onChange } from "../../utils/Common";
 import { Alert, Box, Button, Container, TextField } from "@mui/material";
 import { useLogin } from "../../hooks/useLogin";
 import "../../css/common.css";
+import { useToastContext } from "../../context/ToastContext";
 
 const form: FormType[] = [
   {
@@ -30,6 +31,7 @@ export const Login = () => {
   const [error, setError] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
   const { onSubmit } = useLogin();
+  const { toast } = useToastContext();
   return (
     <Container
       sx={{
