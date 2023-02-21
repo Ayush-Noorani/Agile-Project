@@ -8,8 +8,8 @@ import { setUser } from "../../../store/reducers/user";
 
 export const useUpdateProfile = () => {
   const navigate = useNavigate();
-  const userData=useSelector((state:RootState)=>state.user)
-  const dispatch=useDispatch()
+  const userData = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
   const onSubmit = (
     value: any,
     setLoader: React.Dispatch<React.SetStateAction<boolean>>,
@@ -23,11 +23,12 @@ export const useUpdateProfile = () => {
         passwod: value.password,
       })
       .then((_res) => {
-        dispatch(setUser({
-          ...userData,
-          username: value.username,
-
-        }))
+        dispatch(
+          setUser({
+            ...userData,
+            username: value.username,
+          })
+        );
         navigate("/user-details");
       })
       .catch((err) => {
@@ -35,5 +36,5 @@ export const useUpdateProfile = () => {
       });
     setLoader(false);
   };
-  return { onSubmit };
+  return { onSubmit, userData };
 };

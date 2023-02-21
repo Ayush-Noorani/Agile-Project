@@ -39,6 +39,8 @@ db = client.Users
 #example: user.py
 import webapp.views.test
 import webapp.views.project
+import webapp.views.tasks
+import webapp.views.admin
 import webapp.views.user
 
 # forms

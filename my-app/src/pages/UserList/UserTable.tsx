@@ -18,10 +18,11 @@ import { Search } from "@mui/icons-material";
 import { User } from "../../types/common";
 import { Headers, SortOrder } from "./types/userListTypes";
 import { getcomparator, flipSortOrder } from "./utils/userListUtils";
+import { useRoleAssign } from "./hooks/useRoleAssign";
 
 const columnHeaders: Headers[] = [
   {
-    id: "id",
+    id: "username",
     label: "Username",
   },
   {
@@ -33,12 +34,13 @@ const columnHeaders: Headers[] = [
     label: "Email",
   },
   {
-    id: "role",
-    label: "Role",
+    id: "roles",
+    label: "Roles",
   },
 ];
 
-function UserTable({ data }: { data: User[] }) {
+export const UserTable = () => {
+  const { data } = useRoleAssign();
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [currentPage, setCurrentPage] = React.useState(0);
   const [sortBy, setSortBy] = React.useState<keyof User>("id");
@@ -95,8 +97,8 @@ function UserTable({ data }: { data: User[] }) {
           value={search}
           sx={{ marginY: "20px", marginX: "10px" }}
           InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
+            endAdornment: (
+              <InputAdornment position="end">
                 <Search />
               </InputAdornment>
             ),
@@ -139,18 +141,26 @@ function UserTable({ data }: { data: User[] }) {
                     key={row.id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    {Object.entries(row).map(([key, value]) =>
-                      key === "name" ? (
+                    {columnHeaders.map((item, index) =>
+                      item.id === "name" ? (
                         <TableCell
                           sx={{ display: "flex", alignItems: "center" }}
                         >
                           <Avatar sx={{ marginRight: "10px" }}>
-                            {value[0].concat(value[value.lastIndexOf(" ") + 1])}
+                            {row[item.id][0].concat(
+                              row[item.id][row[item.id].lastIndexOf(" ") + 1]
+                            )}
                           </Avatar>
-                          {value}
+                          {row[item.id]}
+                        </TableCell>
+                      ) : typeof row[item.id] === "object" ? (
+                        <TableCell size="small">
+                          {row["roles"]!.map((value) => value)}
                         </TableCell>
                       ) : (
-                        <TableCell size="small">{value}</TableCell>
+                        <TableCell size="small">
+                          {row[item.id as keyof User]}
+                        </TableCell>
                       )
                     )}
                   </TableRow>
@@ -179,6 +189,4 @@ function UserTable({ data }: { data: User[] }) {
       </TableContainer>
     </>
   );
-}
-
-export { UserTable };
+};

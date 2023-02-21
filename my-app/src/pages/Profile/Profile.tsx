@@ -23,7 +23,7 @@ export const Profile = () => {
   });
   const [error, setError] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const { onSubmit } = useUpdateProfile();
+  const { onSubmit, userData } = useUpdateProfile();
 
   //Not required
   // const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +38,7 @@ export const Profile = () => {
   //   const updateDetails = () => {
 
   //   }
-
+  console.log(userData);
   return (
     <Box
       sx={{
@@ -46,6 +46,7 @@ export const Profile = () => {
         flexDirection: "column",
         height: "100vh",
         padding: "0px 120px",
+        overflow: "auto",
         margin: "5px 0",
       }}
     >
@@ -57,6 +58,7 @@ export const Profile = () => {
           justifyContent: "space-between",
           position: "relative",
           marginTop: "18%",
+
           padding: "0 60px",
         }}
       >
@@ -74,11 +76,11 @@ export const Profile = () => {
             sx={{ width: 200, height: 200 }}
           />
           <Box className="flex_column">
-            <h2 style={{ margin: "0" }}>Profile</h2>
-            <p style={{ margin: "0" }}>Lorem ipsum</p>
+            <h2 style={{ margin: "0" }}>{userData.userName}</h2>
+            <p style={{ margin: "0" }}>{userData.email}</p>
           </Box>
         </Box>
-        <Box className="flex_row" gap={"10px"}>
+        <Box className="flex_row" gap={"10px"} style={{ overflow: "auto" }}>
           <Button variant="contained">Cancel</Button>
           <Button
             variant="outlined"
