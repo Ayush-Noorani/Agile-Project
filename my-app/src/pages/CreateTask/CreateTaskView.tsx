@@ -13,6 +13,7 @@ import { FileUpload } from "@mui/icons-material";
 import ReactQuill from "react-quill";
 import { useParams } from "react-router";
 import { axiosInstance } from "../../helper/axios";
+import { Container } from "@mui/system";
 
 const names = [
   "Oliver Hansen",
@@ -38,6 +39,9 @@ type Task = {
 };
 
 const CreateTaskView = () => {
+  const [fileList, setFileList] = useState<File[]>([]);
+  const [assignees, setAssignees] = useState<String[]>([]);
+
   const [formData, setFormData] = useState<Task>({
     description: "",
     summary: "",
@@ -69,6 +73,13 @@ const CreateTaskView = () => {
     //   },
     // });
   };
+  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const files = e.target.files ? Array.from(e.target.files) : [];
+  //   setFileList((prevList) => {
+  //     return prevList.concat(files);
+  //   });
+  // };
+
   const handleDeleteForAdditionalFiles = (index: number) => {
     setFormData((prev) => {
       return {
@@ -99,6 +110,10 @@ const CreateTaskView = () => {
           };
       }
     });
+  };
+
+  const handleChangeAssignee = (e: any) => {
+    setAssignees(e.target.value);
   };
 
   return (
