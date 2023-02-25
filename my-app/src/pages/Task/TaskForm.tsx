@@ -92,7 +92,7 @@ export const TaskForm = () => {
             theme="snow"
             value={value.description}
             placeholder="Description"
-            onChange={(e) => onChange(e, "description", setValue)}
+            onChange={(e: any) => onChange(e, "description", setValue)}
           />
         </FormControl>
 

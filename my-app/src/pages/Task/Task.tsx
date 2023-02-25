@@ -10,10 +10,12 @@ import {
   SpeedDialAction,
   SpeedDialIcon,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Create, Info } from "@mui/icons-material";
 import { data } from "../../res/initial-data";
 import { TaskForm } from "./TaskForm";
+import { CreateTaskView } from "../CreateTask/CreateTaskView";
 import { useState } from "react";
 
 interface TaskProps {}
@@ -33,14 +35,18 @@ export const Task = ({}: TaskProps) => {
   return (
     <>
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
-        <DialogTitle>Create a Task</DialogTitle>
+        <DialogTitle>
+          <Typography fontSize={30} fontWeight={"bold"}>
+            Create Task
+          </Typography>
+        </DialogTitle>
         <DialogContent>
-          <TaskForm />
+          <CreateTaskView />
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={() => setOpen(false)}>Close</Button>
           <Button onClick={() => {}}>Submit</Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
       <DragAndDrop
         data={data}
