@@ -48,6 +48,7 @@ export const Login = () => {
           height: "35%",
           width: "50%",
           display: "flex",
+          borderRadius: "20px",
           flexDirection: "column",
           justifyContent: "space-around",
         }}

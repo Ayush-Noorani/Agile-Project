@@ -14,7 +14,6 @@ export interface ListProps {
 }
 
 export const ListView = ({ data, action }: ListProps) => {
-  console.log(data);
   return (
     <List>
       {data.map((item, index) => (

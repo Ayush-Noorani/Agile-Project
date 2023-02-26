@@ -17,67 +17,34 @@ const Container = styled.div`
     props.isDragging ? "#EDEDED" : "white"};
 `;
 
-export const Item = ({ ...props }: any) => {
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleClick = (event: { currentTarget: any }) => {
-    setAnchorEl(event.currentTarget);
-  };
-  console.log(props.task);
-  return (
-    <Draggable draggableId={props.task.id} index={props.index}>
-      {(
-        provided: {
-          draggableProps: any;
-          dragHandleProps: any;
-          innerRef: any;
-        },
-        snapshot: { isDragging: any }
-      ) => (
-        <Container
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-          isDragging={snapshot.isDragging}
+export const Item = ({ ...props }: any) => (
+  <Draggable draggableId={props.task.id} index={props.index}>
+    {(
+      provided: {
+        draggableProps: any;
+        dragHandleProps: any;
+        innerRef: any;
+      },
+      snapshot: { isDragging: any }
+    ) => (
+      <Container
+        onClick={() => props.onClick(props.task.id)}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+        ref={provided.innerRef}
+        isDragging={snapshot.isDragging}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <h5>{props.task.title}</h5>
-            <IconButton
-              aria-label="more"
-              id="long-button"
-              aria-controls={open ? "long-menu" : undefined}
-              aria-expanded={open ? "true" : undefined}
-              aria-haspopup="true"
-              onClick={handleClick}
-            >
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="demo-positioned-menu"
-              aria-labelledby="demo-positioned-button"
-              open={anchorEl ? true : false}
-              onClose={() => setAnchorEl(null)}
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <MenuItem onClick={() => setOpen(false)}>Edit</MenuItem>
-              <MenuItem onClick={() => setOpen(false)}>Delete</MenuItem>
-            </Menu>
-          </div>
-          <Assigned data={props.task.members} />
-        </Container>
-      )}
-    </Draggable>
-  );
-};
+          <h5>{props.task.title}</h5>
+        </div>
+      </Container>
+    )}
+  </Draggable>
+);

@@ -22,4 +22,4 @@ const projectSlice = createSlice({
 
 export const { setData, discardUserData } = projectSlice.actions;
 
-export default projectSlice.reducer ;
+export default projectSlice.reducer;

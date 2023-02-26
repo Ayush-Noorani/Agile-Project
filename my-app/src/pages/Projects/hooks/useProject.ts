@@ -20,12 +20,13 @@ export const useProject = (id?: string) => {
     expectedEndDate: new Date(),
     category: "",
     lead: "",
+    columns: ["toDo", "inProgress", "done"],
   });
 
   const fetchMembers = () => {
     axiosInstance.get(`/project/members/${id}`).then((res) => {
       setValue(
-        produce(value, (draft) => {
+        produce((draft) => {
           draft.members = res.data.members;
         })
       );
@@ -38,9 +39,7 @@ export const useProject = (id?: string) => {
     });
   };
   const fetchExistingData = (id: any) => {
-    console.log(id);
     axiosInstance.get(`/project/get/${id}`).then((res) => {
-      console.log(res.data.project);
       setValue(res.data.project);
     });
   };
@@ -49,39 +48,37 @@ export const useProject = (id?: string) => {
     onChange(data, key, setValue);
 
   const uploadImage = (id: any) => {
-    console.log(id);
     if (typeof value.img == "object") {
       let img = new FormData();
       img.append("img", value.img);
-      axiosInstance.put(`/project/image/${id}`, img).then((res) => {
-        console.log(res);
-      });
+      axiosInstance.put(`/project/image/${id}`, img).then((res) => {});
     }
   };
   const submitData = () => {
     let request: any = { ...value };
     delete request.img;
     let data = new FormData();
-    console.log("HERE", value.img);
     if (value.img && typeof value.img == "object") {
       request["img"] = true;
       data.append("img", value.img);
-      console.log(data);
     } else {
       request["img"] = false;
     }
-    data.append("data", JSON.stringify(request));
     if (value.id) {
+      data.append("data", JSON.stringify(request));
+
       axiosInstance
         .put(`/project/${id}`, data)
         .then((res) => {
-          console.log(res.data);
           uploadImage(res.data.id);
         })
         .catch((err) => {
           console.log(err);
         });
     } else {
+      delete request.columns;
+      data.append("data", JSON.stringify(request));
+
       axiosInstance
         .post("/project/create", data)
         .then((res) => {
