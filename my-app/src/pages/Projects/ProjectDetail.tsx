@@ -71,7 +71,6 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
 
     reader.readAsDataURL(e.target.files[0] as File);
     reader.addEventListener("load", () => {
-      console.log(reader.result, typeof value.img, value.img);
       setImage(reader.result as string);
     });
   };
@@ -85,7 +84,7 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
             image.length > 0
               ? image
               : value.img
-              ? `${baseURL}/static/project/${value.id}.png`
+              ? `${baseURL}/image/project/${id}.png`
               : "https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YmxvYnxlbnwwfHwwfHw%3D&w=1000&q=80"
           }
           height="200px"

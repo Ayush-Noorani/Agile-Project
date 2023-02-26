@@ -14,7 +14,6 @@ export const useCommon = () => {
     axiosInstance
       .get(`/search/members/${search}`)
       .then((res) => {
-        console.log(res.data);
         setMembers(res.data.members);
       })
       .catch((err) => console.log(err));

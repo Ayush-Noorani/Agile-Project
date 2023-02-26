@@ -25,10 +25,10 @@ def login():
     password = data['password']
     print(name, password)
     record = collection.find_one(
-        {"email" if '@' in name else 'username': name}, {"_id": 1, "password": 1, 'email': 1, 'username': 1})
+        {"email" if '@' in name else 'username': name}, {"_id": 1, "password": 1, 'email': 1, 'username': 1, 'roles': 1, '_id': 1})
 
     if (record and bcrypt.check_password_hash(record['password'], password)):
-        return {"data": "User found - Login successful", "token": generateToken(str(record['_id'])), 'username': record['username'], 'email': record['email']}, 200
+        return {"data": "User found - Login successful", "token": generateToken(str(record['_id'])), 'username': record['username'], 'email': record['email'], 'roles': record['roles'], 'id': str(record['_id'])}, 200
     else:
         return {"message": "Invalid Credentials - Login Failed"}, 400
 
@@ -60,7 +60,15 @@ def updateDetails():
             newData = collection.find_one({"email": data['email']})
             return {"message": "User details updated successfully", "data": newData}, 200
 
+# save image route
 
+
+@app.route('/user/save-image/<id>', methods=['PUT'])
+def saveImage(id):
+    img = request.files['img']
+    img.save(app.config["UPLOAD_FOLDER"]+"\\profile\\" +
+             str(id)+"."+"png")
+    return {}, 200
 #  example
 # @app.route('/api/v1/private', methods=['GET'])
 # @jwt_required()
