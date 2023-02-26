@@ -1,30 +1,41 @@
-import { Box, Button, Avatar, Alert, TextField } from "@mui/material";
-import React, { ChangeEvent, useState } from "react";
+import { Box, Button, Avatar, Alert, TextField, Fab } from "@mui/material";
+import React, { ChangeEvent, useRef, useState } from "react";
 import { useUpdateProfile } from "./hooks/useUpdateProfile";
 import "../../css/profile.css";
 import { onChange } from "../../utils/Common";
 import { Role } from "../../types/common";
+import { axiosInstance, baseURL } from "../../helper/axios";
+import { Add } from "@mui/icons-material";
 
 interface formFields {
   username: string;
   password: string;
   email: string;
-  phoneNumber: number;
-  role: Role;
+  roles: Role[];
 }
 
 export const Profile = () => {
+  const { onSubmit, userData, saveImage } = useUpdateProfile();
+  const fileRef = useRef<any>(null);
+  const [image, setImage] = useState<string>("");
+  const reader = new FileReader();
+
   const [formFields, setFormFields] = useState<formFields>({
-    username: "",
+    username: userData.userName,
     password: "",
-    email: "",
-    phoneNumber: 0,
-    role: "user",
+    email: userData.email,
+    roles: userData.roles,
   });
+  const handleImageUpload = (e: any) => {
+    reader.readAsDataURL(e.target.files[0] as File);
+    reader.addEventListener("load", () => {
+      setImage(reader.result as string);
+    });
+    saveImage(e.target.files[0]);
+  };
+
   const [error, setError] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const { onSubmit, userData } = useUpdateProfile();
-
   //Not required
   // const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
   //   setFormFields((prevVal) => {
@@ -38,7 +49,6 @@ export const Profile = () => {
   //   const updateDetails = () => {
 
   //   }
-  console.log(userData);
   return (
     <Box
       sx={{
@@ -70,16 +80,40 @@ export const Profile = () => {
             marginTop: "5px",
           }}
         >
-          <Avatar
-            alt="profile image"
-            src="https://loremflickr.com/320/240"
-            sx={{ width: 200, height: 200 }}
-          />
+          <div style={{ position: "relative" }}>
+            <Avatar
+              alt="profile image"
+              src={`${baseURL}/image/profile/${userData.id}.png`}
+              sx={{ width: 200, height: 200 }}
+            />
+            <Fab
+              variant="circular"
+              color="primary"
+              size="small"
+              onClick={() => fileRef.current.click()}
+              style={{
+                zIndex: 1,
+
+                position: "absolute",
+                bottom: "10px",
+                right: "10px",
+              }}
+            >
+              <Add />
+            </Fab>
+          </div>
           <Box className="flex_column">
             <h2 style={{ margin: "0" }}>{userData.userName}</h2>
             <p style={{ margin: "0" }}>{userData.email}</p>
           </Box>
         </Box>
+        <input
+          style={{ opacity: 0 }}
+          type="file"
+          onChange={handleImageUpload}
+          ref={fileRef}
+        />
+
         <Box className="flex_row" gap={"10px"} style={{ overflow: "auto" }}>
           <Button variant="contained">Cancel</Button>
           <Button
@@ -141,7 +175,7 @@ export const Profile = () => {
             style={{
               width: "70%",
             }}
-            value={formFields.role}
+            value={formFields.roles.join(", ")}
             id="outlined-basic"
             variant="outlined"
             disabled

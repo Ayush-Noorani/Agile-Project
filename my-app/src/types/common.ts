@@ -33,6 +33,7 @@ export type ProjectData = {
   expectedEndDate: Date;
   category: string;
   lead: string;
+  columns: string[];
 };
 
 export type ProjectType = {
@@ -45,3 +46,20 @@ export type ProjectType = {
 };
 
 export type Role = "admin" | "user" | "lead" | "member" | "developer";
+
+export const columnTitle: Record<string, string> = {
+  toDo: "To do",
+  inProgress: "In Progress",
+};
+export type Priority = "low" | "medium" | "high";
+export type Tasks = {
+  id: string;
+  title: string;
+  description: string;
+  priority: Priority;
+  status: keyof typeof columnTitle;
+  assignee: Member[];
+  reportTo: Member[];
+  dueDate: Date;
+};
+export type TasksRecord = Record<keyof typeof columnTitle, Tasks[]>;

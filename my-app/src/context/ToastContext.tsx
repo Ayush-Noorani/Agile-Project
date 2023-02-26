@@ -8,7 +8,7 @@ type ToastContext = {
 const defaultValue = {
   position: "top-right",
   autoClose: 800,
-  hideProgressBar: false,
+  hideProgressBar: true,
   closeOnClick: true,
   pauseOnHover: true,
   draggable: true,
