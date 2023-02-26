@@ -10,19 +10,55 @@ import requests
 import json
 from flask import send_file
 collection = db.tasks
+projects_col = db["projects"]
+tasks_col = db["tasks"]
 
 
 @app.route("/task/list/<id>", methods=["GET"])
-@jwt_required()
 def get_task_list(id):
-    user_id = get_jwt_identity()
-    tasks = list(db.tasks.find({'project_id': ObjectId(id)}))
-    for task in tasks:
 
-        task["id"] = str(task["_id"])
-        task.pop("_id")
+    project = projects_col.find_one(
+        {"_id": ObjectId(id)})
 
-    return {"tasks": tasks}
+    tasks_dict = {}
+
+    for task_status in project["tasks"].keys():
+        print(project["tasks"][task_status])
+        task_pipline = pipeline = [
+            {"$match":            {"_id": {"$in": project["tasks"][task_status]}},
+             },
+            {"$lookup": {
+                "from": "users_details",
+                "localField": "assigned",
+                "foreignField": "_id",
+                "as": "assigned_users"
+            }},
+            {"$lookup": {
+                "from": "users_details",
+                "localField": "reporter",
+                "foreignField": "_id",
+                "as": "reporter_user"
+            }},
+            {"$project": {
+                "_id": 0,
+                "id": {"$toString": "$_id"},
+                "title": 1,
+                "description": 1,
+                "status": 1,
+                "created_at": 1,
+                "updated_at": 1,
+                "due_date": 1,
+                "assigned_users": 1,
+                "reporter_user": 1,
+                "reportinTo": {"$arrayElemAt": ["$reporter_user", 0]},
+                "assignedTo": {"$arrayElemAt": ["$assigned_users", 0]}
+
+            }}
+        ]
+        results = list(db.tasks.aggregate(task_pipline))
+        tasks_dict[task_status] = results
+
+    return tasks_dict, 200
 
 
 @app.route("/task/create", methods=["POST"])
@@ -45,6 +81,16 @@ def create_task():
     return {"status": "success", "id": str(id)}
 
 
+@app.route("/task/update/sequence/<id>", methods=["PUT"])
+@jwt_required()
+def update_task_sequence(id):
+    data = request.get_json()
+    for key in data.keys():
+        data[key] = list(map(lambda x: ObjectId(x), data[key]))
+    db.projects.update_one({"_id": ObjectId(id)}, {"$set": {'tasks': data}})
+    return {"status": "success"}
+
+
 @app.route("/task/<id>", methods=["DELETE"])
 @jwt_required()
 def delete_task(id):
@@ -52,7 +98,7 @@ def delete_task(id):
     return {"status": "success"}
 
 
-@app.route("/task/<id>", methods=["GET"])
+@app.route("/task/get/<id>", methods=["GET"])
 @jwt_required()
 def get_task(id):
     task = db.tasks.find_one({"_id": ObjectId(id)})

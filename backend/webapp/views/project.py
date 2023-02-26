@@ -22,7 +22,7 @@ collection = db.projects
 def get_project_list():
     id = get_jwt_identity()
     projects = list(db.projects.find(
-        {"$or": [{"created_by": id}, {"members": {"$in": [id]}}]}))
+        {"$or": [{"created_by": id}, {"members": {"$in": [id]}}]}, {"_id": 1, "title": 1, "description": 1, "img": 1, "members": 1, "created_by": 1, "created_at": 1, "updated_at": 1}))
     for project in projects:
 
         project["id"] = str(project["_id"])
@@ -37,6 +37,7 @@ def get_project_list():
 def create_project():
     data = json.loads(request.form["data"])
     print(data)
+
     data['created_by'] = get_jwt_identity()
     img = request.files['img']
     data['members'] = [ObjectId(member['id']) for member in data['members']]
@@ -44,6 +45,8 @@ def create_project():
         data['img'] = True
     else:
         data['img'] = False
+    for i in data['columns']:
+        data['tasks'][i] = []
     id = db.projects.insert_one(data).inserted_id
     img = request.files['img']
     if (img):
