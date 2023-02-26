@@ -10,6 +10,7 @@ export const useUpdateProfile = () => {
   const navigate = useNavigate();
   const userData = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
+
   const onSubmit = (
     value: any,
     setLoader: React.Dispatch<React.SetStateAction<boolean>>,
@@ -36,5 +37,13 @@ export const useUpdateProfile = () => {
       });
     setLoader(false);
   };
-  return { onSubmit, userData };
+
+  const saveImage = (image: any) => {
+    const form = new FormData();
+    form.append("img", image);
+    axiosInstance.put("/user/save-image/" + userData.id, form).catch((err) => {
+      console.log(err);
+    });
+  };
+  return { onSubmit, userData, saveImage };
 };

@@ -5,7 +5,7 @@ import { UserTable } from "../pages/UserList/UserTable";
 import { Protected } from "../components/Protected";
 import { ProjectsList } from "../pages/Projects/ProjectsList";
 import { ProjectDetail } from "../pages/Projects/ProjectDetail";
-import { Task } from "../pages/Task/Task";
+import { TaskList } from "../pages/Task/TaskList";
 import { Profile } from "../pages/Profile/Profile";
 
 import { TaskForm } from "../pages/Task/TaskForm";
@@ -32,8 +32,8 @@ export const Routes = createBrowserRouter([
     element: <Protected children={<ProjectsList />} />,
   },
   {
-    path: "/tasks/:projectId",
-    element: <Protected children={<Task />} />,
+    path: "/tasks/:id",
+    element: <Protected children={<TaskList />} />,
   },
   {
     path: "/prokect/create",

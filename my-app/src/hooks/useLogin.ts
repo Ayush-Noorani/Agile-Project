@@ -25,6 +25,12 @@ export const useLogin = () => {
         navigate("/dashboard");
       })
       .catch((err) => {
+        if (!err.response?.data?.message) {
+          return toast.error("Server Error", {
+            ...defaultValue,
+            theme: "light",
+          });
+        }
         setError(err.response.data.message);
       });
     setLoader(false);

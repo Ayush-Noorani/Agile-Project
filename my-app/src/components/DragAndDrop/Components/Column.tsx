@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Item } from "./Item";
-import { columTitle } from "../../utils/data";
+import { columnTitle } from "../../../types/common";
 
 const Container = styled.div`
   margin: 8px;
@@ -30,12 +30,11 @@ const TaskList = styled.div`
 
 const InnerList = ({ ...props }: any) => {
   return props.tasks.map((task: any, index: any) => (
-    <Item key={task.id} task={task} index={index} />
+    <Item key={task.id} onClick={props.onClick} task={task} index={index} />
   ));
 };
 
 export const Column = ({ ...props }: any) => {
-  console.log(props, columTitle[props.columnId]);
   return (
     <Draggable draggableId={props.columnId} index={props.index}>
       {(provided: {
@@ -45,7 +44,7 @@ export const Column = ({ ...props }: any) => {
       }) => (
         <Container {...provided.draggableProps} ref={provided.innerRef}>
           <Title {...provided.dragHandleProps}>
-            {columTitle[props.columnId]}
+            {columnTitle[props.columnId]}
           </Title>
           <Droppable droppableId={props.columnId} type="task">
             {(
@@ -61,7 +60,7 @@ export const Column = ({ ...props }: any) => {
                 {...provided.droppableProps}
                 isDraggingOver={snapshot.isDraggingOver}
               >
-                <InnerList tasks={props.tasks} />
+                <InnerList tasks={props.tasks} onClick={props.onClick} />
                 {provided.placeholder}
               </TaskList>
             )}
