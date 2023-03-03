@@ -7,12 +7,12 @@ import {
   CardContent,
   Chip,
   Paper,
-  SelectChangeEvent,
 } from "@mui/material";
 import { Typography } from "@mui/material";
 import { FileUpload } from "@mui/icons-material";
 import ReactQuill from "react-quill";
-import { Container } from "@mui/system";
+import { useParams } from "react-router";
+import { axiosInstance } from "../../helper/axios";
 
 const names = [
   "Oliver Hansen",
@@ -38,9 +38,6 @@ type Task = {
 };
 
 const CreateTaskView = () => {
-  const [fileList, setFileList] = useState<File[]>([]);
-  const [assignees, setAssignees] = useState<String[]>([]);
-
   const [formData, setFormData] = useState<Task>({
     description: "",
     summary: "",
@@ -51,13 +48,27 @@ const CreateTaskView = () => {
     status: "toDo",
   });
 
-  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const files = e.target.files ? Array.from(e.target.files) : [];
-  //   setFileList((prevList) => {
-  //     return prevList.concat(files);
-  //   });
-  // };
+  const { id } = useParams();
 
+  const submitFormData = () => {
+    console.log(formData);
+    const submitData: any = new FormData();
+    for (var key in formData) {
+      submitData.append(key, formData[key as keyof Task]);
+    }
+
+    // submitData.append("data", JSON.stringify(formData));
+
+    axiosInstance.post(`/task/create/${id}`, submitData).then(() => {
+      console.log("sent data");
+    });
+
+    // axios.post("localhost:8080/task/create", submitData, {
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    // });
+  };
   const handleDeleteForAdditionalFiles = (index: number) => {
     setFormData((prev) => {
       return {
@@ -88,10 +99,6 @@ const CreateTaskView = () => {
           };
       }
     });
-  };
-
-  const handleChangeAssignee = (e: any) => {
-    setAssignees(e.target.value);
   };
 
   return (
@@ -259,13 +266,7 @@ const CreateTaskView = () => {
         </Button>
       </Paper>
       <Stack direction="row" justifyContent="flex-end">
-        <Button
-          variant="text"
-          sx={{ width: "100px" }}
-          onClick={() => {
-            console.log(formData);
-          }}
-        >
+        <Button variant="text" sx={{ width: "100px" }} onClick={submitFormData}>
           Submit
         </Button>
       </Stack>
