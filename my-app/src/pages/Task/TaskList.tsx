@@ -1,21 +1,15 @@
 import { DragAndDrop } from "../../components/DragAndDrop";
 import {
-  Button,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
-  TextField,
   Typography,
 } from "@mui/material";
 import { Create, Info } from "@mui/icons-material";
-import { data } from "../../res/initial-data";
-import { TaskForm } from "./TaskForm";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useTask } from "./hooks/useTasks";
 import { useParams } from "react-router-dom";
 import { CreateTaskView } from "./CreateTaskView";
