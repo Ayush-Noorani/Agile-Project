@@ -7,10 +7,18 @@ export const useCommon = () => {
   const navigate = useNavigate();
   const [members, setMembers] = useState<Member[]>([]);
   useEffect(() => {
-    searchUser("*");
+    callDefaultSearch();
   }, []);
 
+  const callDefaultSearch = () => {
+    searchUser("*");
+  };
+
   const searchUser = (search: string) => {
+    if (search === "") {
+      callDefaultSearch();
+      return;
+    }
     axiosInstance
       .get(`/search/members/${search}`)
       .then((res) => {

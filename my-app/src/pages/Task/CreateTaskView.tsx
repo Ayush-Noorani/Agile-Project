@@ -1,4 +1,9 @@
-import React, { ChangeEvent, ChangeEventHandler, useState } from "react";
+import React, {
+  ChangeEvent,
+  ChangeEventHandler,
+  useEffect,
+  useState,
+} from "react";
 import {
   MenuItem,
   Stack,
@@ -13,7 +18,10 @@ import { FileUpload } from "@mui/icons-material";
 import ReactQuill from "react-quill";
 import { useParams } from "react-router";
 import { axiosInstance } from "../../helper/axios";
-import { Container } from "@mui/system";
+import { useTask } from "./hooks/useTasks";
+import { useCommon } from "../../hooks/useCommon";
+import { Priority } from "../../types/common";
+import { TaskPriorityIcon } from "../../components/Common/Priority";
 
 const names = [
   "Oliver Hansen",
@@ -27,94 +35,49 @@ const names = [
   "Virginia Andrews",
   "Kelly Snyder",
 ];
-
-type Task = {
-  description: string;
-  summary: string;
-  taskName: string;
-  assignedTo: string[];
-  reportTo: string[];
-  additionalFiles: File[];
-  status: "toDo" | "inProgres";
+type PriorityOptionsType = {
+  taskType: string;
+  value: Priority;
+  icon: any;
 };
-
-const CreateTaskView = () => {
-  const [fileList, setFileList] = useState<File[]>([]);
-  const [assignees, setAssignees] = useState<String[]>([]);
-
-  const [formData, setFormData] = useState<Task>({
-    description: "",
-    summary: "",
-    taskName: "",
-    assignedTo: [],
-    reportTo: [],
-    additionalFiles: [],
-    status: "toDo",
-  });
-
+const PriorityOptions: PriorityOptionsType[] = [
+  {
+    taskType: "Crictical",
+    value: "critical",
+    icon: <TaskPriorityIcon priority="critical" />,
+  },
+  {
+    taskType: "Major",
+    value: "major",
+    icon: <TaskPriorityIcon priority="major" />,
+  },
+  {
+    taskType: "Moderate",
+    value: "moderate",
+    icon: <TaskPriorityIcon priority="moderate" />,
+  },
+  {
+    taskType: "Minor",
+    value: "minor",
+    icon: <TaskPriorityIcon priority="minor" />,
+  },
+];
+const CreateTaskView = ({ taskId }: { taskId?: string }) => {
   const { id } = useParams();
-
-  const submitFormData = () => {
-    console.log(formData);
-    const submitData: any = new FormData();
-    for (var key in formData) {
-      submitData.append(key, formData[key as keyof Task]);
-    }
-
-    // submitData.append("data", JSON.stringify(formData));
-
-    axiosInstance.post(`/task/create/${id}`, submitData).then(() => {
-      console.log("sent data");
-    });
-
-    // axios.post("localhost:8080/task/create", submitData, {
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    // });
-  };
-  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const files = e.target.files ? Array.from(e.target.files) : [];
-  //   setFileList((prevList) => {
-  //     return prevList.concat(files);
-  //   });
-  // };
-
-  const handleDeleteForAdditionalFiles = (index: number) => {
-    setFormData((prev) => {
-      return {
-        ...prev,
-        additionalFiles: prev.additionalFiles.filter((file, i) => i != index),
-      };
-    });
-  };
-
-  const handleFormDataUpdate = (
-    key: keyof Task,
-    value: any,
-    indexForArray?: number
-  ) => {
-    setFormData((prev) => {
-      switch (key) {
-        case "additionalFiles":
-          const files: File[] = value ? Array.from(value) : [];
-          return {
-            ...prev,
-            additionalFiles: prev.additionalFiles.concat(files),
-          };
-
-        default:
-          return {
-            ...prev,
-            [key]: value,
-          };
-      }
-    });
-  };
-
-  const handleChangeAssignee = (e: any) => {
-    setAssignees(e.target.value);
-  };
+  const { members, searchUser } = useCommon();
+  const {
+    getTasks,
+    handleDeleteForAdditionalFiles,
+    handleFormDataUpdate,
+    submitFormData,
+    getExistingTaskData,
+    updateData,
+    formData,
+  } = useTask(id);
+  useEffect(() => {
+    getTasks(taskId);
+  }, []);
+  console.log(formData);
 
   return (
     <Stack mx="10px" spacing={2} width="550px">
@@ -155,15 +118,26 @@ const CreateTaskView = () => {
         SelectProps={{ multiple: true }}
         value={formData.assignedTo}
         sx={{ width: "350px" }}
-        onChange={(e) => {
-          handleFormDataUpdate("assignedTo", e.target.value);
+        onChange={(e: any) => {
+          handleFormDataUpdate(
+            "assignedTo",
+            e.target.value.map((item: any) =>
+              members.find((value) => value.id === item)
+            )
+          );
         }}
       >
-        {names.map((name) => (
-          <MenuItem key={name} value={name}>
-            {name}
-          </MenuItem>
-        ))}
+        {members
+          .filter(
+            (value) =>
+              formData.assignedTo.find((item) => item.id == value.id) ===
+              undefined
+          )
+          .map((value, index) => (
+            <MenuItem key={index} value={value.id}>
+              {value.username}
+            </MenuItem>
+          ))}
       </TextField>
 
       <TextField
@@ -177,21 +151,56 @@ const CreateTaskView = () => {
         SelectProps={{ multiple: true }}
         sx={{ width: "350px" }}
         value={formData.reportTo}
-        onChange={(e) => {
-          handleFormDataUpdate("reportTo", e.target.value);
+        onChange={(e: any) => {
+          handleFormDataUpdate(
+            "reportTo",
+            e.target.value.map((item: any) =>
+              members.find((value) => value.id === item)
+            )
+          );
         }}
       >
-        {names.map((name) => (
+        {members
+          .filter(
+            (value) =>
+              formData.reportTo.find((item) => item.id === value.id) ===
+              undefined
+          )
+          .map((value, index) => (
+            <MenuItem key={index} value={value.id}>
+              {value.username}
+            </MenuItem>
+          ))}
+      </TextField>
+      <TextField
+        id="standard-basic"
+        label="Priority"
+        variant="filled"
+        size="small"
+        InputProps={{ disableUnderline: true }}
+        InputLabelProps={{ shrink: true }}
+        select
+        sx={{ width: "150px" }}
+        value={formData.priority}
+        onChange={(e: any) => {
+          handleFormDataUpdate("priority", e.target.value);
+        }}
+      >
+        {PriorityOptions.map((value, index) => (
           <MenuItem
-            key={name}
-            value={name}
-            //   style={getStyles(name, personName, theme)}
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              width: "150px",
+              alignItems: "center",
+            }}
+            key={index}
+            value={value.value}
           >
-            {name}
+            {value.icon} {value.taskType}
           </MenuItem>
         ))}
       </TextField>
-
       <TextField
         id="standard-basic"
         label="Status"
@@ -247,18 +256,19 @@ const CreateTaskView = () => {
           Upload Files
         </Typography>
         <CardContent>
-          {formData.additionalFiles.map((file, index) => {
-            return (
-              <Chip
-                variant="outlined"
-                label={file.name}
-                sx={{ marginRight: "5px", marginY: "5px" }}
-                onDelete={() => {
-                  handleDeleteForAdditionalFiles(index);
-                }}
-              />
-            );
-          })}
+          {formData?.additionalFiles &&
+            formData?.additionalFiles.map((file, index) => {
+              return (
+                <Chip
+                  variant="outlined"
+                  label={file.name}
+                  sx={{ marginRight: "5px", marginY: "5px" }}
+                  onDelete={() => {
+                    handleDeleteForAdditionalFiles(index);
+                  }}
+                />
+              );
+            })}
         </CardContent>
 
         <Button
@@ -281,7 +291,11 @@ const CreateTaskView = () => {
         </Button>
       </Paper>
       <Stack direction="row" justifyContent="flex-end">
-        <Button variant="text" sx={{ width: "100px" }} onClick={submitFormData}>
+        <Button
+          variant="text"
+          sx={{ width: "100px" }}
+          onClick={taskId ? updateData : submitFormData}
+        >
           Submit
         </Button>
       </Stack>

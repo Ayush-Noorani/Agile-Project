@@ -18,7 +18,7 @@ import { TaskForm } from "./TaskForm";
 import { useEffect, useState } from "react";
 import { useTask } from "./hooks/useTasks";
 import { useParams } from "react-router-dom";
-import { CreateTaskView } from "../CreateTask/CreateTaskView";
+import { CreateTaskView } from "./CreateTaskView";
 
 interface TaskProps {}
 
@@ -36,12 +36,13 @@ export const TaskList = ({}: TaskProps) => {
   const columnOrder = localStorage.getItem("columnOrder");
   const [open, setOpen] = useState(false);
   const { getTasks, tasks, updateSequence, getExistingTaskData, value } =
-    useTask(id as string);
+    useTask(id);
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   useEffect(() => {
     getTasks();
   }, []);
   const getExistingTask = (id: string) => {
-    getExistingTaskData(id);
+    setSelectedId(id);
     setOpen(true);
   };
   return (
@@ -53,7 +54,7 @@ export const TaskList = ({}: TaskProps) => {
           </Typography>
         </DialogTitle>
         <DialogContent>
-          <CreateTaskView />
+          <CreateTaskView taskId={selectedId} />
         </DialogContent>
         {/* <DialogActions>
           <Button onClick={() => setOpen(false)}>Close</Button>
