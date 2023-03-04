@@ -1,22 +1,18 @@
 import { DragAndDrop } from "../../components/DragAndDrop";
 import {
-  Button,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
-  TextField,
+  Typography,
 } from "@mui/material";
 import { Create, Info } from "@mui/icons-material";
-import { data } from "../../res/initial-data";
-import { TaskForm } from "./TaskForm";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useTask } from "./hooks/useTasks";
 import { useParams } from "react-router-dom";
+import { CreateTaskView } from "./CreateTaskView";
 
 interface TaskProps {}
 
@@ -34,25 +30,30 @@ export const TaskList = ({}: TaskProps) => {
   const columnOrder = localStorage.getItem("columnOrder");
   const [open, setOpen] = useState(false);
   const { getTasks, tasks, updateSequence, getExistingTaskData, value } =
-    useTask(id as string);
+    useTask(id);
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   useEffect(() => {
     getTasks();
   }, []);
   const getExistingTask = (id: string) => {
-    getExistingTaskData(id);
+    setSelectedId(id);
     setOpen(true);
   };
   return (
     <>
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
-        <DialogTitle>Create a Task</DialogTitle>
+        <DialogTitle>
+          <Typography fontSize={30} fontWeight={"bold"}>
+            Create Task
+          </Typography>
+        </DialogTitle>
         <DialogContent>
-          <TaskForm />
+          <CreateTaskView taskId={selectedId} />
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={() => setOpen(false)}>Close</Button>
           <Button onClick={() => {}}>Submit</Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
       {Object.keys(tasks).length > 0 && (
         <DragAndDrop

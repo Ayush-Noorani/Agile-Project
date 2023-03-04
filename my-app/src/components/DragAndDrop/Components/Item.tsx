@@ -6,6 +6,7 @@ import { MenuItem, Menu, Button } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton";
 import { Assigned } from "./Assigned";
+import { TaskPriorityIcon } from "../../Common/Priority";
 const Container = styled.div`
   border-radius: 10px;
   padding: 8px;
@@ -42,7 +43,18 @@ export const Item = ({ ...props }: any) => (
             alignItems: "center",
           }}
         >
-          <h5>{props.task.title}</h5>
+          <h5>{props.task.taskName}</h5>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <TaskPriorityIcon priority={props.task.priority} />{" "}
+          {props.task.priority}
         </div>
       </Container>
     )}

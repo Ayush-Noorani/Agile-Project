@@ -42,15 +42,15 @@ def get_task_list(id):
             {"$project": {
                 "_id": 0,
                 "id": {"$toString": "$_id"},
-                "title": 1,
+                "taskName": 1,
                 "description": 1,
                 "status": 1,
                 "created_at": 1,
                 "updated_at": 1,
                 "due_date": 1,
                 "assigned_users": 1,
-                "reporter_user": 1,
-                "reportinTo": {"$arrayElemAt": ["$reporter_user", 0]},
+                "reporter_users": 1,
+                "reportTo": {"$arrayElemAt": ["$reporter_users", 0]},
                 "assignedTo": {"$arrayElemAt": ["$assigned_users", 0]}
 
             }}
@@ -61,24 +61,25 @@ def get_task_list(id):
     return tasks_dict, 200
 
 
-@app.route("/task/create", methods=["POST"])
+@app.route("/task/create/<projectId>", methods=["POST"])
 @jwt_required()
-def create_task():
-    data = json.loads(request.form["data"])
-    print(data)
-    data['created_by'] = get_jwt_identity()
-    img = request.files['img']
-    if (img):
-        data['img'] = True
-    else:
-        data['img'] = False
-    id = db.tasks.insert_one(data).inserted_id
-    img = request.files['img']
-    if (img):
-        img.save(app.config["UPLOAD_FOLDER"]+"\\task\\" +
-                 str(id)+"."+img.filename.split(".")[1])
+def create_task(projectId):
+    data = request.form
+    parsedData = {}
+    print(request.form, "hi")
+    for key in data.keys():
+        parsedData[key] = data[key]
+    parsedData.pop("id")
+    parsedData["reporter"] = [ObjectId(user['id'])
+                              for user in parsedData["reporter"]]
+    parsedData["assigned"] = [ObjectId(user['id'])
+                              for user in parsedData["assigned"]]
+    taskID = db.tasks.insert_one(parsedData).inserted_id
+    db.projects.update_one({"_id": ObjectId(projectId)}, {
+                           "$push": {"tasks."+data["status"]: taskID}})
 
-    return {"status": "success", "id": str(id)}
+    return "hello world", 200
+# route for update
 
 
 @app.route("/task/update/sequence/<id>", methods=["PUT"])
@@ -107,21 +108,17 @@ def get_task(id):
     return {"task": task}
 
 
-@app.route("/task/<id>", methods=["PUT"])
+@app.route("/task/update/<id>", methods=["PUT"])
 @jwt_required()
 def update_task(id):
     data = json.loads(request.form["data"])
-    print(data)
-    img = request.files['img']
-    if (img):
-        data['img'] = True
-    else:
-        data['img'] = False
+    data.pop("id")
+    data["reporter"] = [ObjectId(user['id'])
+                        for user in data["reporter"]]
+    data["assigned"] = [ObjectId(user['id'])
+                        for user in data["assigned"]]
     db.tasks.update_one({"_id": ObjectId(id)}, {"$set": data})
-    img = request.files['img']
-    if (img):
-        img.save(app.config["UPLOAD_FOLDER"]+"\\task\\" +
-                 str(id)+"."+img.filename.split(".")[1])
+
     return {"status": "success"}
 
 # assign task to user

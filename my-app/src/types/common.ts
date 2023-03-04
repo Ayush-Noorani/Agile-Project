@@ -51,15 +51,16 @@ export const columnTitle: Record<string, string> = {
   toDo: "To do",
   inProgress: "In Progress",
 };
-export type Priority = "low" | "medium" | "high";
+export type TasksRecord = Record<keyof typeof columnTitle, Tasks[]>;
+
+export type Priority = "minor" | "moderate" | "major" | "critical";
 export type Tasks = {
   id: string;
   title: string;
   description: string;
-  priority: Priority;
   status: keyof typeof columnTitle;
   assignee: Member[];
   reportTo: Member[];
   dueDate: Date;
+  priority: Priority;
 };
-export type TasksRecord = Record<keyof typeof columnTitle, Tasks[]>;
