@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useToastContext } from "../../../context/ToastContext";
 import { axiosInstance } from "../../../helper/axios";
 import { setData } from "../../../store/reducers/project";
-import { User } from "../../../types/common";
+import { Role, User } from "../../../types/common";
 
 export const useRoleAssign = () => {
   const [data, setData] = useState<User[]>([]);
@@ -21,11 +21,14 @@ export const useRoleAssign = () => {
       });
   };
 
-  const updateUserRole = (id: string, data: User) => {
+  const updateUserRole = (id: string, roles: Role[]) => {
     axiosInstance
-      .put(`/admin/users/update/${id}`, data)
+      .post(`/admin/users/update/${id}`, {
+        roles,
+      })
       .then((_res) => {
         toast("User data updated!", defaultValue);
+        getUsers();
       })
       .catch((err) => {
         console.log(err);

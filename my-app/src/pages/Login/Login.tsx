@@ -5,6 +5,8 @@ import { Alert, Box, Button, Container, TextField } from "@mui/material";
 import { useLogin } from "../../hooks/useLogin";
 import "../../css/common.css";
 import { useToastContext } from "../../context/ToastContext";
+import { Label } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const form: FormType[] = [
   {
@@ -32,6 +34,7 @@ export const Login = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { onSubmit } = useLogin();
   const { toast } = useToastContext();
+  const navigate = useNavigate();
   return (
     <Container
       sx={{
@@ -76,6 +79,15 @@ export const Login = () => {
         >
           Submit
         </Button>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <Button onClick={() => navigate("/register")}>Register </Button>
+        </Box>
       </Box>
     </Container>
   );

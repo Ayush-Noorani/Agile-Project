@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useUser } from "../hooks/useUser";
 import { SideBar } from "./SiderBar/Siderbar";
 
 interface ProtectedProps {
@@ -6,5 +7,10 @@ interface ProtectedProps {
 }
 export const Protected = ({ children }: ProtectedProps) => {
   //validation to be implemented
+  const { user, fetchUserInfo } = useUser();
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
   return <SideBar>{children}</SideBar>;
 };

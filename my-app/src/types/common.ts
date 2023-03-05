@@ -15,6 +15,7 @@ export type User = {
 export interface SideBarItemProps {
   path: string;
   icon: React.ReactNode;
+  role: Role;
   label: string;
 }
 export type Member = {
@@ -63,4 +64,12 @@ export type Tasks = {
   reportTo: Member[];
   dueDate: Date;
   priority: Priority;
+};
+
+export type Notification = {
+  message: string;
+  type: string;
+  reference: any;
+  created_at: string;
+  created_by: any;
 };
