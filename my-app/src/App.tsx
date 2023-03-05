@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 import "./App.css";
 import { Routes } from "./routes/Routes";
@@ -10,6 +10,7 @@ import "./css/common.css";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { ToastContextProvider } from "./context/ToastContext";
+import { useUser } from "./hooks/useUser";
 function App() {
   return (
     <Provider store={store}>
