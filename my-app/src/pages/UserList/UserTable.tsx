@@ -18,7 +18,7 @@ import {
 import { NavBar } from "../../components/NavBar/NavBar";
 import { Search } from "@mui/icons-material";
 import { Role, User } from "../../types/common";
-import { Headers, SortOrder } from "./types/userListTypes";
+import { Headers, SortOrder } from "../../types/common";
 import { getcomparator, flipSortOrder } from "./utils/userListUtils";
 import { useRoleAssign } from "./hooks/useRoleAssign";
 import { roles } from "./utils/options";
@@ -146,17 +146,8 @@ export const UserTable = () => {
                   >
                     {columnHeaders.map((item, index) =>
                       item.id === "name" ? (
-                        <TableCell
-                          sx={{ display: "flex", alignItems: "center" }}
-                        >
-                          <Avatar sx={{ marginRight: "10px" }}>
-                            {row[item.id][0].concat(
-                              row[item.id][row[item.id].lastIndexOf(" ") + 1]
-                            )}
-                          </Avatar>
-                          {row[item.id]}
-                        </TableCell>
-                      ) : typeof row[item.id] === "object" ? (
+                        <TableCell>{row[item.id as keyof User]}</TableCell>
+                      ) : typeof row[item.id as keyof User] === "object" ? (
                         <TableCell>
                           <Select
                             multiple

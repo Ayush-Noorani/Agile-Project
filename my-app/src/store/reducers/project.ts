@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import produce from "immer";
 import { ProjectData } from "../../types/common";
 type initialStateType = {
   projects: ProjectData[];
@@ -17,9 +18,15 @@ const projectSlice = createSlice({
     discardUserData: (state) => {
       state.projects = [];
     },
+    setColumns: (state, action) => {
+      return produce(state, (draft) => {
+        draft.projects[action.payload.projectIndex].columns =
+          action.payload.columns;
+      });
+    },
   },
 });
 
-export const { setData, discardUserData } = projectSlice.actions;
+export const { setData, discardUserData, setColumns } = projectSlice.actions;
 
 export default projectSlice.reducer;

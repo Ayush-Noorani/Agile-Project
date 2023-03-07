@@ -2,23 +2,18 @@ import React from "react";
 import { Column } from "./Column";
 
 interface ColumnListProps {
-  columnId: any;
+  column: any;
   taskMap: any;
   index: any;
   onClick: any;
 }
 export const Columnlist = ({
-  columnId,
+  column,
   taskMap,
   index,
   onClick,
 }: ColumnListProps) => {
   return (
-    <Column
-      onClick={onClick}
-      columnId={columnId}
-      tasks={taskMap}
-      index={index}
-    />
+    <Column onClick={onClick} column={column} tasks={taskMap} index={index} />
   );
 };
