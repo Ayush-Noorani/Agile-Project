@@ -24,6 +24,17 @@ export type Member = {
   role?: Role;
   img?: string;
 };
+export type Headers = {
+  id: any;
+  label: string;
+};
+
+export type SortOrder = "asc" | "desc";
+
+export type Columntype = {
+  label: string;
+  value: string;
+};
 export type ProjectData = {
   id?: any;
   name: string;
@@ -34,7 +45,7 @@ export type ProjectData = {
   expectedEndDate: Date;
   category: string;
   lead: string;
-  columns: string[];
+  columns: Columntype[];
 };
 
 export type ProjectType = {

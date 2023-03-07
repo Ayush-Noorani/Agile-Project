@@ -1,6 +1,7 @@
 import produce from "immer";
 import { useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { Columntype } from "../../types/common";
 import { Columnlist } from "./Components/ColumnList";
 
 interface DragAndDropProps {
@@ -8,16 +9,17 @@ interface DragAndDropProps {
   order: any[] | undefined;
   onValueChange: (value: any) => void;
   onClick?: (value: any) => void;
+  columns: Columntype[];
 }
 export const DragAndDrop = ({
   data,
   order,
   onClick,
+  columns,
   onValueChange,
 }: DragAndDropProps) => {
-  let defaultOrder = ["toDo", "inProgress"];
-  const [columnOrder, setColumnOrder] = useState<string[]>(defaultOrder);
-
+  let defaultOrder = columns;
+  const [columnOrder, setColumnOrder] = useState<Columntype[]>(defaultOrder);
   const onDragEnd = (result: any) => {
     const { destination, source, draggableId, type } = result;
 
@@ -79,20 +81,18 @@ export const DragAndDrop = ({
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {(order ? order : columnOrder).map(
-                (columnId: string | number, index: any) => {
-                  const columnData = data[columnId];
-                  return (
-                    <Columnlist
-                      key={columnId}
-                      onClick={onClick}
-                      columnId={columnId}
-                      taskMap={columnData}
-                      index={index}
-                    />
-                  );
-                }
-              )}
+              {columnOrder.map((column: Columntype, index: any) => {
+                const columnData = data[column.value] || [];
+                return (
+                  <Columnlist
+                    key={column.value}
+                    onClick={onClick}
+                    column={column}
+                    taskMap={columnData}
+                    index={index}
+                  />
+                );
+              })}
               {provided.placeholder}
             </div>
           )}

@@ -8,7 +8,7 @@ import { ProjectDetail } from "../pages/Projects/ProjectDetail";
 import { TaskList } from "../pages/Task/TaskList";
 import { Profile } from "../pages/Profile/Profile";
 
-import { TaskForm } from "../pages/Task/TaskForm";
+import { TaskForm } from "../pages/Task/components/TaskForm";
 import { CreateTaskView } from "../pages/CreateTask/CreateTaskView";
 import { AdminProtected } from "../components/AdminProtected";
 

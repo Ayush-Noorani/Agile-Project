@@ -14,9 +14,9 @@ import {
 import { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { CustomFormControl } from "../../components/Common/CustomFormControl";
-import { ListView } from "../../components/ListView";
-import { onChange } from "../../utils/Common";
+import { CustomFormControl } from "../../../components/Common/CustomFormControl";
+import { ListView } from "../../../components/ListView";
+import { onChange } from "../../../utils/Common";
 
 const fields = [
   {
