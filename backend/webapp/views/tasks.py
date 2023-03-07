@@ -24,7 +24,7 @@ def get_task_list(id):
 
     for task_status in project["tasks"].keys():
         print(project["tasks"][task_status])
-        task_pipline = pipeline = [
+        task_pipline = [
             {"$match":            {"_id": {"$in": project["tasks"][task_status]}},
              },
             {"$lookup": {
@@ -57,7 +57,7 @@ def get_task_list(id):
         ]
         results = list(db.tasks.aggregate(task_pipline))
         tasks_dict[task_status] = results
-
+    print(tasks_dict)
     return tasks_dict, 200
 
 
