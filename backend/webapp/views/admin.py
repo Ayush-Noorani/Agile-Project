@@ -1,9 +1,10 @@
 from webapp import app
 from flask import request
-from pymongo import MongoClient
+from bson import ObjectId
 from webapp.helpers.jwt import generateToken
-from webapp import bcrypt
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from webapp import db
+
 collection = db.user_details
 
 
@@ -17,3 +18,15 @@ def get_users():
         user.pop("_id")
     print(users)
     return {'users': users}, 200
+
+
+@app.route('/admin/users/update/<id>', methods=['POST'])
+@jwt_required()
+def role_update(id):
+    data = request.get_json()
+    collection.update({
+        '_id': ObjectId(id)
+    }, {
+        '$set': {'roles': data['roles']}
+    })
+    return {}, 200

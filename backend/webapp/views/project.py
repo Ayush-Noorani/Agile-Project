@@ -7,28 +7,31 @@ from webapp import db
 from bson import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import requests
+from webapp.helpers.notification import create_notification
+
 import json
 from flask import send_file
 collection = db.projects
-
 
 # collection
 # project-stores project related information
 # project_logger-stores logs related to project
 # user_prokects stores information related to id of all proejects assigned to a user
 
+
 @app.route("/project/list", methods=["GET"])
 @jwt_required()
 def get_project_list():
     id = get_jwt_identity()
     projects = list(db.projects.find(
-        {"$or": [{"created_by": id}, {"members": {"$in": [id]}}]}, {"_id": 1, "title": 1, "description": 1, "img": 1, "members": 1, "created_by": 1, "created_at": 1, "updated_at": 1}))
+        {"$or": [{"created_by": ObjectId(get_jwt_identity())}, {"members": {"$in": [ObjectId(id)]}}]}, {"_id": 1, "title": 1, "description": 1, "img": 1, "members": 1, "created_by": 1, "created_at": 1, "updated_at": 1, 'columns': 1}))
     for project in projects:
 
         project["id"] = str(project["_id"])
         project['members'] = len(project['members'])
         project.pop("_id")
-
+        project.pop('created_by')
+    print(projects)
     return {"projects": projects}
 
 
@@ -38,7 +41,7 @@ def create_project():
     data = json.loads(request.form["data"])
     print(data)
 
-    data['created_by'] = get_jwt_identity()
+    data['created_by'] = ObjectId(get_jwt_identity())
     img = request.files['img']
     data['members'] = [ObjectId(member['id']) for member in data['members']]
     if (img):
@@ -47,14 +50,40 @@ def create_project():
         data['img'] = False
     for i in data['columns']:
         data['tasks'][i] = []
+    default_columns = [
+        {
+            "label": "To Do",
+            "value": "toDo"
+        },
+        {
+            "label": "In Progress",
+            "value": "inProgress"
+        },
+        {
+            "label": "Done",
+            "value": "done"
+        }
+    ]
+    data['columns'] = default_columns
     id = db.projects.insert_one(data).inserted_id
     img = request.files['img']
     if (img):
         img.save(app.config["UPLOAD_FOLDER"]+"\\project\\" +
                  str(id)+"."+"png")
+    create_notification(
+        data['members'], "You have been assigned to a project by", 1, ObjectId(data['created_by']), id)
 
     # db.project_logger.insert_one({"created_by":ObjectId(get_jwt_identity()),"project_id":ObjectId(id),"logs":[]})
     return {"status": "success", "id": str(id)}
+
+
+@app.route("/project/column/<id>", methods=["PUT"])
+@jwt_required()
+def get_project_column(id):
+    data = request.get_json()
+    db.projects.update_one({"_id": ObjectId(id)}, {
+                           "$set": {"columns": data['columns']}})
+    return {"status": "success"}
 
 
 @app.route("/project/<id>", methods=["DELETE"])
@@ -111,7 +140,6 @@ def search_project_members(text):
 
         member["id"] = str(member["_id"])
         member.pop("_id")
-    print(members, '-')
     return {"members": members}
 
 
@@ -131,7 +159,7 @@ def get_project(id):
 def update_project(id):
     data = json.loads(request.form["data"])
     img = request.files['img']
-
+    user_id = get_jwt_identity()
     if (img) and data['img'] != True:
         data['img'] = True
         img.save(app.config["UPLOAD_FOLDER"]+"\\project\\" +
@@ -142,6 +170,8 @@ def update_project(id):
     data['members'] = [ObjectId(member) for member in data['members']]
     data.pop("id")
     db.projects.update_one({"_id": ObjectId(id)}, {"$set": data})
+    create_notification(
+        data['members'], "Project Information is updated", 2, ObjectId(user_id), ObjectId(id))
     return {"status": "success"}
 
 
