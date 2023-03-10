@@ -32,8 +32,8 @@ export const useTask = (projectId?: string) => {
   });
   const dispatch = useDispatch();
   const projects = useSelector((state: RootState) => state.project.projects);
-  const columns: Columntype[] | [] =
-    projects.find((project) => project.id === projectId)?.columns || [];
+  const currentProject = projects.find((project) => project.id === projectId);
+  const columns: Columntype[] | [] = currentProject?.columns || [];
   const [formData, setFormData] = useState<Task>({
     id: "",
     description: "",
@@ -106,7 +106,7 @@ export const useTask = (projectId?: string) => {
       columnValue = [...columns, newColumn];
     }
     axiosInstance
-      .put(`/project/update/${projectId}`, {
+      .put(`/project/column/update/${projectId}`, {
         columns: columnValue,
       })
       .then((res) => {
