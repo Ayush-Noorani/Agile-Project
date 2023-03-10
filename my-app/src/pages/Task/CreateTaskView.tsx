@@ -119,6 +119,7 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
         value={formData.assignedTo}
         sx={{ width: "350px" }}
         onChange={(e: any) => {
+          console.log(e.target.value);
           handleFormDataUpdate(
             "assignedTo",
             e.target.value.map((item: any) =>
