@@ -35,6 +35,16 @@ def get_project_list():
     return {"projects": projects}
 
 
+@app.route("/project/column/update/<id>", methods=["PUT"])
+@jwt_required()
+def save_columns(id):
+    data = request.get_json()
+    print(data)
+    db.projects.update_one({"_id": ObjectId(id)}, {
+                           "$set": {"columns": data['columns']}})
+    return {"status": "success"}
+
+
 @app.route("/project/create", methods=["POST"])
 @jwt_required()
 def create_project():
@@ -48,8 +58,7 @@ def create_project():
         data['img'] = True
     else:
         data['img'] = False
-    for i in data['columns']:
-        data['tasks'][i] = []
+
     default_columns = [
         {
             "label": "To Do",
@@ -64,6 +73,8 @@ def create_project():
             "value": "done"
         }
     ]
+    for i in default_columns:
+        data['tasks'][i]['value'] = []
     data['columns'] = default_columns
     id = db.projects.insert_one(data).inserted_id
     img = request.files['img']
