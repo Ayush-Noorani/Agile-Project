@@ -8,8 +8,9 @@ import { ProjectDetail } from "../pages/Projects/ProjectDetail";
 import { TaskList } from "../pages/Task/TaskList";
 import { Profile } from "../pages/Profile/Profile";
 
-import { TaskForm } from "../pages/Task/TaskForm";
+import { TaskForm } from "../pages/Task/components/TaskForm";
 import { CreateTaskView } from "../pages/CreateTask/CreateTaskView";
+import { AdminProtected } from "../components/AdminProtected";
 
 export const Routes = createBrowserRouter([
   {
@@ -53,5 +54,9 @@ export const Routes = createBrowserRouter([
   {
     path: "/testCreateTask",
     element: <CreateTaskView />,
+  },
+  {
+    path: "/user-list",
+    element: <AdminProtected children={<UserTable />} />,
   },
 ]);

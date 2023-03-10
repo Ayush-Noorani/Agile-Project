@@ -13,13 +13,13 @@ export const ProjectsList = () => {
   const [show, setShow] = useState(false);
   const [eTarget, setETarget] = useState<any>(null);
 
-  const { data, fetchAllProjects } = useProject();
+  const { projects, fetchAllProjects } = useProject();
   useEffect(() => {
     fetchAllProjects();
   }, []);
   return (
     <div className="project-container">
-      {data?.map((item) => (
+      {projects?.map((item) => (
         <>
           <Card
             data={item}

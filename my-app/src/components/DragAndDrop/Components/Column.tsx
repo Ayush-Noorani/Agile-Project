@@ -36,17 +36,15 @@ const InnerList = ({ ...props }: any) => {
 
 export const Column = ({ ...props }: any) => {
   return (
-    <Draggable draggableId={props.columnId} index={props.index}>
+    <Draggable draggableId={props.column.value} index={props.index}>
       {(provided: {
         draggableProps: any;
         innerRef: any;
         dragHandleProps: any;
       }) => (
         <Container {...provided.draggableProps} ref={provided.innerRef}>
-          <Title {...provided.dragHandleProps}>
-            {columnTitle[props.columnId]}
-          </Title>
-          <Droppable droppableId={props.columnId} type="task">
+          <Title {...provided.dragHandleProps}>{props.column.label}</Title>
+          <Droppable droppableId={props.column.value} type="task">
             {(
               provided: {
                 innerRef: any;

@@ -1,6 +1,16 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { axiosInstance } from "../../../helper/axios";
-import { Member, Priority, Tasks, TasksRecord } from "../../../types/common";
+import { setColumns } from "../../../store/reducers/project";
+import { RootState } from "../../../store/store";
+import {
+  Columntype,
+  Member,
+  Priority,
+  Tasks,
+  TasksRecord,
+} from "../../../types/common";
 type Task = {
   id?: string;
   description: string;
@@ -16,7 +26,14 @@ type Task = {
 export const useTask = (projectId?: string) => {
   const [tasks, setTasks] = useState<TasksRecord>({});
   const [value, setValue] = useState<any>();
-
+  const [newColumn, setNewColumn] = useState<Columntype>({
+    label: "",
+    value: "",
+  });
+  const dispatch = useDispatch();
+  const projects = useSelector((state: RootState) => state.project.projects);
+  const currentProject = projects.find((project) => project.id === projectId);
+  const columns: Columntype[] | [] = currentProject?.columns || [];
   const [formData, setFormData] = useState<Task>({
     id: "",
     description: "",
@@ -62,12 +79,48 @@ export const useTask = (projectId?: string) => {
       }
     });
   };
+  const updateColumns = () => {
+    dispatch(
+      setColumns({
+        projectIndex: projects.findIndex((item) => item.id === projectId),
+        columns: [...columns, newColumn],
+      })
+    );
+    setNewColumn({
+      label: "",
+      value: "",
+    });
+  };
+
+  const deleteColumns = (index: number) => {
+    dispatch(
+      setColumns({
+        projectIndex: projects.findIndex((item) => item.id === projectId),
+        columns: columns.filter((item, i) => i !== index),
+      })
+    );
+  };
+  const saveColumns = () => {
+    let columnValue = columns;
+    if (newColumn.label && newColumn.value) {
+      columnValue = [...columns, newColumn];
+    }
+    axiosInstance
+      .put(`/project/column/update/${projectId}`, {
+        columns: columnValue,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const getTasks = (id?: string) => {
     axiosInstance
       .get("/task/list/" + projectId)
       .then((res) => {
-        console.log(res.data);
         setTasks(res.data);
         if (id) {
           const value: Task = Object.values(res.data)
@@ -142,10 +195,17 @@ export const useTask = (projectId?: string) => {
         console.log(err);
       });
   };
+
   return {
     tasks,
     value,
     formData,
+    columns,
+    newColumn,
+    setNewColumn,
+    deleteColumns,
+    updateColumns,
+    saveColumns,
     getTasks,
     updateSequence,
     getExistingTaskData,

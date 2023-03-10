@@ -26,7 +26,7 @@ export const useRegister = () => {
             email: value.email,
           })
         );
-
+        dispatch(setUser(value));
         localStorage.setItem("token", res.data.token);
         navigate("/dashboard");
       })
