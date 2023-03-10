@@ -13,6 +13,8 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Button from "@mui/material/Button";
 import { useCommon } from "../../hooks/useCommon";
+import { MenuItem, Menu, Divider, Tabs, Tab } from "@mui/material";
+import { useState } from "react";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -76,12 +78,74 @@ const test = [
   },
 ];
 
+const notificationTest = [
+  {
+    message: "test1",
+    type: "assigned to a project",
+    read: false,
+    created_at: "07th March, 11:36",
+    messageType: "projects",
+  },
+  {
+    message: "test2",
+    type: "updated project information",
+    read: false,
+    created_at: "07th March, 12:36",
+    messageType: "projects",
+  },
+  {
+    message: "test3",
+    type: "assigned to a task",
+    read: false,
+    created_at: "07th March, 13:36",
+    messageType: "tasks",
+  },
+  {
+    message: "test4",
+    type: "updated task information",
+    read: false,
+    created_at: "07th March, 14:36",
+    messageType: "tasks",
+  },
+];
+
+let unreadCount = 0;
+notificationTest.forEach((notification) => {
+  if (notification?.read == false) unreadCount++;
+});
+let notificationCount = unreadCount;
 interface NavBarProps {
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const NavBar = ({ show, setShow }: NavBarProps) => {
+  const [open, setOpen] = useState<boolean>(show);
+  const [eTarget, setETarget] = useState<any>(null);
+  const [typeSelected, setTypeSelected] = useState<string>("all");
   const { navigate } = useCommon();
+
+  const notifications = notificationTest.map((notification) => {
+    if (notification.read == false) {
+      if (
+        typeSelected.toLocaleLowerCase() == notification.messageType ||
+        typeSelected.toLocaleLowerCase() == "all"
+      ) {
+        return (
+          <>
+            <MenuItem>
+              {notification.message} {notification.type}
+            </MenuItem>
+            <Divider />
+          </>
+        );
+      }
+    }
+  });
+
+  const handleChange = (e: any) => {
+    setTypeSelected(e.target.textContent);
+  };
+
   return (
     <Box sx={{ width: "100vw" }}>
       <AppBar position="static">
@@ -132,11 +196,44 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
                 inputProps={{ "aria-label": "search" }}
               />
             </Search>
-            <IconButton size="medium">
-              <Badge badgeContent={0} color="error">
+            <IconButton
+              size="medium"
+              onClick={(e: any) => {
+                let target = eTarget;
+                setETarget((prev: any) =>
+                  prev === e.target ? null : e.target
+                );
+                setOpen((prev) => (e.target !== target ? true : false));
+              }}
+            >
+              <Badge badgeContent={notificationCount} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            <Menu
+              open={open}
+              anchorEl={eTarget}
+              onClose={() => {
+                setOpen(false);
+                setETarget(null);
+              }}
+            >
+              <>
+                <Box>
+                  <Tabs
+                    value={typeSelected}
+                    textColor="primary"
+                    indicatorColor="primary"
+                    onChange={(e) => handleChange(e)}
+                  >
+                    <Tab value="All" label="All" />
+                    <Tab value="Tasks" label="Tasks" />
+                    <Tab value="Projects" label="Projects" />
+                  </Tabs>
+                </Box>
+                {notifications}
+              </>
+            </Menu>
             <IconButton onClick={() => navigate("/user/update-profile")}>
               <AccountCircle />
             </IconButton>
