@@ -15,7 +15,6 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { NavBar } from "../../components/NavBar/NavBar";
 import { Search } from "@mui/icons-material";
 import { Role, User } from "../../types/common";
 import { Headers, SortOrder } from "../../types/common";
