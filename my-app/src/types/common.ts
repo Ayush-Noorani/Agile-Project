@@ -22,6 +22,7 @@ export type Member = {
   id: string;
   username: string;
   role?: Role;
+  name: string;
   img?: string;
 };
 export type Headers = {

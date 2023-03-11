@@ -1,5 +1,7 @@
 import { DragAndDrop } from "../../components/DragAndDrop";
 import {
+  Box,
+  Container,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -14,6 +16,7 @@ import { useTask } from "./hooks/useTask";
 import { useParams } from "react-router-dom";
 import { CreateTaskView } from "./CreateTaskView";
 import { ColumnForm } from "./components/ColumnForm";
+import { TaskHeader } from "./components/TaskHeader";
 
 interface TaskProps {}
 
@@ -41,6 +44,7 @@ export const TaskList = ({}: TaskProps) => {
     getExistingTaskData,
     value,
     columns,
+    filters,
   } = useTask(id);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   useEffect(() => {
@@ -50,8 +54,13 @@ export const TaskList = ({}: TaskProps) => {
     setSelectedId(id);
     setOpen(true);
   };
+  console.log(tasks);
   return (
-    <>
+    <Box
+      style={{
+        padding: 0,
+      }}
+    >
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
         <DialogTitle>
           <Typography fontSize={30} fontWeight={"bold"}>
@@ -69,11 +78,12 @@ export const TaskList = ({}: TaskProps) => {
       <Dialog open={openColumn} onClose={() => setOpenColumn(false)}>
         <ColumnForm id={id} />
       </Dialog>
-
+      <TaskHeader id={id!} />
       {Object.keys(tasks).length > 0 && (
         <DragAndDrop
           data={tasks}
           columns={columns}
+          filters={filters}
           onClick={getExistingTask}
           onValueChange={(data) => updateSequence(data)}
           order={columnOrder ? JSON.parse(columnOrder) : undefined}
@@ -93,6 +103,6 @@ export const TaskList = ({}: TaskProps) => {
           />
         ))}
       </SpeedDial>
-    </>
+    </Box>
   );
 };

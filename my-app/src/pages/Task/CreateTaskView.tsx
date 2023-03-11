@@ -67,6 +67,7 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
   const { members, searchUser } = useCommon();
   const {
     getTasks,
+    currentProject,
     handleDeleteForAdditionalFiles,
     handleFormDataUpdate,
     submitFormData,
@@ -123,12 +124,12 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
           handleFormDataUpdate(
             "assignedTo",
             e.target.value.map((item: any) =>
-              members.find((value) => value.id === item)
+              currentProject?.members.find((value) => value.id === item)
             )
           );
         }}
       >
-        {members
+        {currentProject?.members
           .filter(
             (value) =>
               formData.assignedTo.find((item) => item.id == value.id) ===
@@ -156,12 +157,12 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
           handleFormDataUpdate(
             "reportTo",
             e.target.value.map((item: any) =>
-              members.find((value) => value.id === item)
+              currentProject?.members.find((value) => value.id === item)
             )
           );
         }}
       >
-        {members
+        {currentProject?.members
           .filter(
             (value) =>
               formData.reportTo.find((item) => item.id === value.id) ===

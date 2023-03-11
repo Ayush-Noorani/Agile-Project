@@ -10,12 +10,14 @@ interface DragAndDropProps {
   onValueChange: (value: any) => void;
   onClick?: (value: any) => void;
   columns: Columntype[];
+  filters?: any;
 }
 export const DragAndDrop = ({
   data,
   order,
   onClick,
   columns,
+  filters,
   onValueChange,
 }: DragAndDropProps) => {
   let defaultOrder = columns;
@@ -82,7 +84,23 @@ export const DragAndDrop = ({
               ref={provided.innerRef}
             >
               {columnOrder.map((column: Columntype, index: any) => {
-                const columnData = data[column.value] || [];
+                let columnData: any = [];
+
+                if (filters?.id && filters?.id.length > 0) {
+                  console.log(data[column.value], filters.id);
+                  columnData = data[column.value].filter(
+                    (task: any) =>
+                      task.assigned_user.some((assigned: any) =>
+                        filters.id.includes(assigned.username)
+                      ) ||
+                      task.reporter_user.some((member: any) =>
+                        filters.id.includes(member.username)
+                      )
+                  );
+                } else {
+                  columnData = data[column.value] || [];
+                }
+
                 return (
                   <Columnlist
                     key={column.value}

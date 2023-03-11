@@ -23,15 +23,44 @@ collection = db.projects
 @jwt_required()
 def get_project_list():
     id = get_jwt_identity()
-    projects = list(db.projects.find(
-        {"$or": [{"created_by": ObjectId(get_jwt_identity())}, {"members": {"$in": [ObjectId(id)]}}]}, {"_id": 1, "title": 1, "description": 1, "img": 1, "members": 1, "created_by": 1, "created_at": 1, "updated_at": 1, 'columns': 1}))
+    pipeline = [
+        {
+            '$match': {'members': {'$in': [ObjectId(id)]}}
+        },
+        {
+            '$lookup': {
+                'from': 'user_details',
+                'localField': 'members',
+                'foreignField': '_id',
+                'as': 'members'
+            }
+        },
+        {
+            '$project': {
+                'title': 1,
+                'description': 1,
+                'img': 1,
+                'columns': 1,
+                'created_at': 1,
+                'members._id': 1,
+                'members.username': 1,
+                'members.name': 1,
+                'members.roles': 1,
+                'members.img': 1
+            }
+
+        }
+    ]
+    projects = list(db.projects.aggregate(pipeline))
+    print(projects)
     for project in projects:
 
         project["id"] = str(project["_id"])
-        project['members'] = len(project['members'])
+        project['membersCount'] = len(project['members'])
+        for i in project['members']:
+            i['id'] = str(i['_id'])
+            i.pop('_id')
         project.pop("_id")
-        project.pop('created_by')
-    print(projects)
     return {"projects": projects}
 
 
@@ -40,8 +69,16 @@ def get_project_list():
 def save_columns(id):
     data = request.get_json()
     print(data)
+    current_project = db.projects.find_one(
+        {"_id": ObjectId(id)}, {'columns': 1, 'tasks': 1})
+    missing_elements = [x for x in data['columns']
+                        if x not in current_project['columns']]
+
+    for i in missing_elements:
+        current_project['tasks'][i['value']] = []
     db.projects.update_one({"_id": ObjectId(id)}, {
-                           "$set": {"columns": data['columns']}})
+                           "$set": {"columns": data['columns'],
+                                    'tasks': current_project['tasks']}, })
     return {"status": "success"}
 
 
@@ -162,6 +199,9 @@ def get_project(id):
     project["id"] = id
     project.pop("_id")
     project['members'] = [str(member) for member in project['members']]
+    project.pop("tasks")
+    project.pop('created_by')
+    print(project)
     return {"project": project}
 
 
@@ -169,7 +209,7 @@ def get_project(id):
 @ jwt_required()
 def update_project(id):
     data = json.loads(request.form["data"])
-    img = request.files['img']
+    img = request.files['img'] if 'img' in request.files.keys() else False
     user_id = get_jwt_identity()
     if (img) and data['img'] != True:
         data['img'] = True

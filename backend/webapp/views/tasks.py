@@ -75,12 +75,16 @@ def get_task_list(id):
                 "priority": 1,
 
                 "assigned_user.username": 1,
-                "reporter_user.username": 1
+
+                "assigned_user.name": 1,
+
+                "reporter_user.username": 1,
+                "reporter_user.name": 1
+
             }}
         ]
         results = list(db.tasks.aggregate(task_pipeline))
         tasks_dict[task_status] = results
-    print(tasks_dict)
     return tasks_dict, 200
 
 # save columns

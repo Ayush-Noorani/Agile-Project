@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { axiosInstance } from "../../../helper/axios";
+import { setFilter } from "../../../store/reducers/filters";
 import { setColumns } from "../../../store/reducers/project";
 import { RootState } from "../../../store/store";
 import {
@@ -26,6 +27,7 @@ type Task = {
 export const useTask = (projectId?: string) => {
   const [tasks, setTasks] = useState<TasksRecord>({});
   const [value, setValue] = useState<any>();
+
   const [newColumn, setNewColumn] = useState<Columntype>({
     label: "",
     value: "",
@@ -33,6 +35,10 @@ export const useTask = (projectId?: string) => {
   const dispatch = useDispatch();
   const projects = useSelector((state: RootState) => state.project.projects);
   const currentProject = projects.find((project) => project.id === projectId);
+  const filters = useSelector((state: RootState) => state.filters);
+  useEffect(() => {
+    console.log("filters", filters);
+  }, [filters]);
   const columns: Columntype[] | [] = currentProject?.columns || [];
   const [formData, setFormData] = useState<Task>({
     id: "",
@@ -195,13 +201,28 @@ export const useTask = (projectId?: string) => {
         console.log(err);
       });
   };
-
+  const setFilters = (data: any) => {
+    console.log({
+      ...filters,
+      ...data,
+    });
+    dispatch(
+      setFilter({
+        ...filters,
+        ...data,
+      })
+    );
+    console.log(filters);
+  };
   return {
     tasks,
     value,
     formData,
     columns,
     newColumn,
+    filters,
+    currentProject,
+    setFilters,
     setNewColumn,
     deleteColumns,
     updateColumns,

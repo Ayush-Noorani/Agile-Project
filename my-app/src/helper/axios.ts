@@ -5,7 +5,7 @@ export const baseURL = process.env.SERVER_URL || "http://localhost:8000";
 export const axiosInstance = axios.create({
   baseURL: baseURL,
 });
-axiosInstance.interceptors.request.use(async (config) => {
+axiosInstance.interceptors.request.use(async (config: any) => {
   if (["post", "get", "put", "delete"].includes(config.method)) {
     try {
       let token = await localStorage.getItem("token");
