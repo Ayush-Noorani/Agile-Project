@@ -4,6 +4,7 @@ import { Draggable } from "react-beautiful-dnd";
 import { Box } from "@mui/material";
 import { TaskPriorityIcon } from "../../Common/Priority";
 import { TypoGraphyImage } from "../../Common/TypoGraphyImage";
+import { Member } from "../../../types/common";
 const Container = styled.div`
   border-radius: 10px;
   padding: 8px;
@@ -53,8 +54,12 @@ export const Item = ({ ...props }: any) => (
         >
           <Box>
             {props.task.assigned_user.length > 0 &&
-              props.task.assigned_user.map((assigned: any) => (
-                <TypoGraphyImage name={assigned.name} url={assigned.img} />
+              props.task.assigned_user.map((assigned: Member) => (
+                <TypoGraphyImage
+                  name={assigned.name}
+                  color={assigned.color}
+                  url={assigned.img}
+                />
               ))}
           </Box>
           {props.task.priority && (

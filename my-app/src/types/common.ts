@@ -24,6 +24,7 @@ export type Member = {
   role?: Role;
   name: string;
   img?: string;
+  color?: string;
 };
 export type Headers = {
   id: any;

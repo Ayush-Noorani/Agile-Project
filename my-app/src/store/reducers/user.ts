@@ -7,6 +7,7 @@ type initialStateType = {
   email: string;
   roles: Role[];
   id: string | undefined;
+  color?: string;
 };
 
 const initialState: initialStateType = {

@@ -13,8 +13,10 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Button from "@mui/material/Button";
 import { useCommon } from "../../hooks/useCommon";
-import { MenuItem, Menu, Divider, Tabs, Tab } from "@mui/material";
-import { useState } from "react";
+import { MenuItem, Menu, Divider, Tabs, Tab, InputLabel } from "@mui/material";
+import { Fragment, useEffect, useMemo, useState } from "react";
+import { axiosInstance, socket } from "../../helper/axios";
+import { TypoGraphyImage } from "../Common/TypoGraphyImage";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -121,29 +123,76 @@ interface NavBarProps {
 const NavBar = ({ show, setShow }: NavBarProps) => {
   const [open, setOpen] = useState<boolean>(show);
   const [eTarget, setETarget] = useState<any>(null);
+  const [notification, setNotification] = useState<any>([]);
   const [typeSelected, setTypeSelected] = useState<string>("all");
   const { navigate } = useCommon();
 
-  const notifications = notificationTest.map((notification) => {
-    if (notification.read == false) {
-      if (
-        typeSelected.toLocaleLowerCase() == notification.messageType ||
-        typeSelected.toLocaleLowerCase() == "all"
-      ) {
-        return (
-          <>
-            <MenuItem>
-              {notification.message} {notification.type}
-            </MenuItem>
-            <Divider />
-          </>
-        );
+  useEffect(() => {
+    console.log("CALL SOCKET");
+    let interval = setInterval(() => {
+      if (socket.connected) {
+        socket.emit("notification-list", localStorage.getItem("token"));
       }
-    }
-  });
+    }, 5000);
+    socket.on("notification", (data: any) => {
+      setNotification(data);
+    });
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
-  const handleChange = (e: any) => {
-    setTypeSelected(e.target.textContent);
+  const notifications = notification
+    .filter((value: any) => {
+      console.log(typeSelected, typeSelected.includes(value.type), value.type);
+      return typeSelected === "all" || typeSelected.includes(value.type);
+    })
+    .map((value: any, index: Number) => (
+      <Box
+        sx={{
+          margin: "2px",
+          padding: "2px",
+        }}
+        key={index.toString()}
+      >
+        <MenuItem
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <TypoGraphyImage name={value.reference.name} />
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <InputLabel
+              sx={{
+                width: "100%",
+                whiteSpace: "normal",
+              }}
+            >
+              {value.message}
+            </InputLabel>
+            <InputLabel
+              sx={{
+                alignSelf: "flex-end",
+              }}
+            >
+              {value.created_at}
+            </InputLabel>
+          </Box>
+        </MenuItem>
+        <Divider />
+      </Box>
+    ));
+
+  const handleChange = (_e: any, value: any) => {
+    setTypeSelected(value);
   };
 
   return (
@@ -175,8 +224,9 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
             >
               Jira Clone
             </Typography>
-            {test.map((link) => (
+            {test.map((link, index) => (
               <Button
+                key={index.toString()}
                 variant="text"
                 onClick={link.onclick}
                 sx={{ color: "black" }}
@@ -206,13 +256,14 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
                 setOpen((prev) => (e.target !== target ? true : false));
               }}
             >
-              <Badge badgeContent={notificationCount} color="error">
+              <Badge badgeContent={notification.length} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
             <Menu
               open={open}
               anchorEl={eTarget}
+              sx={{ width: "100%" }}
               onClose={() => {
                 setOpen(false);
                 setETarget(null);
@@ -224,11 +275,11 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
                     value={typeSelected}
                     textColor="primary"
                     indicatorColor="primary"
-                    onChange={(e) => handleChange(e)}
+                    onChange={handleChange}
                   >
-                    <Tab value="All" label="All" />
-                    <Tab value="Tasks" label="Tasks" />
-                    <Tab value="Projects" label="Projects" />
+                    <Tab value="all" label="All" />
+                    <Tab value="34" label="Tasks" />
+                    <Tab value="12" label="Projects" />
                   </Tabs>
                 </Box>
                 {notifications}

@@ -44,6 +44,7 @@ def get_project_list():
                 'created_at': 1,
                 'members._id': 1,
                 'members.username': 1,
+                'members.color': 1,
                 'members.name': 1,
                 'members.roles': 1,
                 'members.img': 1
@@ -158,11 +159,10 @@ def get_project_members(id):
         {'$lookup': {'from': 'user_details', 'localField': 'members',
                      'foreignField': '_id', 'as': 'members'}},
         {'$unwind': '$members'},
-        {'$project': {'members._id': 1, 'members.username': 1,
-                      'members.roles': 1, 'members.img': 1}}
+        {'$project': {'members._id': 1, 'members.username': 1, 'members.name': 1,
+                      'members.roles': 1, 'members.img': 1, 'members.color': 1}}
     ]
     members = list(db.projects.aggregate(pipeline))
-    print(members)
     result = []
     for member in members:
         member = member['members']
@@ -180,10 +180,10 @@ def search_project_members(text):
     if (text == "*"):
         print("in")
         members = list(db.user_details.find({"roles": {"$in": roles}},  {
-            '_id': 1, "username": 1, "roles": 1, "img": 1}))
+            '_id': 1, "username": 1, "roles": 1, "img": 1, 'members.color': 1, 'members.name': 1}))
     else:
         members = list(db.user_details.find({"roles": {"$in": roles}, 'username': "/" + text + "/"}, {
-            '_id': 1, "username": 1, "roles": 1, "img": 1}))
+            '_id': 1, "username": 1, "roles": 1, "img": 1, 'members.color': 1, 'members.name': 1}))
     for member in members:
 
         member["id"] = str(member["_id"])
@@ -196,11 +196,40 @@ def search_project_members(text):
 def get_project(id):
     print(id)
     project = db.projects.find_one({"_id": ObjectId(id)})
+    pipeline = [
+        {'$match': {'_id': ObjectId(id)}},
+        {'$lookup': {'from': 'user_details', 'localField': 'members',
+                     'foreignField': '_id', 'as': 'members'}},
+
+        {
+            '$project': {
+                'members._id': 1,
+                'members.username': 1,
+                'members.name': 1,
+                'members.roles': 1,
+                'members.img': 1,
+                'members.color': 1,
+                'created_by': 1,
+                'name': 1,
+                'description': 1,
+                'img': 1,
+                'lead': 1,
+                'category': 1,
+                'startDate': 1,
+                'endDate': 1,
+                'columns': 1,
+
+            }
+        }
+    ]
+    project = list(db.projects.aggregate(pipeline))[0]
     project["id"] = id
     project.pop("_id")
-    project['members'] = [str(member) for member in project['members']]
-    project.pop("tasks")
-    project.pop('created_by')
+    for member in project['members']:
+        member["id"] = str(member["_id"])
+        member.pop("_id")
+    project['created_by'] = str(project['created_by'])
+
     print(project)
     return {"project": project}
 

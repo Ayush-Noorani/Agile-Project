@@ -17,7 +17,6 @@ export const TaskHeader = ({ id }: { id: string }) => {
       });
     }
   };
-  console.log(filters);
   return (
     <Box>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
@@ -26,6 +25,7 @@ export const TaskHeader = ({ id }: { id: string }) => {
             <TypoGraphyImage
               onClick={() => onClick(value.username)}
               name={value.name}
+              color={value.color}
               isSelected={filters?.id && filters?.id.includes(value.username)}
               url={value.img}
             />

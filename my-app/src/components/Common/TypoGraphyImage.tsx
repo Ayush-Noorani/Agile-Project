@@ -3,18 +3,12 @@ import { getNameAcronym } from "../../helper/common";
 
 interface TypoGraphyImageProps {
   name: string;
-  url: string | undefined;
+  url?: string | undefined;
   isSelected?: boolean;
   onClick?: Function;
   id?: string;
+  color?: string;
 }
-
-const generateRandomColor = () => {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
-  return `rgb(${r}, ${g}, ${b})`;
-};
 
 export const TypoGraphyImage = ({
   id,
@@ -22,6 +16,7 @@ export const TypoGraphyImage = ({
   url,
   isSelected,
   onClick,
+  color,
 }: TypoGraphyImageProps) => (
   <Typography
     onClick={() => {
@@ -32,7 +27,7 @@ export const TypoGraphyImage = ({
     sx={{
       display: "flex",
       flexDirection: "row",
-      backgroundColor: generateRandomColor(),
+      backgroundColor: color ? color : "grey",
       borderRadius: "40px",
       height: "40px",
       width: "40px",

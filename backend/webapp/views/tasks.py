@@ -9,6 +9,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import requests
 import json
 from flask import send_file
+from webapp.helpers.notification import create_notification
 collection = db.tasks
 projects_col = db["projects"]
 tasks_col = db["tasks"]
@@ -75,9 +76,9 @@ def get_task_list(id):
                 "priority": 1,
 
                 "assigned_user.username": 1,
-
+                "assigned_user.color": 1,
                 "assigned_user.name": 1,
-
+                "reporter_user.color": 1,
                 "reporter_user.username": 1,
                 "reporter_user.name": 1
 
@@ -95,7 +96,7 @@ def get_task_list(id):
 def create_task(projectId):
     data = request.form
     parsedData = {}
-    print(request.form, "hi")
+    user_id = get_jwt_identity()
     for key in data.keys():
         parsedData[key] = data[key]
     parsedData.pop("id")
@@ -106,7 +107,9 @@ def create_task(projectId):
     taskID = db.tasks.insert_one(parsedData).inserted_id
     db.projects.update_one({"_id": ObjectId(projectId)}, {
                            "$push": {"tasks."+data["status"]: taskID}})
-
+    ids = parsedData['reportTo']+parsedData['assignedTo']
+    create_notification(ids, 'assigned you a task in project ',
+                        3, user_id, ObjectId(taskID))
     return "hello world", 200
 # route for update
 
@@ -142,13 +145,17 @@ def get_task(id):
 def update_task(id):
     print(request.get_json())
     data = request.get_json()
+    user_id = get_jwt_identity()
     data.pop("id")
     data["reportTo"] = [ObjectId(user['id'])
                         for user in data["reportTo"]]
     data["assignedTo"] = [ObjectId(user['id'])
                           for user in data["assignedTo"]]
     db.tasks.update_one({"_id": ObjectId(id)}, {"$set": data})
+    ids = data['reportTo']+data['assignedTo']
 
+    create_notification(ids, 'has updated task information in project ',
+                        3, user_id, ObjectId(id))
     return {"status": "success"}
 
 # assign task to user

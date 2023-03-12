@@ -19,6 +19,7 @@ import { ListView } from "../../components/ListView";
 import { useProject } from "./hooks/useProject";
 import { baseURL } from "../../helper/axios";
 import { useCommon } from "../../hooks/useCommon";
+import { TypoGraphyImage } from "../../components/Common/TypoGraphyImage";
 
 interface ProjectDetailProps {}
 
@@ -211,7 +212,7 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
                 className="row"
                 sx={{ alignItems: "center" }}
               >
-                <Avatar sx={{ marginLeft: "10px" }} src={option.img} />
+                <TypoGraphyImage color={option.color} name={option.label} />
                 <Typography sx={{ marginLeft: "10px" }}>
                   {option.label}
                 </Typography>
