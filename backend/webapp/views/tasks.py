@@ -43,6 +43,7 @@ def get_task_list(id):
                 "id": {"$toString": "$_id"},
                 "taskName": 1,
                 "description": 1,
+                "summary":1,
                 "status": 1,
                 "created_at": 1,
                 "updated_at": 1,
@@ -68,6 +69,7 @@ def get_task_list(id):
                 "id": 1,
                 "taskName": 1,
                 "description": 1,
+                "summary":1,
                 "status": 1,
                 "created_at": 1,
                 "updated_at": 1,
@@ -86,19 +88,25 @@ def get_task_list(id):
 # save columns
 
 
-@app.route("/task/create/<projectId>", methods=["PUT"])
+@app.route("/task/create/<projectId>", methods=["POST"])
 @jwt_required()
 def create_task(projectId):
     data = request.form
     parsedData = {}
-    print(request.form, "hi")
     for key in data.keys():
         parsedData[key] = data[key]
     parsedData.pop("id")
-    parsedData["reportTo"] = [ObjectId(user['id'])
-                              for user in parsedData["reportTo"]]
-    parsedData["assignedTo"] = [ObjectId(user['id'])
-                                for user in parsedData["assignedTo"]]
+
+    print(data)
+    print(parsedData)
+    
+    reportTo = parsedData["reportTo"].split(",")
+    assignedTo = parsedData["assignedTo"].split(",")
+    
+    parsedData["reportTo"] = [ObjectId(user)
+                              for user in reportTo]
+    parsedData["assignedTo"] = [ObjectId(user)
+                              for user in assignedTo]
     taskID = db.tasks.insert_one(parsedData).inserted_id
     db.projects.update_one({"_id": ObjectId(projectId)}, {
                            "$push": {"tasks."+data["status"]: taskID}})
@@ -136,14 +144,24 @@ def get_task(id):
 @app.route("/task/update/<id>", methods=["PUT"])
 @jwt_required()
 def update_task(id):
-    print(request.get_json())
-    data = request.get_json()
-    data.pop("id")
-    data["reportTo"] = [ObjectId(user['id'])
-                        for user in data["reportTo"]]
-    data["assignedTo"] = [ObjectId(user['id'])
-                          for user in data["assignedTo"]]
-    db.tasks.update_one({"_id": ObjectId(id)}, {"$set": data})
+    # data = json.loads(request.form["data"])
+
+    data = request.form
+    parsedData = {}
+    for key in data.keys():
+        parsedData[key] = data[key]
+    parsedData.pop("id")
+
+    reportTo = parsedData["reportTo"].split(",")
+    assignedTo = parsedData["assignedTo"].split(",")
+    
+    parsedData["reportTo"] = [ObjectId(user)
+                              for user in reportTo]
+    parsedData["assignedTo"] = [ObjectId(user)
+                              for user in assignedTo]
+    
+    response=db.tasks.update_one({"_id": ObjectId(id)}, {"$set": parsedData})
+    print(response.modified_count)
 
     return {"status": "success"}
 

@@ -1,4 +1,9 @@
-import React, { ChangeEvent, ChangeEventHandler, useState } from "react";
+import React, {
+  ChangeEvent,
+  ChangeEventHandler,
+  useEffect,
+  useState,
+} from "react";
 import {
   MenuItem,
   Stack,
@@ -7,92 +12,63 @@ import {
   CardContent,
   Chip,
   Paper,
-  SelectChangeEvent,
+  Checkbox,
+  ListItemText,
 } from "@mui/material";
 import { Typography } from "@mui/material";
 import { FileUpload } from "@mui/icons-material";
 import ReactQuill from "react-quill";
-import { Container } from "@mui/system";
+import { useParams } from "react-router";
+import { axiosInstance } from "../../helper/axios";
+import { useTask } from "./hooks/useTask";
+import { useCommon } from "../../hooks/useCommon";
+import { Member, Priority } from "../../types/common";
+import { TaskPriorityIcon } from "../../components/Common/Priority";
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
-
-type Task = {
-  description: string;
-  summary: string;
-  taskName: string;
-  assignedTo: string[];
-  reportTo: string[];
-  additionalFiles: File[];
-  status: "toDo" | "inProgres";
+type PriorityOptionsType = {
+  taskType: string;
+  value: Priority;
+  icon: any;
 };
+const PriorityOptions: PriorityOptionsType[] = [
+  {
+    taskType: "Crictical",
+    value: "critical",
+    icon: <TaskPriorityIcon priority="critical" />,
+  },
+  {
+    taskType: "Major",
+    value: "major",
+    icon: <TaskPriorityIcon priority="major" />,
+  },
+  {
+    taskType: "Moderate",
+    value: "moderate",
+    icon: <TaskPriorityIcon priority="moderate" />,
+  },
+  {
+    taskType: "Minor",
+    value: "minor",
+    icon: <TaskPriorityIcon priority="minor" />,
+  },
+];
+const TaskUtility = ({ taskId }: { taskId?: string }) => {
+  const { id: ProjectId } = useParams();
+  const { members, searchUser } = useCommon();
+  const {
+    getTasks,
+    handleDeleteForAdditionalFiles,
+    handleFormDataUpdate,
+    submitFormData,
+    getExistingTaskData,
+    formData,
+  } = useTask(ProjectId);
 
-const CreateTaskView = () => {
-  const [fileList, setFileList] = useState<File[]>([]);
-  const [assignees, setAssignees] = useState<String[]>([]);
+  useEffect(() => {
+    getTasks(taskId);
+  }, []);
 
-  const [formData, setFormData] = useState<Task>({
-    description: "",
-    summary: "",
-    taskName: "",
-    assignedTo: [],
-    reportTo: [],
-    additionalFiles: [],
-    status: "toDo",
-  });
-
-  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const files = e.target.files ? Array.from(e.target.files) : [];
-  //   setFileList((prevList) => {
-  //     return prevList.concat(files);
-  //   });
-  // };
-
-  const handleDeleteForAdditionalFiles = (index: number) => {
-    setFormData((prev) => {
-      return {
-        ...prev,
-        additionalFiles: prev.additionalFiles.filter((file, i) => i != index),
-      };
-    });
-  };
-
-  const handleFormDataUpdate = (
-    key: keyof Task,
-    value: any,
-    indexForArray?: number
-  ) => {
-    setFormData((prev) => {
-      switch (key) {
-        case "additionalFiles":
-          const files: File[] = value ? Array.from(value) : [];
-          return {
-            ...prev,
-            additionalFiles: prev.additionalFiles.concat(files),
-          };
-
-        default:
-          return {
-            ...prev,
-            [key]: value,
-          };
-      }
-    });
-  };
-
-  const handleChangeAssignee = (e: any) => {
-    setAssignees(e.target.value);
-  };
+  console.log("TaskUtility", formData);
 
   return (
     <Stack mx="10px" spacing={2} width="550px">
@@ -101,6 +77,7 @@ const CreateTaskView = () => {
         label="Task Name"
         variant="filled"
         size="small"
+        value={formData.taskName}
         InputProps={{ disableUnderline: true }}
         InputLabelProps={{ shrink: true }}
         sx={{ width: "350px" }}
@@ -115,6 +92,7 @@ const CreateTaskView = () => {
         size="small"
         InputLabelProps={{ shrink: true }}
         InputProps={{ disableUnderline: true }}
+        value={formData.summary}
         sx={{ width: "350px" }}
         multiline
         onChange={(e) => {
@@ -130,16 +108,24 @@ const CreateTaskView = () => {
         InputProps={{ disableUnderline: true }}
         InputLabelProps={{ shrink: true }}
         select
-        SelectProps={{ multiple: true }}
+        SelectProps={{
+          multiple: true,
+          renderValue: (selected: any) =>
+            members
+              .filter((member) => selected.indexOf(member.id) > -1)
+              .map((member) => member.username)
+              .join(", "),
+        }}
         value={formData.assignedTo}
         sx={{ width: "350px" }}
-        onChange={(e) => {
+        onChange={(e: any) => {
           handleFormDataUpdate("assignedTo", e.target.value);
         }}
       >
-        {names.map((name) => (
-          <MenuItem key={name} value={name}>
-            {name}
+        {members.map((value, index) => (
+          <MenuItem key={index} value={value.id}>
+            <Checkbox checked={formData.assignedTo.indexOf(value.id) > -1} />
+            <ListItemText primary={value.username} />
           </MenuItem>
         ))}
       </TextField>
@@ -152,24 +138,56 @@ const CreateTaskView = () => {
         InputProps={{ disableUnderline: true }}
         InputLabelProps={{ shrink: true }}
         select
-        SelectProps={{ multiple: true }}
+        SelectProps={{
+          multiple: true,
+          renderValue: (selected: any) =>
+            members
+              .filter((member) => selected.indexOf(member.id) > -1)
+              .map((member) => member.username)
+              .join(", "),
+        }}
         sx={{ width: "350px" }}
         value={formData.reportTo}
-        onChange={(e) => {
+        onChange={(e: any) => {
           handleFormDataUpdate("reportTo", e.target.value);
         }}
       >
-        {names.map((name) => (
-          <MenuItem
-            key={name}
-            value={name}
-            //   style={getStyles(name, personName, theme)}
-          >
-            {name}
+        {members.map((value, index) => (
+          <MenuItem key={index} value={value.id}>
+            <Checkbox checked={formData.reportTo.indexOf(value.id) > -1} />
+            <ListItemText primary={value.username} />
           </MenuItem>
         ))}
       </TextField>
-
+      <TextField
+        id="standard-basic"
+        label="Priority"
+        variant="filled"
+        size="small"
+        InputProps={{ disableUnderline: true }}
+        InputLabelProps={{ shrink: true }}
+        select
+        sx={{ width: "150px" }}
+        value={formData.priority}
+        onChange={(e: any) => {
+          handleFormDataUpdate("priority", e.target.value);
+        }}
+      >
+        {PriorityOptions.map((value, index) => (
+          <MenuItem
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              width: "150px",
+              alignItems: "center",
+            }}
+            key={index}
+            value={value.value}
+          >
+            {value.icon} {value.taskType}
+          </MenuItem>
+        ))}
+      </TextField>
       <TextField
         id="standard-basic"
         label="Status"
@@ -182,12 +200,11 @@ const CreateTaskView = () => {
         value={formData.status}
         placeholder="Select a Status"
         onChange={(e) => {
-          console.log(e.target.value);
           handleFormDataUpdate("status", e.target.value);
         }}
       >
         <MenuItem value="toDo">To Do</MenuItem>
-        <MenuItem value="inProgres">In Progress</MenuItem>
+        <MenuItem value="inProgress">In Progress</MenuItem>
       </TextField>
       {/* need to find MUI them colors or soemthing here. For now this is the closest to natching the filled text input */}
       <Paper
@@ -207,7 +224,6 @@ const CreateTaskView = () => {
             ],
           }}
           onChange={(e: any) => {
-            // console.log("quil update", e);
             handleFormDataUpdate("description", e);
           }}
         />
@@ -225,18 +241,19 @@ const CreateTaskView = () => {
           Upload Files
         </Typography>
         <CardContent>
-          {formData.additionalFiles.map((file, index) => {
-            return (
-              <Chip
-                variant="outlined"
-                label={file.name}
-                sx={{ marginRight: "5px", marginY: "5px" }}
-                onDelete={() => {
-                  handleDeleteForAdditionalFiles(index);
-                }}
-              />
-            );
-          })}
+          {formData?.additionalFiles &&
+            formData?.additionalFiles.map((file, index) => {
+              return (
+                <Chip
+                  variant="outlined"
+                  label={file.name}
+                  sx={{ marginRight: "5px", marginY: "5px" }}
+                  onDelete={() => {
+                    handleDeleteForAdditionalFiles(index);
+                  }}
+                />
+              );
+            })}
         </CardContent>
 
         <Button
@@ -259,13 +276,7 @@ const CreateTaskView = () => {
         </Button>
       </Paper>
       <Stack direction="row" justifyContent="flex-end">
-        <Button
-          variant="text"
-          sx={{ width: "100px" }}
-          onClick={() => {
-            console.log(formData);
-          }}
-        >
+        <Button variant="text" sx={{ width: "100px" }} onClick={submitFormData}>
           Submit
         </Button>
       </Stack>
@@ -273,4 +284,4 @@ const CreateTaskView = () => {
   );
 };
 
-export { CreateTaskView };
+export { TaskUtility };
