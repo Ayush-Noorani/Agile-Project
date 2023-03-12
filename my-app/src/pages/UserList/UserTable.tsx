@@ -12,13 +12,15 @@ import {
   TablePagination,
   TableSortLabel,
   TextField,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import { NavBar } from "../../components/NavBar/NavBar";
 import { Search } from "@mui/icons-material";
-import { User } from "../../types/common";
-import { Headers, SortOrder } from "./types/userListTypes";
+import { Role, User } from "../../types/common";
+import { Headers, SortOrder } from "../../types/common";
 import { getcomparator, flipSortOrder } from "./utils/userListUtils";
 import { useRoleAssign } from "./hooks/useRoleAssign";
+import { roles } from "./utils/options";
 
 const columnHeaders: Headers[] = [
   {
@@ -40,7 +42,7 @@ const columnHeaders: Headers[] = [
 ];
 
 export const UserTable = () => {
-  const { data } = useRoleAssign();
+  const { data, updateUserRole } = useRoleAssign();
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [currentPage, setCurrentPage] = React.useState(0);
   const [sortBy, setSortBy] = React.useState<keyof User>("id");
@@ -87,7 +89,7 @@ export const UserTable = () => {
     <>
       <TableContainer
         component={Paper}
-        sx={{ marginY: "15px", marginX: "20px", width: "auto" }}
+        sx={{ marginY: "15px", marginX: "20px", width: "100vw" }}
       >
         <TextField
           id="outlined-basic"
@@ -143,19 +145,25 @@ export const UserTable = () => {
                   >
                     {columnHeaders.map((item, index) =>
                       item.id === "name" ? (
-                        <TableCell
-                          sx={{ display: "flex", alignItems: "center" }}
-                        >
-                          <Avatar sx={{ marginRight: "10px" }}>
-                            {row[item.id][0].concat(
-                              row[item.id][row[item.id].lastIndexOf(" ") + 1]
-                            )}
-                          </Avatar>
-                          {row[item.id]}
-                        </TableCell>
-                      ) : typeof row[item.id] === "object" ? (
-                        <TableCell size="small">
-                          {row["roles"]!.map((value) => value)}
+                        <TableCell>{row[item.id as keyof User]}</TableCell>
+                      ) : typeof row[item.id as keyof User] === "object" ? (
+                        <TableCell>
+                          <Select
+                            multiple
+                            value={row.roles}
+                            onChange={(event) => {
+                              updateUserRole(
+                                row.id,
+                                event.target.value as unknown as Role[]
+                              );
+                            }}
+                          >
+                            {roles.map((option) => (
+                              <MenuItem key={option} value={option}>
+                                {option}
+                              </MenuItem>
+                            ))}
+                          </Select>
                         </TableCell>
                       ) : (
                         <TableCell size="small">

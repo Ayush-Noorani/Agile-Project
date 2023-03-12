@@ -24,6 +24,7 @@ const userSlice = createSlice({
       state.isLoggedIn = action.payload;
     },
     setUser: (state, action) => {
+      console.log(action);
       state = produce(state, (draft) => {
         draft.userName = action.payload.username;
         draft.email = action.payload.email;

@@ -18,7 +18,7 @@ import { FileUpload } from "@mui/icons-material";
 import ReactQuill from "react-quill";
 import { useParams } from "react-router";
 import { axiosInstance } from "../../helper/axios";
-import { useTask } from "./hooks/useTasks";
+import { useTask } from "./hooks/useTask";
 import { useCommon } from "../../hooks/useCommon";
 import { Priority } from "../../types/common";
 import { TaskPriorityIcon } from "../../components/Common/Priority";
@@ -119,6 +119,7 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
         value={formData.assignedTo}
         sx={{ width: "350px" }}
         onChange={(e: any) => {
+          console.log(e.target.value);
           handleFormDataUpdate(
             "assignedTo",
             e.target.value.map((item: any) =>

@@ -1,9 +1,14 @@
 from webapp import app
 from flask import request
 from pymongo import MongoClient
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 from webapp.helpers.jwt import generateToken
 from webapp import bcrypt
 from webapp import db
+from bson import ObjectId
+
+
 collection = db.user_details
 # from webapp.models.user_model import user_model
 # make an end point private by
@@ -16,6 +21,17 @@ collection = db.user_details
 @app.route('/')
 def root():
     return {'message': 'Hello, World!'}, 200
+
+
+@app.route("/user/info")
+@jwt_required()
+def user_info():
+    id = get_jwt_identity()
+    data = collection.find_one({'_id': ObjectId(id)}, {
+        "_id": 0, 'email': 1, 'username': 1, 'roles': 1, '_id': 1})
+    data.pop("_id")
+    print(data)
+    return data, 200
 
 
 @app.route('/user/login', methods=['POST'])
@@ -37,6 +53,7 @@ def login():
 def register():
     data = request.get_json()
     data['password'] = bcrypt.generate_password_hash(data['password'])
+    data['roles'] = ['user']
     is_registered = collection.insert_one(data)
     if (is_registered):
         return {"data": "Registered", "token": generateToken(str(is_registered.inserted_id))}, 200
@@ -45,6 +62,7 @@ def register():
 
 
 @app.route('/user/update-details', methods=['POST'])
+@jwt_required()
 def updateDetails():
     data = request.get_json()
     username = data['username']
@@ -64,6 +82,7 @@ def updateDetails():
 
 
 @app.route('/user/save-image/<id>', methods=['PUT'])
+@jwt_required()
 def saveImage(id):
     img = request.files['img']
     img.save(app.config["UPLOAD_FOLDER"]+"\\profile\\" +

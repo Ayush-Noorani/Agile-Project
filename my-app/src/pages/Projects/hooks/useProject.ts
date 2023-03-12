@@ -5,11 +5,12 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import produce from "immer";
+import { useDispatch } from "react-redux";
+import { setData } from "../../../store/reducers/project";
 
 export const useProject = (id?: string) => {
   const projects = useSelector((state: RootState) => state.project.projects);
-
-  const [data, setData] = useState<ProjectData[]>(projects);
+  const dispatch = useDispatch();
   const [value, setValue] = useState<ProjectData>({
     id: undefined,
     name: "",
@@ -20,7 +21,7 @@ export const useProject = (id?: string) => {
     expectedEndDate: new Date(),
     category: "",
     lead: "",
-    columns: ["toDo", "inProgress", "done"],
+    columns: [],
   });
 
   const fetchMembers = () => {
@@ -35,7 +36,7 @@ export const useProject = (id?: string) => {
 
   const fetchAllProjects = () => {
     axiosInstance.get("/project/list").then((res) => {
-      setData(res.data.projects);
+      dispatch(setData(res.data.projects));
     });
   };
   const fetchExistingData = (id: any) => {
@@ -90,7 +91,7 @@ export const useProject = (id?: string) => {
     }
   };
   return {
-    data,
+    projects,
     value,
     updateState,
     submitData,
