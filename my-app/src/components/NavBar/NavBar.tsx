@@ -152,6 +152,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
         sx={{
           margin: "2px",
           padding: "2px",
+          width: "200px",
         }}
         key={index.toString()}
       >
@@ -159,6 +160,14 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
           sx={{
             display: "flex",
             flexDirection: "row",
+            width: "200px",
+          }}
+          onClick={() => {
+            navigate(
+              value.type == "1" || value.type == "2"
+                ? "/project/" + value.reference.id
+                : "/tasks/" + value.reference.id
+            );
           }}
         >
           <TypoGraphyImage name={value.reference.name} />
@@ -263,7 +272,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
             <Menu
               open={open}
               anchorEl={eTarget}
-              sx={{ width: "100%" }}
+              sx={{ minWidth: "100%" }}
               onClose={() => {
                 setOpen(false);
                 setETarget(null);

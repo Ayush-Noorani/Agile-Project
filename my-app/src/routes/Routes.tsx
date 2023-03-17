@@ -11,6 +11,8 @@ import { Profile } from "../pages/Profile/Profile";
 import { TaskForm } from "../pages/Task/components/TaskForm";
 import { CreateTaskView } from "../pages/CreateTask/CreateTaskView";
 import { AdminProtected } from "../components/AdminProtected";
+import { BackLog } from "../pages/BackLog/BackLog";
+import { Home } from "../pages/Home/Home";
 
 export const Routes = createBrowserRouter([
   {
@@ -58,5 +60,13 @@ export const Routes = createBrowserRouter([
   {
     path: "/user-list",
     element: <AdminProtected children={<UserTable />} />,
+  },
+  {
+    path: "/backlog",
+    element: <Protected children={<BackLog />} />,
+  },
+  {
+    path: "/home",
+    element: <Protected children={<Home />} />,
   },
 ]);
