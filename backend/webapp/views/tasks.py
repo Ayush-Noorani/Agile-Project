@@ -86,7 +86,6 @@ def get_task_list(id):
         ]
         results = list(db.tasks.aggregate(task_pipeline))
         tasks_dict[task_status] = results
-    print(tasks_dict)
     return tasks_dict, 200
 
 # save columns
