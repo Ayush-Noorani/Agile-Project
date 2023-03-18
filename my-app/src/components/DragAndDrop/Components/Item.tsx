@@ -1,12 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
-import { Person, Title } from "@mui/icons-material";
-import { MenuItem, Menu, Button, Avatar, Box } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import IconButton from "@mui/material/IconButton";
-import { Assigned } from "./Assigned";
+import { Box } from "@mui/material";
 import { TaskPriorityIcon } from "../../Common/Priority";
+import { TypoGraphyImage } from "../../Common/TypoGraphyImage";
+import { Member } from "../../../types/common";
 const Container = styled.div`
   border-radius: 10px;
   padding: 8px;
@@ -56,13 +54,12 @@ export const Item = ({ ...props }: any) => (
         >
           <Box>
             {props.task.assigned_user.length > 0 &&
-              props.task.assigned_user.map((assigned: any) => (
-                <>
-                  <Avatar>
-                    <Person />
-                  </Avatar>
-                  {assigned.username}
-                </>
+              props.task.assigned_user.map((assigned: Member) => (
+                <TypoGraphyImage
+                  name={assigned.name}
+                  color={assigned.color}
+                  url={assigned.img}
+                />
               ))}
           </Box>
           {props.task.priority && (
@@ -79,6 +76,7 @@ export const Item = ({ ...props }: any) => (
             </Box>
           )}
         </div>
+        {console.log("HERE")}
       </Container>
     )}
   </Draggable>

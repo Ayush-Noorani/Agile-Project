@@ -23,15 +23,45 @@ collection = db.projects
 @jwt_required()
 def get_project_list():
     id = get_jwt_identity()
-    projects = list(db.projects.find(
-        {"$or": [{"created_by": ObjectId(get_jwt_identity())}, {"members": {"$in": [ObjectId(id)]}}]}, {"_id": 1, "title": 1, "description": 1, "img": 1, "members": 1, "created_by": 1, "created_at": 1, "updated_at": 1, 'columns': 1}))
+    pipeline = [
+        {
+            '$match': {'members': {'$in': [ObjectId(id)]}}
+        },
+        {
+            '$lookup': {
+                'from': 'user_details',
+                'localField': 'members',
+                'foreignField': '_id',
+                'as': 'members'
+            }
+        },
+        {
+            '$project': {
+                'title': 1,
+                'description': 1,
+                'img': 1,
+                'columns': 1,
+                'created_at': 1,
+                'members._id': 1,
+                'members.username': 1,
+                'members.color': 1,
+                'members.name': 1,
+                'members.roles': 1,
+                'members.img': 1
+            }
+
+        }
+    ]
+    projects = list(db.projects.aggregate(pipeline))
+    print(projects)
     for project in projects:
 
         project["id"] = str(project["_id"])
-        project['members'] = len(project['members'])
+        project['membersCount'] = len(project['members'])
+        for i in project['members']:
+            i['id'] = str(i['_id'])
+            i.pop('_id')
         project.pop("_id")
-        project.pop('created_by')
-    print(projects)
     return {"projects": projects}
 
 
@@ -40,8 +70,16 @@ def get_project_list():
 def save_columns(id):
     data = request.get_json()
     print(data)
+    current_project = db.projects.find_one(
+        {"_id": ObjectId(id)}, {'columns': 1, 'tasks': 1})
+    missing_elements = [x for x in data['columns']
+                        if x not in current_project['columns']]
+
+    for i in missing_elements:
+        current_project['tasks'][i['value']] = []
     db.projects.update_one({"_id": ObjectId(id)}, {
-                           "$set": {"columns": data['columns']}})
+                           "$set": {"columns": data['columns'],
+                                    'tasks': current_project['tasks']}, })
     return {"status": "success"}
 
 
@@ -121,11 +159,10 @@ def get_project_members(id):
         {'$lookup': {'from': 'user_details', 'localField': 'members',
                      'foreignField': '_id', 'as': 'members'}},
         {'$unwind': '$members'},
-        {'$project': {'members._id': 1, 'members.username': 1,
-                      'members.roles': 1, 'members.img': 1}}
+        {'$project': {'members._id': 1, 'members.username': 1, 'members.name': 1,
+                      'members.roles': 1, 'members.img': 1, 'members.color': 1}}
     ]
     members = list(db.projects.aggregate(pipeline))
-    print(members)
     result = []
     for member in members:
         member = member['members']
@@ -143,10 +180,10 @@ def search_project_members(text):
     if (text == "*"):
         print("in")
         members = list(db.user_details.find({"roles": {"$in": roles}},  {
-            '_id': 1, "username": 1, "roles": 1, "img": 1}))
+            '_id': 1, "username": 1, "roles": 1, "img": 1, 'members.color': 1, 'members.name': 1}))
     else:
         members = list(db.user_details.find({"roles": {"$in": roles}, 'username': "/" + text + "/"}, {
-            '_id': 1, "username": 1, "roles": 1, "img": 1}))
+            '_id': 1, "username": 1, "roles": 1, "img": 1, 'members.color': 1, 'members.name': 1}))
     for member in members:
 
         member["id"] = str(member["_id"])
@@ -159,9 +196,41 @@ def search_project_members(text):
 def get_project(id):
     print(id)
     project = db.projects.find_one({"_id": ObjectId(id)})
+    pipeline = [
+        {'$match': {'_id': ObjectId(id)}},
+        {'$lookup': {'from': 'user_details', 'localField': 'members',
+                     'foreignField': '_id', 'as': 'members'}},
+
+        {
+            '$project': {
+                'members._id': 1,
+                'members.username': 1,
+                'members.name': 1,
+                'members.roles': 1,
+                'members.img': 1,
+                'members.color': 1,
+                'created_by': 1,
+                'name': 1,
+                'description': 1,
+                'img': 1,
+                'lead': 1,
+                'category': 1,
+                'startDate': 1,
+                'endDate': 1,
+                'columns': 1,
+
+            }
+        }
+    ]
+    project = list(db.projects.aggregate(pipeline))[0]
     project["id"] = id
     project.pop("_id")
-    project['members'] = [str(member) for member in project['members']]
+    for member in project['members']:
+        member["id"] = str(member["_id"])
+        member.pop("_id")
+    project['created_by'] = str(project['created_by'])
+
+    print(project)
     return {"project": project}
 
 
@@ -169,7 +238,7 @@ def get_project(id):
 @ jwt_required()
 def update_project(id):
     data = json.loads(request.form["data"])
-    img = request.files['img']
+    img = request.files['img'] if 'img' in request.files.keys() else False
     user_id = get_jwt_identity()
     if (img) and data['img'] != True:
         data['img'] = True

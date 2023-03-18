@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { axiosInstance } from "../../../helper/axios";
+import { setFilter } from "../../../store/reducers/filters";
 import { setColumns } from "../../../store/reducers/project";
 import { RootState } from "../../../store/store";
 import {
@@ -26,6 +27,7 @@ type Task = {
 export const useTask = (projectId?: string) => {
   const [tasks, setTasks] = useState<TasksRecord>({});
   const [value, setValue] = useState<any>();
+
   const [newColumn, setNewColumn] = useState<Columntype>({
     label: "",
     value: "",
@@ -33,6 +35,10 @@ export const useTask = (projectId?: string) => {
   const dispatch = useDispatch();
   const projects = useSelector((state: RootState) => state.project.projects);
   const currentProject = projects.find((project) => project.id === projectId);
+  const filters = useSelector((state: RootState) => state.filters);
+  useEffect(() => {
+    console.log("filters", filters);
+  }, [filters]);
   const columns: Columntype[] | [] = currentProject?.columns || [];
   const [formData, setFormData] = useState<Task>({
     id: undefined,
@@ -56,10 +62,7 @@ export const useTask = (projectId?: string) => {
     });
   };
 
-  const handleFormDataUpdate = (
-    key: keyof Task,
-    value: any
-  ) => {
+  const handleFormDataUpdate = (key: keyof Task, value: any) => {
     setFormData((prev) => {
       switch (key) {
         case "additionalFiles":
@@ -122,11 +125,11 @@ export const useTask = (projectId?: string) => {
       .then((res) => {
         setTasks(res.data);
         if (TaskId) {
-          console.log(tasks)
+          console.log(tasks);
           const value: Task = Object.values(res.data)
             .flatMap((value) => value)
             .find((task: any) => task.id === TaskId) as unknown as Task;
-            console.log(value)
+          console.log(value);
           setFormData({
             id: value.id,
             description: value.description,
@@ -139,7 +142,6 @@ export const useTask = (projectId?: string) => {
             priority: value.priority,
           });
         }
- 
       })
       .catch((err) => {
         console.log(err);
@@ -154,8 +156,8 @@ export const useTask = (projectId?: string) => {
     );
   };
 
-  const updateData = (data:FormData) => {
-    console.log("this is", data)
+  const updateData = (data: FormData) => {
+    console.log("this is", data);
     axiosInstance
       .put(`/task/update/${formData.id}`, data)
       .then((res) => {
@@ -166,25 +168,25 @@ export const useTask = (projectId?: string) => {
       });
   };
 
-const createData = (data: FormData)  => {
-  console.log("creating task")
-  axiosInstance
-  .post(`/task/create/${projectId}`, data)
-  .then(() => {
-    console.log("sent data");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-}
+  const createData = (data: FormData) => {
+    console.log("creating task");
+    axiosInstance
+      .post(`/task/create/${projectId}`, data)
+      .then(() => {
+        console.log("sent data");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-  const submitFormData = () => { 
+  const submitFormData = () => {
     const submitData: any = new FormData();
     for (var key in formData) {
       submitData.append(key, formData[key as keyof Task]);
     }
     // submitData.append("data", JSON.stringify(formData));
-    formData.id ? updateData(submitData) : createData(submitData)
+    formData.id ? updateData(submitData) : createData(submitData);
   };
 
   const updateSequence = (tasks: any) => {
@@ -202,13 +204,28 @@ const createData = (data: FormData)  => {
         console.log(err);
       });
   };
-
+  const setFilters = (data: any) => {
+    console.log({
+      ...filters,
+      ...data,
+    });
+    dispatch(
+      setFilter({
+        ...filters,
+        ...data,
+      })
+    );
+    console.log(filters);
+  };
   return {
     tasks,
     value,
     formData,
     columns,
     newColumn,
+    filters,
+    currentProject,
+    setFilters,
     setNewColumn,
     deleteColumns,
     updateColumns,
@@ -218,6 +235,6 @@ const createData = (data: FormData)  => {
     getExistingTaskData,
     submitFormData,
     handleDeleteForAdditionalFiles,
-    handleFormDataUpdate
+    handleFormDataUpdate,
   };
 };

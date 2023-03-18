@@ -4,6 +4,7 @@ import { axiosInstance } from "../helper/axios";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/reducers/user";
 import { useToastContext } from "../context/ToastContext";
+import { generateRandomColor } from "../helper/common";
 
 export const useRegister = () => {
   const navigate = useNavigate();
@@ -18,7 +19,10 @@ export const useRegister = () => {
     setError("");
     setLoader(true);
     axiosInstance
-      .post("/user/register", value)
+      .post("/user/register", {
+        ...value,
+        color: generateRandomColor(),
+      })
       .then((res) => {
         dispatch(
           setUser({
@@ -28,7 +32,7 @@ export const useRegister = () => {
         );
         dispatch(setUser(value));
         localStorage.setItem("token", res.data.token);
-        navigate("/dashboard");
+        navigate("/home");
       })
       .catch((err) => {
         if (!err.response?.data?.message) {

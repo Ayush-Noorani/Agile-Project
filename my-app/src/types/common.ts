@@ -17,12 +17,15 @@ export interface SideBarItemProps {
   icon: React.ReactNode;
   role: Role;
   label: string;
+  handleRedirect?: (path: string) => void;
 }
 export type Member = {
   id: string;
   username: string;
   role?: Role;
+  name: string;
   img?: string;
+  color?: string;
 };
 export type Headers = {
   id: any;

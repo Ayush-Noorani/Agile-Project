@@ -66,6 +66,7 @@ export const useProject = (id?: string) => {
       request["img"] = false;
     }
     if (value.id) {
+      request.members = request.members.map((value: Member) => value.id);
       data.append("data", JSON.stringify(request));
 
       axiosInstance

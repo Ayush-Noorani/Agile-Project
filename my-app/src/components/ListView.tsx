@@ -8,12 +8,14 @@ import {
   Button,
 } from "@mui/material";
 import { baseURL } from "../helper/axios";
+import { TypoGraphyImage } from "./Common/TypoGraphyImage";
 export interface ListProps {
   data: any[];
   action: Function[];
 }
 
 export const ListView = ({ data, action }: ListProps) => {
+  console.log(data);
   return (
     <List>
       {data.map((item, index) => (
@@ -26,9 +28,7 @@ export const ListView = ({ data, action }: ListProps) => {
           key={index.toString()}
         >
           <ListItemAvatar>
-            <Avatar>
-              <img alt={"img"} src={`${baseURL}/static/users/${item.id}.png`} />
-            </Avatar>
+            <TypoGraphyImage color={item.color} name={item.name} />
           </ListItemAvatar>
           <ListItemText primary={item.username} />
           {action.map((value, index) => value(item.id))}

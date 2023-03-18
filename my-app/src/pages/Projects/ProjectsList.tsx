@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import "../../css/project.css";
 import { Fab, MenuItem, Menu } from "@mui/material";
 import { Card } from "../../components/Common/Card";
 import { Add, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useProject } from "./hooks/useProject";
+import { ProjectData } from "../../types/common";
 
 interface ProjectProps {}
 
@@ -19,11 +20,11 @@ export const ProjectsList = () => {
   }, []);
   return (
     <div className="project-container">
-      {projects?.map((item) => (
-        <>
+      {projects?.map((item: ProjectData, index: any) => (
+        <Fragment key={index}>
           <Card
             data={item}
-            key={item.id}
+            key={index}
             onClick={(e: any) => {
               let target = eTarget;
               setETarget((prev: any) => (prev === e.target ? null : e.target));
@@ -50,7 +51,7 @@ export const ProjectsList = () => {
               View Tasks
             </MenuItem>
           </Menu>
-        </>
+        </Fragment>
       ))}
       <Fab
         color="primary"

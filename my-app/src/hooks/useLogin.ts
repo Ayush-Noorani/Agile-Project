@@ -22,7 +22,7 @@ export const useLogin = () => {
         localStorage.setItem("token", res.data.token);
         dispatch(setUser(res.data));
         toast("Logged in", defaultValue);
-        navigate("/dashboard");
+        navigate("/home");
       })
       .catch((err) => {
         if (!err.response?.data?.message) {

@@ -49,7 +49,7 @@ export const Card = ({ data, onClick }: { data: any; onClick: Function }) => {
         }}
       >
         <label>
-          <WeightLabel weight={600}>Members:</WeightLabel> {data.members}
+          <WeightLabel weight={600}>Members:</WeightLabel> {data.members.length}
         </label>
         <label>
           <WeightLabel weight={600}>Total Tasks:</WeightLabel> {data.totalTasks}

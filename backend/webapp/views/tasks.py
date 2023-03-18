@@ -9,6 +9,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import requests
 import json
 from flask import send_file
+from webapp.helpers.notification import create_notification
 collection = db.tasks
 projects_col = db["projects"]
 tasks_col = db["tasks"]
@@ -43,7 +44,6 @@ def get_task_list(id):
                 "id": {"$toString": "$_id"},
                 "taskName": 1,
                 "description": 1,
-                "summary":1,
                 "status": 1,
                 "created_at": 1,
                 "updated_at": 1,
@@ -69,20 +69,23 @@ def get_task_list(id):
                 "id": 1,
                 "taskName": 1,
                 "description": 1,
-                "summary":1,
                 "status": 1,
                 "created_at": 1,
+                "summary": 1,
                 "updated_at": 1,
                 "due_date": 1,
                 "priority": 1,
-
                 "assigned_user.username": 1,
-                "reporter_user.username": 1
+                "assigned_user.color": 1,
+                "assigned_user.name": 1,
+                "reporter_user.color": 1,
+                "reporter_user.username": 1,
+                "reporter_user.name": 1
+
             }}
         ]
         results = list(db.tasks.aggregate(task_pipeline))
         tasks_dict[task_status] = results
-    print(tasks_dict)
     return tasks_dict, 200
 
 # save columns
@@ -93,24 +96,20 @@ def get_task_list(id):
 def create_task(projectId):
     data = request.form
     parsedData = {}
+    user_id = get_jwt_identity()
     for key in data.keys():
         parsedData[key] = data[key]
     parsedData.pop("id")
-
-    print(data)
-    print(parsedData)
-    
-    reportTo = parsedData["reportTo"].split(",")
-    assignedTo = parsedData["assignedTo"].split(",")
-    
-    parsedData["reportTo"] = [ObjectId(user)
-                              for user in reportTo]
-    parsedData["assignedTo"] = [ObjectId(user)
-                              for user in assignedTo]
+    parsedData["reportTo"] = [ObjectId(user['id'])
+                              for user in parsedData["reportTo"]]
+    parsedData["assignedTo"] = [ObjectId(user['id'])
+                                for user in parsedData["assignedTo"]]
     taskID = db.tasks.insert_one(parsedData).inserted_id
     db.projects.update_one({"_id": ObjectId(projectId)}, {
                            "$push": {"tasks."+data["status"]: taskID}})
-
+    ids = parsedData['reportTo']+parsedData['assignedTo']
+    create_notification(ids, 'assigned you a task in project ',
+                        3, user_id, ObjectId(taskID))
     return "hello world", 200
 # route for update
 
@@ -144,25 +143,19 @@ def get_task(id):
 @app.route("/task/update/<id>", methods=["PUT"])
 @jwt_required()
 def update_task(id):
-    # data = json.loads(request.form["data"])
+    print(request.get_json())
+    data = request.get_json()
+    user_id = get_jwt_identity()
+    data.pop("id")
+    data["reportTo"] = [ObjectId(user['id'])
+                        for user in data["reportTo"]]
+    data["assignedTo"] = [ObjectId(user['id'])
+                          for user in data["assignedTo"]]
+    db.tasks.update_one({"_id": ObjectId(id)}, {"$set": data})
+    ids = data['reportTo']+data['assignedTo']
 
-    data = request.form
-    parsedData = {}
-    for key in data.keys():
-        parsedData[key] = data[key]
-    parsedData.pop("id")
-
-    reportTo = parsedData["reportTo"].split(",")
-    assignedTo = parsedData["assignedTo"].split(",")
-    
-    parsedData["reportTo"] = [ObjectId(user)
-                              for user in reportTo]
-    parsedData["assignedTo"] = [ObjectId(user)
-                              for user in assignedTo]
-    
-    response=db.tasks.update_one({"_id": ObjectId(id)}, {"$set": parsedData})
-    print(response.modified_count)
-
+    create_notification(ids, 'has updated task information in project ',
+                        3, user_id, ObjectId(id))
     return {"status": "success"}
 
 # assign task to user
