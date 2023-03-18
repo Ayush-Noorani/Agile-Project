@@ -5,7 +5,6 @@ import { useTask } from "../hooks/useTask";
 
 export const TaskHeader = ({ id }: { id: string }) => {
   const { currentProject, setFilters, filters } = useTask(id);
-  console.log(currentProject);
   const onClick = (id: string) => {
     if (filters?.id && filters?.id.includes(id)) {
       setFilters({

@@ -71,10 +71,10 @@ def get_task_list(id):
                 "description": 1,
                 "status": 1,
                 "created_at": 1,
+                "summary": 1,
                 "updated_at": 1,
                 "due_date": 1,
                 "priority": 1,
-
                 "assigned_user.username": 1,
                 "assigned_user.color": 1,
                 "assigned_user.name": 1,
@@ -86,12 +86,13 @@ def get_task_list(id):
         ]
         results = list(db.tasks.aggregate(task_pipeline))
         tasks_dict[task_status] = results
+    print(tasks_dict)
     return tasks_dict, 200
 
 # save columns
 
 
-@app.route("/task/create/<projectId>", methods=["PUT"])
+@app.route("/task/create/<projectId>", methods=["POST"])
 @jwt_required()
 def create_task(projectId):
     data = request.form

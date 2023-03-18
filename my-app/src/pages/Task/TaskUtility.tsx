@@ -12,6 +12,8 @@ import {
   CardContent,
   Chip,
   Paper,
+  Checkbox,
+  ListItemText,
 } from "@mui/material";
 import { Typography } from "@mui/material";
 import { FileUpload } from "@mui/icons-material";
@@ -20,21 +22,9 @@ import { useParams } from "react-router";
 import { axiosInstance } from "../../helper/axios";
 import { useTask } from "./hooks/useTask";
 import { useCommon } from "../../hooks/useCommon";
-import { Priority } from "../../types/common";
+import { Member, Priority } from "../../types/common";
 import { TaskPriorityIcon } from "../../components/Common/Priority";
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
 type PriorityOptionsType = {
   taskType: string;
   value: Priority;
@@ -62,23 +52,23 @@ const PriorityOptions: PriorityOptionsType[] = [
     icon: <TaskPriorityIcon priority="minor" />,
   },
 ];
-const CreateTaskView = ({ taskId }: { taskId?: string }) => {
-  const { id } = useParams();
+const TaskUtility = ({ taskId }: { taskId?: string }) => {
+  const { id: ProjectId } = useParams();
   const { members, searchUser } = useCommon();
   const {
     getTasks,
-    currentProject,
     handleDeleteForAdditionalFiles,
     handleFormDataUpdate,
     submitFormData,
     getExistingTaskData,
-    updateData,
     formData,
-  } = useTask(id);
+  } = useTask(ProjectId);
+
   useEffect(() => {
     getTasks(taskId);
   }, []);
-  console.log(formData);
+
+  console.log("TaskUtility", formData);
 
   return (
     <Stack mx="10px" spacing={2} width="550px">
@@ -87,6 +77,7 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
         label="Task Name"
         variant="filled"
         size="small"
+        value={formData.taskName}
         InputProps={{ disableUnderline: true }}
         InputLabelProps={{ shrink: true }}
         sx={{ width: "350px" }}
@@ -101,6 +92,7 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
         size="small"
         InputLabelProps={{ shrink: true }}
         InputProps={{ disableUnderline: true }}
+        value={formData.summary}
         sx={{ width: "350px" }}
         multiline
         onChange={(e) => {
@@ -116,30 +108,26 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
         InputProps={{ disableUnderline: true }}
         InputLabelProps={{ shrink: true }}
         select
-        SelectProps={{ multiple: true }}
+        SelectProps={{
+          multiple: true,
+          renderValue: (selected: any) =>
+            members
+              .filter((member) => selected.indexOf(member.id) > -1)
+              .map((member) => member.username)
+              .join(", "),
+        }}
         value={formData.assignedTo}
         sx={{ width: "350px" }}
         onChange={(e: any) => {
-          console.log(e.target.value);
-          handleFormDataUpdate(
-            "assignedTo",
-            e.target.value.map((item: any) =>
-              currentProject?.members.find((value) => value.id === item)
-            )
-          );
+          handleFormDataUpdate("assignedTo", e.target.value);
         }}
       >
-        {currentProject?.members
-          .filter(
-            (value) =>
-              formData.assignedTo.find((item) => item.id == value.id) ===
-              undefined
-          )
-          .map((value, index) => (
-            <MenuItem key={index} value={value.id}>
-              {value.username}
-            </MenuItem>
-          ))}
+        {members.map((value, index) => (
+          <MenuItem key={index} value={value.id}>
+            <Checkbox checked={formData.assignedTo.indexOf(value.id) > -1} />
+            <ListItemText primary={value.username} />
+          </MenuItem>
+        ))}
       </TextField>
 
       <TextField
@@ -150,29 +138,26 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
         InputProps={{ disableUnderline: true }}
         InputLabelProps={{ shrink: true }}
         select
-        SelectProps={{ multiple: true }}
+        SelectProps={{
+          multiple: true,
+          renderValue: (selected: any) =>
+            members
+              .filter((member) => selected.indexOf(member.id) > -1)
+              .map((member) => member.username)
+              .join(", "),
+        }}
         sx={{ width: "350px" }}
         value={formData.reportTo}
         onChange={(e: any) => {
-          handleFormDataUpdate(
-            "reportTo",
-            e.target.value.map((item: any) =>
-              currentProject?.members.find((value) => value.id === item)
-            )
-          );
+          handleFormDataUpdate("reportTo", e.target.value);
         }}
       >
-        {currentProject?.members
-          .filter(
-            (value) =>
-              formData.reportTo.find((item) => item.id === value.id) ===
-              undefined
-          )
-          .map((value, index) => (
-            <MenuItem key={index} value={value.id}>
-              {value.username}
-            </MenuItem>
-          ))}
+        {members.map((value, index) => (
+          <MenuItem key={index} value={value.id}>
+            <Checkbox checked={formData.reportTo.indexOf(value.id) > -1} />
+            <ListItemText primary={value.username} />
+          </MenuItem>
+        ))}
       </TextField>
       <TextField
         id="standard-basic"
@@ -215,12 +200,11 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
         value={formData.status}
         placeholder="Select a Status"
         onChange={(e) => {
-          console.log(e.target.value);
           handleFormDataUpdate("status", e.target.value);
         }}
       >
         <MenuItem value="toDo">To Do</MenuItem>
-        <MenuItem value="inProgres">In Progress</MenuItem>
+        <MenuItem value="inProgress">In Progress</MenuItem>
       </TextField>
       {/* need to find MUI them colors or soemthing here. For now this is the closest to natching the filled text input */}
       <Paper
@@ -240,7 +224,6 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
             ],
           }}
           onChange={(e: any) => {
-            // console.log("quil update", e);
             handleFormDataUpdate("description", e);
           }}
         />
@@ -293,11 +276,7 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
         </Button>
       </Paper>
       <Stack direction="row" justifyContent="flex-end">
-        <Button
-          variant="text"
-          sx={{ width: "100px" }}
-          onClick={taskId ? updateData : submitFormData}
-        >
+        <Button variant="text" sx={{ width: "100px" }} onClick={submitFormData}>
           Submit
         </Button>
       </Stack>
@@ -305,4 +284,4 @@ const CreateTaskView = ({ taskId }: { taskId?: string }) => {
   );
 };
 
-export { CreateTaskView };
+export { TaskUtility };

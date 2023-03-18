@@ -14,7 +14,7 @@ import { Create, Info } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import { useTask } from "./hooks/useTask";
 import { useParams } from "react-router-dom";
-import { CreateTaskView } from "./CreateTaskView";
+import { TaskUtility } from "./TaskUtilityForm";
 import { ColumnForm } from "./components/ColumnForm";
 import { TaskHeader } from "./components/TaskHeader";
 
@@ -29,7 +29,14 @@ export const TaskList = ({}: TaskProps) => {
     name: string;
     onClick?: Function;
   }[] = [
-    { icon: <Create />, name: "Create Task", onClick: () => setOpen(true) },
+    {
+      icon: <Create />,
+      name: "Create Task",
+      onClick: () => {
+        setOpen(true);
+        setSelectedTaskId(undefined);
+      },
+    },
     { icon: <Info />, name: "Project Details", onClick: () => setOpen(true) },
 
     { icon: <Info />, name: "Add Column", onClick: () => setOpenColumn(true) },
@@ -46,12 +53,14 @@ export const TaskList = ({}: TaskProps) => {
     columns,
     filters,
   } = useTask(id);
-  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>(
+    undefined
+  );
   useEffect(() => {
     getTasks();
   }, []);
   const getExistingTask = (id: string) => {
-    setSelectedId(id);
+    setSelectedTaskId(id);
     setOpen(true);
   };
   console.log(tasks);
@@ -64,11 +73,11 @@ export const TaskList = ({}: TaskProps) => {
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
         <DialogTitle>
           <Typography fontSize={30} fontWeight={"bold"}>
-            Create Task
+            {selectedTaskId ? "Update Task" : "Create Task"}
           </Typography>
         </DialogTitle>
         <DialogContent>
-          <CreateTaskView taskId={selectedId} />
+          <TaskUtility taskId={selectedTaskId} />
         </DialogContent>
         {/* <DialogActions>
           <Button onClick={() => setOpen(false)}>Close</Button>
