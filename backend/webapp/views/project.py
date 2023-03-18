@@ -40,6 +40,7 @@ def get_project_list():
                 'title': 1,
                 'description': 1,
                 'img': 1,
+                'name': 1,
                 'columns': 1,
                 'created_at': 1,
                 'members._id': 1,

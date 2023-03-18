@@ -73,11 +73,13 @@ export type Tasks = {
   id: string;
   title: string;
   description: string;
-  status: keyof typeof columnTitle;
+  status: string;
   assignee: Member[];
   reportTo: Member[];
   dueDate: Date;
   priority: Priority;
+  section?: string;
+  plan?: string;
 };
 
 export type Notification = {
