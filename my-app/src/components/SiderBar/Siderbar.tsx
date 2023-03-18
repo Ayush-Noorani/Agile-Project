@@ -6,6 +6,7 @@ import { Item } from "./Item";
 import { items } from "./Routes";
 import { NavBar } from "../NavBar/NavBar";
 import { useUser } from "../../hooks/useUser";
+import { useCommon } from "../../hooks/useCommon";
 interface SideBarProps {
   children: React.ReactNode | React.ReactNode[];
 }
@@ -13,8 +14,12 @@ interface SideBarProps {
 export const SideBar = ({ children }: SideBarProps) => {
   let token = localStorage.getItem("token");
   const { user } = useUser();
+  const { navigate } = useCommon();
   const [open, setOpen] = React.useState(false);
-
+  const handleRedirect = (path: string) => {
+    setOpen(false);
+    navigate(path);
+  };
   if (!token) {
     return <>{children}</>;
   }
@@ -50,6 +55,7 @@ export const SideBar = ({ children }: SideBarProps) => {
                 <Item
                   icon={value.icon}
                   label={value.label}
+                  handleRedirect={handleRedirect}
                   path={value.path}
                   role={"admin"}
                 />
