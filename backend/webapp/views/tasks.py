@@ -14,6 +14,72 @@ collection = db.tasks
 projects_col = db["projects"]
 tasks_col = db["tasks"]
 
+task_pipeline = [
+    {"$match": {}},
+    {"$lookup": {
+        "from": "user_details",
+                "localField": "assignedTo",
+                "foreignField": "_id",
+                "as": "assigned_user"
+    }},
+    {"$lookup": {
+        "from": "user_details",
+                "localField": "reportTo",
+                "foreignField": "_id",
+                "as": "reporter_user"
+    }},
+    {"$project": {
+        "_id": 0,
+        "id": {"$toString": "$_id"},
+        "taskName": 1,
+        "description": 1,
+        'summary': 1,
+        "status": 1,
+        "created_at": 1,
+        "updated_at": 1,
+        'plan': 1,
+
+        "priority": 1,
+        'section': 1,
+        "due_date": 1,
+        "assigned_user_id": {"$arrayElemAt": ["$assigned_user._id", 0]},
+        "reporter_user_id": {"$arrayElemAt": ["$reporter_user._id", 0]},
+    }},
+    {"$lookup": {
+        "from": "user_details",
+                "localField": "assigned_user_id",
+                "foreignField": "_id",
+                "as": "assigned_user"
+    }},
+    {"$lookup": {
+        "from": "user_details",
+                "localField": "reporter_user_id",
+                "foreignField": "_id",
+                "as": "reporter_user"
+    }},
+    {"$project": {
+        "_id": 0,
+        "id": 1,
+        "taskName": 1,
+        "description": 1,
+        "status": 1,
+        "created_at": 1,
+        "summary": 1,
+        'plan': 1,
+        "updated_at": 1,
+        "due_date": 1,
+        "section": 1,
+        "priority": 1,
+        "assigned_user.username": 1,
+        "assigned_user.color": 1,
+        "assigned_user.name": 1,
+        "reporter_user.color": 1,
+        "reporter_user.username": 1,
+        "reporter_user.name": 1
+
+    }}
+]
+
 
 @app.route("/task/list/<id>", methods=["GET"])
 def get_task_list(id):
@@ -24,71 +90,42 @@ def get_task_list(id):
     tasks_dict = {}
 
     for task_status in project["tasks"].keys():
+        task_pipeline[0]['$match'] = {
+            "_id": {"$in":  project["tasks"][task_status]}}
 
-        task_pipeline = [
-            {"$match": {"_id": {"$in": project["tasks"][task_status]}}},
-            {"$lookup": {
-                "from": "user_details",
-                "localField": "assignedTo",
-                "foreignField": "_id",
-                "as": "assigned_user"
-            }},
-            {"$lookup": {
-                "from": "user_details",
-                "localField": "reportTo",
-                "foreignField": "_id",
-                "as": "reporter_user"
-            }},
-            {"$project": {
-                "_id": 0,
-                "id": {"$toString": "$_id"},
-                "taskName": 1,
-                "description": 1,
-                "status": 1,
-                "created_at": 1,
-                "updated_at": 1,
-                "priority": 1,
-                "due_date": 1,
-                "assigned_user_id": {"$arrayElemAt": ["$assigned_user._id", 0]},
-                "reporter_user_id": {"$arrayElemAt": ["$reporter_user._id", 0]},
-            }},
-            {"$lookup": {
-                "from": "user_details",
-                "localField": "assigned_user_id",
-                "foreignField": "_id",
-                "as": "assigned_user"
-            }},
-            {"$lookup": {
-                "from": "user_details",
-                "localField": "reporter_user_id",
-                "foreignField": "_id",
-                "as": "reporter_user"
-            }},
-            {"$project": {
-                "_id": 0,
-                "id": 1,
-                "taskName": 1,
-                "description": 1,
-                "status": 1,
-                "created_at": 1,
-                "summary": 1,
-                "updated_at": 1,
-                "due_date": 1,
-                "priority": 1,
-                "assigned_user.username": 1,
-                "assigned_user.color": 1,
-                "assigned_user.name": 1,
-                "reporter_user.color": 1,
-                "reporter_user.username": 1,
-                "reporter_user.name": 1
-
-            }}
-        ]
         results = list(db.tasks.aggregate(task_pipeline))
+        for i in results:
+            i['assignee'] = i['assigned_user']
+            i['reportTo'] = i['reporter_user']
+            i.pop('assigned_user')
+            i.pop('reporter_user')
+            if i['plan'] != 'backLog':
+                i['plan'] = str(i['plan'])
         tasks_dict[task_status] = results
     return tasks_dict, 200
 
 # save columns
+
+
+@app.route("/task/backlog/create/<projectId>", methods=["POST"])
+@jwt_required()
+def create_task_backlog(projectId):
+    data = request.form
+    parsedData = {}
+    user_id = get_jwt_identity()
+    for key in data.keys():
+        parsedData[key] = data[key]
+    parsedData.pop("id")
+    parsedData['plan'] = 'backLog'
+    parsedData["reportTo"] = [ObjectId(user['id'])
+                              for user in parsedData["reportTo"]]
+    parsedData["assignedTo"] = [ObjectId(user['id'])
+                                for user in parsedData["assignedTo"]]
+    taskID = db.tasks.insert_one(parsedData).inserted_id
+    db.projects.update_one({"_id": ObjectId(projectId)}, {
+                           "$push": {"tasks."+data["status"]: taskID}})
+
+    return {}, 200
 
 
 @app.route("/task/create/<projectId>", methods=["POST"])
@@ -100,6 +137,7 @@ def create_task(projectId):
     for key in data.keys():
         parsedData[key] = data[key]
     parsedData.pop("id")
+    parsedData['section'] = ObjectId(projectId)
     parsedData["reportTo"] = [ObjectId(user['id'])
                               for user in parsedData["reportTo"]]
     parsedData["assignedTo"] = [ObjectId(user['id'])
@@ -110,7 +148,7 @@ def create_task(projectId):
     ids = parsedData['reportTo']+parsedData['assignedTo']
     create_notification(ids, 'assigned you a task in project ',
                         3, user_id, ObjectId(taskID))
-    return "hello world", 200
+    return {}, 200
 # route for update
 
 
@@ -183,3 +221,33 @@ def unassign_task():
     return {"status": "success", "id": str(id)}
 
 # Path: backend\webapp\views\user.py
+
+
+@app.route('/task/all', methods=['GET'])
+@jwt_required()
+def list_tasks():
+    if '$match' in task_pipeline[0].keys():
+        # task_pipeline[0]['$match'] = {
+        #     'section': 'backlog'
+        # }
+        task_pipeline.pop(0)
+    results = list(db.tasks.aggregate(task_pipeline))
+    for i in results:
+        i['assignee'] = i['assigned_user']
+        i['reportTo'] = i['reporter_user']
+        i.pop('assigned_user')
+        i.pop('reporter_user')
+        if i['plan'] != 'backLog':
+            i['plan'] = str(i['plan'])
+    return {'data': results}, 200
+
+
+@app.route('/task/move', methods=['POST'])
+@jwt_required()
+def tasks_move():
+    data = request.get_json()
+    if (data['plan'] != 'backLog'):
+        data['plan'] = ObjectId(data['plan'])
+    collection.update_one({'_id': ObjectId(data['taskId'])}, {
+        '$set': {'plan': data['plan']}})
+    return {'status': 'success'}, 200
