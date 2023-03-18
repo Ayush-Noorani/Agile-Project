@@ -16,8 +16,8 @@ type Task = {
   description: string;
   summary: string;
   taskName: string;
-  assignedTo: Member[];
-  reportTo: Member[];
+  assignedTo: String[];
+  reportTo: String[];
   additionalFiles?: File[];
   status: "toDo" | "inProgres";
   priority: Priority;
@@ -35,7 +35,7 @@ export const useTask = (projectId?: string) => {
   const currentProject = projects.find((project) => project.id === projectId);
   const columns: Columntype[] | [] = currentProject?.columns || [];
   const [formData, setFormData] = useState<Task>({
-    id: "",
+    id: undefined,
     description: "",
     summary: "",
     taskName: "",
@@ -58,8 +58,7 @@ export const useTask = (projectId?: string) => {
 
   const handleFormDataUpdate = (
     key: keyof Task,
-    value: any,
-    indexForArray?: number
+    value: any
   ) => {
     setFormData((prev) => {
       switch (key) {
@@ -117,15 +116,17 @@ export const useTask = (projectId?: string) => {
       });
   };
 
-  const getTasks = (id?: string) => {
+  const getTasks = (TaskId?: string) => {
     axiosInstance
       .get("/task/list/" + projectId)
       .then((res) => {
         setTasks(res.data);
-        if (id) {
+        if (TaskId) {
+          console.log(tasks)
           const value: Task = Object.values(res.data)
             .flatMap((value) => value)
-            .find((task: any) => task.id === id) as unknown as Task;
+            .find((task: any) => task.id === TaskId) as unknown as Task;
+            console.log(value)
           setFormData({
             id: value.id,
             description: value.description,
@@ -138,13 +139,14 @@ export const useTask = (projectId?: string) => {
             priority: value.priority,
           });
         }
+ 
       })
       .catch((err) => {
         console.log(err);
       });
   };
   const getExistingTaskData = (id: string) => {
-    console.log(Object.values(tasks).flatMap((value) => value));
+    // console.log(Object.values(tasks).flatMap((value) => value));
     setValue(
       Object.values(tasks)
         .flatMap((value) => value)
@@ -152,9 +154,10 @@ export const useTask = (projectId?: string) => {
     );
   };
 
-  const updateData = () => {
+  const updateData = (data:FormData) => {
+    console.log("this is", data)
     axiosInstance
-      .put(`/task/update/${formData.id}`, formData)
+      .put(`/task/update/${formData.id}`, data)
       .then((res) => {
         console.log(res);
       })
@@ -162,22 +165,26 @@ export const useTask = (projectId?: string) => {
         console.log(err);
       });
   };
-  const submitFormData = () => {
+
+const createData = (data: FormData)  => {
+  console.log("creating task")
+  axiosInstance
+  .post(`/task/create/${projectId}`, data)
+  .then(() => {
+    console.log("sent data");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+}
+
+  const submitFormData = () => { 
     const submitData: any = new FormData();
     for (var key in formData) {
       submitData.append(key, formData[key as keyof Task]);
     }
-
     // submitData.append("data", JSON.stringify(formData));
-
-    axiosInstance
-      .post(`/task/create/` + projectId, submitData)
-      .then(() => {
-        console.log("sent data");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    formData.id ? updateData(submitData) : createData(submitData)
   };
 
   const updateSequence = (tasks: any) => {
@@ -211,7 +218,6 @@ export const useTask = (projectId?: string) => {
     getExistingTaskData,
     submitFormData,
     handleDeleteForAdditionalFiles,
-    handleFormDataUpdate,
-    updateData,
+    handleFormDataUpdate
   };
 };
