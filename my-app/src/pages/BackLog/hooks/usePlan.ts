@@ -1,10 +1,11 @@
 import { axiosInstance } from "../../../helper/axios";
 
 export const usePlan = () => {
-  const updatePlanStatus = (id: string, status: Number) => {
+  const updatePlanStatus = (data: any, status: Number) => {
     axiosInstance
       .post("/plan/status/" + status, {
-        id,
+        id: data.id,
+        projectId: data.project,
       })
       .then((res) => {
         console.log(res.data);

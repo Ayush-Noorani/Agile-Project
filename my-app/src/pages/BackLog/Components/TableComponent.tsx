@@ -1,4 +1,4 @@
-import { Tasks } from "../types/common";
+import { Tasks } from "../../../types/common";
 import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -13,7 +13,7 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import { MenuComponent } from "./MenuComponent";
+import { MenuComponent } from "../../../components/MenuComponent";
 
 interface TableProps {
   tasks: Tasks[];
@@ -59,7 +59,6 @@ export const TableComponent = ({
           <TableRow>
             <TableCell>ID</TableCell>
             <TableCell>Title</TableCell>
-            <TableCell>Status</TableCell>
             <TableCell>Assignee</TableCell>
             <TableCell>Report To</TableCell>
             <TableCell>Priority</TableCell>
@@ -76,8 +75,7 @@ export const TableComponent = ({
             .map((task) => (
               <TableRow key={task.id}>
                 <TableCell>{task.id}</TableCell>
-                <TableCell>{task.title}</TableCell>
-                <TableCell>{task.status}</TableCell>
+                <TableCell>{task.taskName}</TableCell>
                 <TableCell>{task.assignee.length}</TableCell>
                 <TableCell>{task.reportTo.length}</TableCell>
                 <TableCell>{task.priority}</TableCell>
@@ -92,7 +90,7 @@ export const TableComponent = ({
                 <TableCell>
                   {/* added a new button to open the menu */}
                   <Button onClick={(event) => handleMenuOpen(event, task)}>
-                    Actions
+                    Move to plan
                   </Button>
                 </TableCell>
               </TableRow>

@@ -30,7 +30,6 @@ def user_info():
     data = collection.find_one({'_id': ObjectId(id)}, {
         "_id": 0, 'email': 1, 'username': 1, 'roles': 1, '_id': 1, 'color': 1})
     data.pop("_id")
-    print(data)
     return data, 200
 
 
@@ -39,9 +38,9 @@ def login():
     data = request.get_json()
     name = data['name']
     password = data['password']
-    print(name, password)
     record = collection.find_one(
         {"email" if '@' in name else 'username': name}, {"_id": 1, "password": 1, 'email': 1, 'username': 1, 'roles': 1, '_id': 1, 'color': 1})
+    print("data")
 
     if (record and bcrypt.check_password_hash(record['password'], password)):
         return {"data": "User found - Login successful", "token": generateToken(str(record['_id'])), 'username': record['username'], 'email': record['email'], 'roles': record['roles'], 'id': str(record['_id'])}, 200

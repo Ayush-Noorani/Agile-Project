@@ -15,19 +15,20 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { useBackLog } from "./hooks/useBackLog";
 import { onChange } from "../../utils/Common";
 import project from "../../store/reducers/project";
 import { useProject } from "../Projects/hooks/useProject";
+import { usePlan } from "./hooks/usePlan";
 
-interface BackLogUtilityProps {
+interface PlanUtilityProps {
   setOpen: (open: boolean) => void;
   open: boolean;
 }
 
-export const BackLogUtility = ({ setOpen, open }: BackLogUtilityProps) => {
-  const { form, setForm, createPlan } = useBackLog();
+export const PlanUtility = ({ setOpen, open }: PlanUtilityProps) => {
+  const { form, setForm, createPlan } = usePlan();
   const { projects, fetchAllProjects } = useProject();
+
   useEffect(() => {
     fetchAllProjects();
   }, []);

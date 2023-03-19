@@ -90,8 +90,74 @@ def get_task_list(id):
     tasks_dict = {}
 
     for task_status in project["tasks"].keys():
-        task_pipeline[0]['$match'] = {
-            "_id": {"$in":  project["tasks"][task_status]}}
+        task_pipeline = [
+            {"$match": {
+                "_id": {"$in":  project["tasks"][task_status]}}},
+            {"$lookup": {
+                "from": "user_details",
+                "localField": "assignedTo",
+                "foreignField": "_id",
+                "as": "assigned_user"
+            }},
+            {"$lookup": {
+                "from": "user_details",
+                "localField": "reportTo",
+                "foreignField": "_id",
+                "as": "reporter_user"
+            }},
+            {"$project": {
+                "_id": 0,
+                "id": {"$toString": "$_id"},
+                "taskName": 1,
+                "description": 1,
+                'summary': 1,
+                "status": 1,
+                "created_at": 1,
+                "updated_at": 1,
+                'plan': 1,
+                "project": 1,
+
+                "priority": 1,
+                'section': 1,
+                "due_date": 1,
+                "assigned_user_id": {"$arrayElemAt": ["$assigned_user._id", 0]},
+                "reporter_user_id": {"$arrayElemAt": ["$reporter_user._id", 0]},
+            }},
+            {"$lookup": {
+                "from": "user_details",
+                "localField": "assigned_user_id",
+                "foreignField": "_id",
+                "as": "assigned_user"
+            }},
+            {"$lookup": {
+                "from": "user_details",
+                "localField": "reporter_user_id",
+                "foreignField": "_id",
+                "as": "reporter_user"
+            }},
+            {"$project": {
+                "_id": 0,
+                "id": 1,
+                "taskName": 1,
+                "description": 1,
+                "status": 1,
+                "created_at": 1,
+                "project": 1,
+                "summary": 1,
+                'plan': 1,
+                "updated_at": 1,
+                "due_date": 1,
+                "section": 1,
+                "priority": 1,
+                "assigned_user.username": 1,
+                "assigned_user.color": 1,
+                "assigned_user.name": 1,
+                "reporter_user.color": 1,
+                "reporter_user.username": 1,
+                "reporter_user.name": 1
+
+            }}
+        ]
 
         results = list(db.tasks.aggregate(task_pipeline))
         for i in results:
@@ -181,7 +247,6 @@ def get_task(id):
 @app.route("/task/update/<id>", methods=["PUT"])
 @jwt_required()
 def update_task(id):
-    print(request.get_json())
     data = request.get_json()
     user_id = get_jwt_identity()
     data.pop("id")
@@ -203,7 +268,6 @@ def update_task(id):
 @ jwt_required()
 def assign_task():
     data = json.loads(request.form["data"])
-    print(data)
     id = db.tasks.update_one({"_id": ObjectId(data['task_id'])}, {
         "$set": {"assigned_to": data['user_id']}})
     return {"status": "success", "id": str(id)}
@@ -215,7 +279,6 @@ def assign_task():
 @ jwt_required()
 def unassign_task():
     data = json.loads(request.form["data"])
-    print(data)
     id = db.tasks.update_one({"_id": ObjectId(data['task_id'])}, {
         "$set": {"assigned_to": None}})
     return {"status": "success", "id": str(id)}
@@ -226,11 +289,74 @@ def unassign_task():
 @app.route('/task/all', methods=['GET'])
 @jwt_required()
 def list_tasks():
-    if '$match' in task_pipeline[0].keys():
-        # task_pipeline[0]['$match'] = {
-        #     'section': 'backlog'
-        # }
-        task_pipeline.pop(0)
+    task_pipeline = [
+
+        {"$lookup": {
+            "from": "user_details",
+            "localField": "assignedTo",
+            "foreignField": "_id",
+            "as": "assigned_user"
+        }},
+        {"$lookup": {
+            "from": "user_details",
+            "localField": "reportTo",
+            "foreignField": "_id",
+            "as": "reporter_user"
+        }},
+        {"$project": {
+            "_id": 0,
+            "id": {"$toString": "$_id"},
+            "taskName": 1,
+            "description": 1,
+            'summary': 1,
+            "status": 1,
+            "created_at": 1,
+            "updated_at": 1,
+            'plan': 1,
+            "project": 1,
+
+            "priority": 1,
+            'section': 1,
+            "due_date": 1,
+            "assigned_user_id": {"$arrayElemAt": ["$assigned_user._id", 0]},
+            "reporter_user_id": {"$arrayElemAt": ["$reporter_user._id", 0]},
+        }},
+        {"$lookup": {
+            "from": "user_details",
+            "localField": "assigned_user_id",
+            "foreignField": "_id",
+            "as": "assigned_user"
+        }},
+        {"$lookup": {
+            "from": "user_details",
+            "localField": "reporter_user_id",
+            "foreignField": "_id",
+            "as": "reporter_user"
+        }},
+        {"$project": {
+            "_id": 0,
+            "id": 1,
+            "taskName": 1,
+            "description": 1,
+            "project": 1,
+
+            "status": 1,
+            "created_at": 1,
+            "summary": 1,
+            'plan': 1,
+            "updated_at": 1,
+            "due_date": 1,
+            "section": 1,
+            "priority": 1,
+            "assigned_user.username": 1,
+            "assigned_user.color": 1,
+            "assigned_user.name": 1,
+            "reporter_user.color": 1,
+            "reporter_user.username": 1,
+            "reporter_user.name": 1
+
+        }}
+    ]
     results = list(db.tasks.aggregate(task_pipeline))
     for i in results:
         i['assignee'] = i['assigned_user']

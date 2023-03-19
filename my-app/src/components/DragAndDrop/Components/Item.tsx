@@ -53,8 +53,8 @@ export const Item = ({ ...props }: any) => (
           }}
         >
           <Box>
-            {props.task.assigned_user.length > 0 &&
-              props.task.assigned_user.map((assigned: Member) => (
+            {props.task.assignee.length > 0 &&
+              props.task.assignee.map((assigned: Member) => (
                 <TypoGraphyImage
                   name={assigned.name}
                   color={assigned.color}

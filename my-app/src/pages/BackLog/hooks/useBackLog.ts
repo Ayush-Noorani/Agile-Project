@@ -5,18 +5,18 @@ import { axiosInstance } from "../../../helper/axios";
 import { setTask } from "../../../store/reducers/tasks";
 import { RootState } from "../../../store/store";
 import { Tasks } from "../../../types/common";
-
+export type Plan = {
+  startDate: Date;
+  endDate: Date;
+  planName: string;
+  project: string;
+};
 export const useBackLog = () => {
   const taskStore = useSelector((state: RootState) => state.tasks);
 
   const dispatch = useDispatch();
   const [tasks, setTasks] = useState<Tasks[]>(taskStore);
-  const [form, setForm] = useState<{
-    startDate: Date;
-    endDate: Date;
-    planName: string;
-    project: string;
-  }>({
+  const [form, setForm] = useState<Plan>({
     startDate: new Date(),
     endDate: new Date(),
     planName: "",
@@ -24,7 +24,6 @@ export const useBackLog = () => {
   });
   const [plans, setPlans] = useState<any[]>([]);
   useEffect(() => {
-    console.log("HERe----");
     getALlTasks();
     getPlans();
   }, []);
@@ -33,7 +32,6 @@ export const useBackLog = () => {
     axiosInstance
       .get("/task/all")
       .then((res) => {
-        console.log(res.data);
         dispatch(setTask(res.data.data));
         setTasks(res.data.data);
       })
@@ -73,7 +71,6 @@ export const useBackLog = () => {
         plan: id,
       })
       .then((res) => {
-        console.log(res.data);
         getALlTasks();
       })
       .catch((err) => {
@@ -81,13 +78,13 @@ export const useBackLog = () => {
       });
   };
 
-  const updatePlanStatus = (id: string, status: Number) => {
+  const updatePlanStatus = (data: any, status: any) => {
     axiosInstance
-      .post("/plans/status/" + status, {
-        id,
+      .post("/plan/status/" + status, {
+        id: data.id,
+        projectId: data.project,
       })
       .then((res) => {
-        console.log(res.data);
         getPlans();
       })
 

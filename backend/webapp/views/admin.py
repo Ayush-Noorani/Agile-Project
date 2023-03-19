@@ -16,7 +16,6 @@ def get_users():
     for user in users:
         user['id'] = str(user['_id'])
         user.pop("_id")
-    print(users)
     return {'users': users}, 200
 
 
