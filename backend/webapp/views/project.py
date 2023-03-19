@@ -54,7 +54,6 @@ def get_project_list():
         }
     ]
     projects = list(db.projects.aggregate(pipeline))
-    print(projects)
     for project in projects:
 
         project["id"] = str(project["_id"])
@@ -70,7 +69,6 @@ def get_project_list():
 @jwt_required()
 def save_columns(id):
     data = request.get_json()
-    print(data)
     current_project = db.projects.find_one(
         {"_id": ObjectId(id)}, {'columns': 1, 'tasks': 1})
     missing_elements = [x for x in data['columns']
@@ -88,7 +86,6 @@ def save_columns(id):
 @jwt_required()
 def create_project():
     data = json.loads(request.form["data"])
-    print(data)
 
     data['created_by'] = ObjectId(get_jwt_identity())
     img = request.files['img']
@@ -145,14 +142,12 @@ def delete_project(id):
 
 @app.route("/image/<path>/<id>", methods=["GET"])
 def get_image(path, id):
-    print(app.config["UPLOAD_FOLDER"]+"\\"+path+"\\"+id)
     return send_file(app.config["UPLOAD_FOLDER"]+"\\"+path+"\\"+id, mimetype='image/gif')
 
 
 @app.route("/project/members/<id>", methods=["GET"])
 @jwt_required()
 def get_project_members(id):
-    print(id)
     pipeline = [
         {"$match": {"_id": ObjectId(id)}},
         {'$project': {'members': 1, '_id': 0}},
@@ -179,7 +174,6 @@ def search_project_members(text):
     roles = ['user', 'lead', 'developer', 'tester', 'admin']
     members = []
     if (text == "*"):
-        print("in")
         members = list(db.user_details.find({"roles": {"$in": roles}},  {
             '_id': 1, "username": 1, "roles": 1, "img": 1, 'members.color': 1, 'members.name': 1}))
     else:
@@ -195,7 +189,6 @@ def search_project_members(text):
 @ app.route("/project/get/<id>", methods=["GET"])
 @ jwt_required()
 def get_project(id):
-    print(id)
     project = db.projects.find_one({"_id": ObjectId(id)})
     pipeline = [
         {'$match': {'_id': ObjectId(id)}},
@@ -231,7 +224,6 @@ def get_project(id):
         member.pop("_id")
     project['created_by'] = str(project['created_by'])
 
-    print(project)
     return {"project": project}
 
 
@@ -247,7 +239,6 @@ def update_project(id):
                  str(id)+"."+"png")
     elif data['img'] == False:
         data['img'] = False
-    print(data)
     data['members'] = [ObjectId(member) for member in data['members']]
     data.pop("id")
     db.projects.update_one({"_id": ObjectId(id)}, {"$set": data})

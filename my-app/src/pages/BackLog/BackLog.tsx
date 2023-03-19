@@ -30,15 +30,15 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Tasks } from "../../types/common";
-import { TableComponent } from "../../components/TableComponent";
+import { TableComponent } from "./Components/TableComponent";
 import { Create } from "@mui/icons-material";
-import { BackLogUtility } from "./BackLogUtility";
 import { CustomTable } from "./Components/CustomTable";
+import { PlanUtility } from "../Plan/PlanUtility";
 export const BackLog = () => {
   const { tasks, setTasks, getALlTasks, plans, moveToPlan } = useBackLog();
   useEffect(() => {
-    console.log(tasks);
-  }, [tasks]);
+    console.log(plans);
+  }, [plans]);
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Tasks | null>(null); // state for the task currently selected in the menu
   const actions: {
@@ -79,32 +79,48 @@ export const BackLog = () => {
           />
         )}
       </Box>
-      <BackLogUtility open={open} setOpen={setOpen} />
-      {plans.map((value, key) => (
-        <CustomTable
-          handleMoveToPlan={handleMoveToPlan}
-          value={value}
-          setSelectedTask={setSelectedTask}
-          menuOptions={
-            plans.length > 0
-              ? [
-                  ...plans.filter((item) => item.id !== value.id),
-                  {
-                    id: "backLog",
-                    name: "Back Log",
-                  },
-                ].map((value: any) => (
-                  <MenuItem onClick={() => handleMoveToPlan(value.id)}>
-                    {value.name}
-                  </MenuItem>
-                ))
-              : [<MenuItem>No plans found</MenuItem>]
-          }
-          filter={value.id}
-          plans={plans}
-          tasks={tasks}
-        />
-      ))}
+      <PlanUtility open={open} setOpen={setOpen} />
+      <Box
+        className="box"
+        style={{
+          height: "60%",
+        }}
+      >
+        <InputLabel>Existing Plans</InputLabel>
+
+        <Box
+          style={{
+            height: "90%",
+            overflow: "auto",
+          }}
+        >
+          {plans.map((value, key) => (
+            <CustomTable
+              handleMoveToPlan={handleMoveToPlan}
+              value={value}
+              setSelectedTask={setSelectedTask}
+              menuOptions={
+                plans.length > 0
+                  ? [
+                      ...plans.filter((item) => item.id !== value.id),
+                      {
+                        id: "backLog",
+                        planName: "Back Log",
+                      },
+                    ].map((value: any) => (
+                      <MenuItem onClick={() => handleMoveToPlan(value.id)}>
+                        {value.planName}
+                      </MenuItem>
+                    ))
+                  : [<MenuItem>No plans found</MenuItem>]
+              }
+              filter={value.id}
+              plans={plans}
+              tasks={tasks}
+            />
+          ))}
+        </Box>
+      </Box>
       <SpeedDial
         ariaLabel="SpeedDial basic example"
         sx={{ position: "absolute", bottom: 16, right: 16 }}

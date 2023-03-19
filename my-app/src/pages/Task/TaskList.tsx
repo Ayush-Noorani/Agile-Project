@@ -17,12 +17,19 @@ import { useParams } from "react-router-dom";
 import { TaskUtility } from "./TaskUtilityForm";
 import { ColumnForm } from "./components/ColumnForm";
 import { TaskHeader } from "./components/TaskHeader";
+import { usePlan } from "../Plan/hooks/usePlan";
 
 interface TaskProps {}
 
 export const TaskList = ({}: TaskProps) => {
   const { id } = useParams();
   const [open, setOpen] = useState(false);
+  const { form, plans, createPlan, getPlans } = usePlan();
+  useEffect(() => {
+    getPlans({
+      status: "1",
+    });
+  }, []);
   const [openColumn, setOpenColumn] = useState(false);
   const actions: {
     icon: JSX.Element;
@@ -43,7 +50,6 @@ export const TaskList = ({}: TaskProps) => {
   ];
 
   const columnOrder = localStorage.getItem("columnOrder");
-
   const {
     getTasks,
     tasks,
@@ -57,17 +63,21 @@ export const TaskList = ({}: TaskProps) => {
     undefined
   );
   useEffect(() => {
-    getTasks();
-  }, []);
+    getTasks(undefined, id);
+    getPlans({
+      status: 1,
+    });
+  }, [id]);
   const getExistingTask = (id: string) => {
     setSelectedTaskId(id);
     setOpen(true);
   };
-  console.log(tasks);
+
   return (
     <Box
       style={{
         padding: 0,
+        width: "100%",
       }}
     >
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
@@ -87,7 +97,7 @@ export const TaskList = ({}: TaskProps) => {
       <Dialog open={openColumn} onClose={() => setOpenColumn(false)}>
         <ColumnForm id={id} />
       </Dialog>
-      <TaskHeader id={id!} />
+      <TaskHeader id={id!} plans={plans} />
       {Object.keys(tasks).length > 0 && (
         <DragAndDrop
           data={tasks}

@@ -72,11 +72,13 @@ export type Priority = "minor" | "moderate" | "major" | "critical";
 export type Tasks = {
   id: string;
   title: string;
+  taskName?: string;
   description: string;
   status: string;
   assignee: Member[];
   reportTo: Member[];
   dueDate: Date;
+  projectId?: string;
   priority: Priority;
   section?: string;
   plan?: string;
