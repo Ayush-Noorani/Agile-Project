@@ -2,12 +2,26 @@ import React, { useEffect } from "react";
 import { WeightLabel } from "./Common";
 import "../../css/project.css";
 import { IconButton } from "@mui/material";
-import { MoreVert } from "@mui/icons-material";
 import { baseURL } from "../../helper/axios";
+import { Settings } from "@mui/icons-material";
 
-export const Card = ({ data, onClick }: { data: any; onClick: Function }) => {
+export const Card = ({
+  data,
+  settingsClick,
+  onClick,
+}: {
+  data: any;
+  settingsClick: Function;
+  onClick: Function;
+}) => {
   return (
-    <div key={data.id} className="project">
+    <div
+      key={data.id}
+      className="project"
+      onClick={(e) => {
+        onClick(e);
+      }}
+    >
       <img
         src={
           data?.img
@@ -34,9 +48,9 @@ export const Card = ({ data, onClick }: { data: any; onClick: Function }) => {
         <IconButton
           aria-label="more"
           id="long-button"
-          onClick={(e) => onClick(e)}
+          onClick={(e) => settingsClick(e)}
         >
-          <MoreVert />
+          <Settings />
         </IconButton>
       </div>
       <p className="desc">{data.description}</p>

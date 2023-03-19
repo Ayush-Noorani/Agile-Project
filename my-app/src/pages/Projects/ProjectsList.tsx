@@ -25,10 +25,14 @@ export const ProjectsList = () => {
           <Card
             data={item}
             key={index}
-            onClick={(e: any) => {
+            settingsClick={(e: any) => {
+              e.stopPropagation();
               let target = eTarget;
               setETarget((prev: any) => (prev === e.target ? null : e.target));
               setShow((_prev) => (e.target !== target ? true : false));
+            }}
+            onClick={(e: any) => {
+              navigate(`/tasks/${item.id}`);
             }}
           />
           <Menu
@@ -46,9 +50,6 @@ export const ProjectsList = () => {
           >
             <MenuItem onClick={() => navigate(`/project/${item.id}`)}>
               View Project Details
-            </MenuItem>
-            <MenuItem onClick={() => navigate(`/tasks/${item.id}`)}>
-              View Tasks
             </MenuItem>
           </Menu>
         </Fragment>
