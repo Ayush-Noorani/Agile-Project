@@ -5,6 +5,7 @@ import { axiosInstance } from "../../../helper/axios";
 import { setTask } from "../../../store/reducers/tasks";
 import { RootState } from "../../../store/store";
 import { Tasks } from "../../../types/common";
+import { consoleStatement } from "../../../utils/Common";
 export type Plan = {
   startDate: Date;
   endDate: Date;
@@ -44,7 +45,7 @@ export const useBackLog = () => {
     axiosInstance
       .get("/plans/list")
       .then((res) => {
-        console.log(res.data);
+        consoleStatement("GET Plan list", "green", res.data.plans);
         setPlans(res.data.plans);
       })
       .catch((err) => {
@@ -56,6 +57,8 @@ export const useBackLog = () => {
     axiosInstance
       .post("/plans/create", form)
       .then((res) => {
+        consoleStatement("CREATE Plan", "green", res.data);
+
         console.log(res.data);
         getPlans();
       })
