@@ -17,3 +17,11 @@ export const formatDateTime = (date: any) => {
   });
   return [formateDate, formatTime];
 };
+
+export const consoleStatement = (message: string, color: any, state?: any) => {
+  console.log(
+    `%c ${message} \n`,
+    `background: ${color}; color: white;  font-weight: bold;`,
+    state
+  );
+};
