@@ -125,7 +125,7 @@ export const useTask = (projectId?: string) => {
       .then((res) => {
         setTasks(res.data);
         if (TaskId) {
-          console.log(tasks);
+          console.log("z", tasks);
           const value: Task = Object.values(res.data)
             .flatMap((value) => value)
             .find((task: any) => task.id === TaskId) as unknown as Task;
