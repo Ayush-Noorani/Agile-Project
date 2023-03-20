@@ -12,23 +12,23 @@ const PieChart = ({ id, projectName, closeHandler }: any) => {
   const [pieLabels, setPieLabels] = useState<string[]>([]);
 
   const { getTasks, tasks, columns } = useTask(id);
-  console.log("T: ", tasks);
 
   useEffect(() => {
-    getTasks();
-    loadPieChartData();
+    getTasks(undefined, id);
   }, [id]);
 
+  useEffect(() => {
+    loadPieChartData();
+  }, [tasks]);
+
   const loadPieChartData = () => {
-    if (Object.values(tasks).length > 0) {
+    if (tasks) {
       let tempLabels: string[] = [];
       let tempData: number[] = [];
       columns.forEach((col) => {
-        console.log("COL: ", col, tasks[col?.value]?.length);
         tempLabels.push(col?.label);
         tempData.push(tasks[col?.value]?.length);
       });
-      console.log("TEMP: ", tempData);
       setPieData(tempData);
       setPieLabels(tempLabels);
     }
