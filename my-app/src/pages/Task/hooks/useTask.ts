@@ -12,6 +12,7 @@ import {
   Tasks,
   TasksRecord,
 } from "../../../types/common";
+import { useProject } from "../../Projects/hooks/useProject";
 type Task = {
   id?: string;
   description: string;
@@ -27,18 +28,19 @@ type Task = {
 export const useTask = (projectId?: string) => {
   const [tasks, setTasks] = useState<TasksRecord>({});
   const [value, setValue] = useState<any>();
+  const { fetchAllProjects } = useProject();
 
   const [newColumn, setNewColumn] = useState<Columntype>({
     label: "",
     value: "",
   });
   const dispatch = useDispatch();
+  useEffect(() => {
+    fetchAllProjects();
+  }, []);
   const projects = useSelector((state: RootState) => state.project.projects);
   const currentProject = projects.find((project) => project.id === projectId);
   const filters = useSelector((state: RootState) => state.filters);
-  useEffect(() => {
-    console.log("filters", filters);
-  }, [filters]);
   const columns: Columntype[] | [] = currentProject?.columns || [];
   const [formData, setFormData] = useState<Task>({
     id: undefined,
@@ -119,7 +121,7 @@ export const useTask = (projectId?: string) => {
       });
   };
 
-  const getTasks = (TaskId?: string) => {
+  const getTasks = (TaskId?: string | undefined, projectId?: string) => {
     axiosInstance
       .get("/task/list/" + projectId)
       .then((res) => {
@@ -129,7 +131,6 @@ export const useTask = (projectId?: string) => {
           const value: Task = Object.values(res.data)
             .flatMap((value) => value)
             .find((task: any) => task.id === TaskId) as unknown as Task;
-          console.log(value);
           setFormData({
             id: value.id,
             description: value.description,

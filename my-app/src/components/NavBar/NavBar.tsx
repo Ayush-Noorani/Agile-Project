@@ -128,7 +128,6 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
   const { navigate } = useCommon();
 
   useEffect(() => {
-    console.log("CALL SOCKET");
     let interval = setInterval(() => {
       if (socket.connected) {
         socket.emit("notification-list", localStorage.getItem("token"));
@@ -144,7 +143,6 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
 
   const notifications = notification
     .filter((value: any) => {
-      console.log(typeSelected, typeSelected.includes(value.type), value.type);
       return typeSelected === "all" || typeSelected.includes(value.type);
     })
     .map((value: any, index: Number) => (

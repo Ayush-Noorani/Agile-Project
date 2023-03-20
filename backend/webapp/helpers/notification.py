@@ -116,6 +116,5 @@ def get_notfication(id):
             message += "\n"
             message_obj['message'] = message
             messagelist.append(message_obj)
-    print(messagelist, '-------')
 
     return messagelist
