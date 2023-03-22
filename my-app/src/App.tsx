@@ -11,13 +11,16 @@ import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { ToastContextProvider } from "./context/ToastContext";
 import { useUser } from "./hooks/useUser";
+import { ProjectContextProvider } from "./context/ProjectContext";
 function App() {
   return (
     <Provider store={store}>
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <ToastContextProvider>
-          <RouterProvider router={Routes} />
-        </ToastContextProvider>
+        <ProjectContextProvider>
+          <ToastContextProvider>
+            <RouterProvider router={Routes} />
+          </ToastContextProvider>
+        </ProjectContextProvider>
       </LocalizationProvider>
     </Provider>
   );

@@ -6,10 +6,18 @@ export const Item = (props: SideBarItemProps) => {
   return (
     <Box
       className="sidebar-item"
-      onClick={() => props.handleRedirect!(props.path)}
+      onClick={() => props.handleRedirect!(props.path, props.require || [])}
     >
-      <h4> {props.label}</h4>
       {props.icon}
+
+      <h4
+        style={{
+          whiteSpace: "nowrap",
+          marginLeft: "5px",
+        }}
+      >
+        {props.label}
+      </h4>
     </Box>
   );
 };

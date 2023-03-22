@@ -17,6 +17,10 @@ import { MenuItem, Menu, Divider, Tabs, Tab, InputLabel } from "@mui/material";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { axiosInstance, socket } from "../../helper/axios";
 import { TypoGraphyImage } from "../Common/TypoGraphyImage";
+import { Home, Work, ListAlt } from "@mui/icons-material";
+import { SideBarItemProps } from "../../types/common";
+import { useUser } from "../../hooks/useUser";
+import { useProjectContext } from "../../context/ProjectContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -59,24 +63,24 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const test = [
+const navBarItems: SideBarItemProps[] = [
   {
-    label: "test1",
-    onclick: () => {
-      console.log("hi");
-    },
+    label: "Dashboard",
+    icon: <Home />,
+    role: "user",
+    path: "/home",
   },
   {
-    label: "test2",
-    onclick: () => {
-      console.log("hi");
-    },
+    label: "Projects",
+    icon: <Work />,
+    role: "user",
+    path: "/projects",
   },
   {
-    label: "test3",
-    onclick: () => {
-      console.log("hi");
-    },
+    label: "User list",
+    icon: <ListAlt />,
+    role: "admin",
+    path: "/user-list",
   },
 ];
 
@@ -126,7 +130,8 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
   const [notification, setNotification] = useState<any>([]);
   const [typeSelected, setTypeSelected] = useState<string>("all");
   const { navigate } = useCommon();
-
+  const { user } = useUser();
+  const { selected, setSelected } = useProjectContext();
   useEffect(() => {
     let interval = setInterval(() => {
       if (socket.connected) {
@@ -215,7 +220,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
             <IconButton
               size="large"
               edge="start"
-              onClick={() => setShow(!show)}
+              onClick={() => selected && setShow(!show)}
               aria-label="open drawer"
               sx={{ mr: 2 }}
             >
@@ -231,16 +236,34 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
             >
               Jira Clone
             </Typography>
-            {test.map((link, index) => (
-              <Button
-                key={index.toString()}
-                variant="text"
-                onClick={link.onclick}
-                sx={{ color: "black" }}
-              >
-                {link.label}
-              </Button>
-            ))}
+            {navBarItems.map((link, index) =>
+              user.roles.includes("admin") ? (
+                <Button
+                  key={index.toString()}
+                  variant="text"
+                  onClick={() => {
+                    navigate(link.path);
+                  }}
+                  sx={{ color: "black" }}
+                >
+                  {link.label}
+                </Button>
+              ) : (
+                user.roles.includes(link.role) && (
+                  <Button
+                    key={index.toString()}
+                    variant="text"
+                    onClick={() => {
+                      selected && setSelected(undefined);
+                      navigate(link.path);
+                    }}
+                    sx={{ color: "black" }}
+                  >
+                    {link.label}
+                  </Button>
+                )
+              )
+            )}
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
