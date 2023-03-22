@@ -111,40 +111,44 @@ def set_plan_status(value):
 
     if not data['id']:
         return {'message': 'id is required'}, 400
-    if (value == '1'):
-        check_if_plan_started = collection.find_one({
-            'project': ObjectId(data['projectId']), 'status': "1",
-            'endDate': {
-                '$gt': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-            }
-        })
+    check_plan = db.plans.find_one(
+        {'_id': ObjectId(data['id'])}, {'status': 1})
+    if check_plan['status'] != '3':
+        if (value == '1'):
+            check_if_plan_started = collection.find_one({
+                'project': ObjectId(data['projectId']), 'status': "1",
+                'endDate': {
+                    '$gt': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+                }
+            })
 
-        if check_if_plan_started:
-            return {'message': 'Plan has already started cannot have two plans running simulataneously'}, 400
-        check_startDate = collection.find_one({
-            '_id': ObjectId(data['id']),
-            'startDate': {
-                '$lte': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-            }
-        })
-        if not check_startDate:
-            return {'message': 'Plan cannot be started before of its  startDate'}, 400
-        tasks = db.tasks.find({
-            'plan': ObjectId(data['id'])
-        }, {'_id': 1})
-        projects = db.projects.find_one({
-            "_id": check_startDate['project']
-        })
-        tasks = [ObjectId(i['_id']) for i in tasks if ObjectId(
-            i['_id']) not in projects['tasks']['toDo']]
-        projects['tasks']['toDo'] = tasks+projects['tasks']['toDo']
-        db.projects.update_one({
-            '_id': projects['_id'],
-        }, {
-            '$set': {
-                'taks': projects['tasks']
-            }
-        })
-    collection.update_one({'_id': ObjectId(data['id'])}, {
-                          '$set': {'status': value}})
-    return {'message': 'plan status updated'}, 200
+            if check_if_plan_started:
+                return {'message': 'Plan has already started cannot have two plans running simulataneously'}, 400
+            check_startDate = collection.find_one({
+                '_id': ObjectId(data['id']),
+                'startDate': {
+                    '$lte': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+                }
+            })
+            if not check_startDate:
+                return {'message': 'Plan cannot be started before of its  startDate'}, 400
+            tasks = db.tasks.find({
+                'plan': ObjectId(data['id'])
+            }, {'_id': 1})
+            projects = db.projects.find_one({
+                "_id": check_startDate['project']
+            })
+            tasks = [ObjectId(i['_id']) for i in tasks if ObjectId(
+                i['_id']) not in projects['tasks']['toDo']]
+            projects['tasks']['toDo'] = tasks+projects['tasks']['toDo']
+            db.projects.update_one({
+                '_id': projects['_id'],
+            }, {
+                '$set': {
+                    'tasks': projects['tasks']
+                }
+            })
+        collection.update_one({'_id': ObjectId(data['id'])}, {
+            '$set': {'status': value}})
+        return {'message': 'plan status updated'}, 200
+    return {'message': 'plan already marked as completed cannot change status now.'}, 200

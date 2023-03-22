@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Alert,
   Box,
   Button,
   IconButton,
@@ -81,6 +82,8 @@ export const ColumnForm = ({ id }: ColumnProps) => {
         }}
         m="s"
       >
+        {newColumn?.fixed && <Alert>Can only edit label and not value</Alert>}
+
         <TextField
           variant="filled"
           label="Column Label"
@@ -100,6 +103,7 @@ export const ColumnForm = ({ id }: ColumnProps) => {
           InputProps={{ disableUnderline: true }}
           sx={{ width: "350px" }}
           value={newColumn.value}
+          disabled={newColumn?.fixed}
           multiline
           onChange={(e) => onChange(e.target.value, "value", setNewColumn)}
         />

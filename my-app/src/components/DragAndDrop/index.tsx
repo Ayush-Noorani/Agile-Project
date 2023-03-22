@@ -90,7 +90,7 @@ export const DragAndDrop = ({
                   console.log(data[column.value], filters.id);
                   columnData = data[column.value].filter(
                     (task: any) =>
-                      task.assigned_user.some((assigned: any) =>
+                      task.assignee.some((assigned: any) =>
                         filters.id.includes(assigned.username)
                       ) ||
                       task.reporter_user.some((member: any) =>

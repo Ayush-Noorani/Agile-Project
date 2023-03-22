@@ -8,6 +8,7 @@ import {
   Box,
   Button,
   Fab,
+  ListItemText,
   TextField,
   Typography,
 } from "@mui/material";
@@ -139,13 +140,42 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
             disablePortal
             id="combo-box-demo"
             className="margin"
-            onChange={(e) => {}}
+            ref={autoCompplete}
+            onChange={(e, newValue) => {
+              if (newValue && newValue.id) {
+                updateState([...value.members, newValue], "lead");
+                autoCompplete.current.value = "";
+              }
+            }}
             sx={{ width: 400 }}
+            autoHighlight
             renderInput={(params) => (
-              <TextField {...params} label="Team Lead" />
+              <TextField
+                onChange={(e) => searchUser(e.target.value)}
+                {...params}
+                label="Team Lead"
+              />
             )}
-            options={[]}
+            options={members.map((value, key) => ({
+              ...value,
+              label: value.username,
+              value: value.id,
+              color: value.color,
+            }))}
+            getOptionLabel={(option) => option.label}
+            renderOption={(props, option) => (
+              <Box
+                component="li"
+                {...props}
+                className="row"
+                sx={{ alignItems: "center" }}
+              >
+                <TypoGraphyImage color={option.color} name={option.label} />
+                <ListItemText primary={option.label} />
+              </Box>
+            )}
           />
+
           <Box
             className="margin"
             style={{

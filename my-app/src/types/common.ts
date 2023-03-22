@@ -37,6 +37,7 @@ export type SortOrder = "asc" | "desc";
 export type Columntype = {
   label: string;
   value: string;
+  fixed?: boolean;
 };
 export type ProjectData = {
   id?: any;

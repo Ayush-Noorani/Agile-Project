@@ -28,7 +28,7 @@ export const ListView = ({ data, action }: ListProps) => {
           key={index.toString()}
         >
           <ListItemAvatar>
-            <TypoGraphyImage color={item.color} name={item.name} />
+            <TypoGraphyImage color={item.color} name={item.username} />
           </ListItemAvatar>
           <ListItemText primary={item.username} />
           {action.map((value, index) => value(item.id))}

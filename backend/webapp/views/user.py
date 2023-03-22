@@ -28,8 +28,10 @@ def root():
 def user_info():
     id = get_jwt_identity()
     data = collection.find_one({'_id': ObjectId(id)}, {
-        "_id": 0, 'email': 1, 'username': 1, 'roles': 1, '_id': 1, 'color': 1})
+        'email': 1, 'username': 1, 'roles': 1, '_id': 1, 'color': 1})
+    data['id'] = str(data['_id'])
     data.pop("_id")
+
     return data, 200
 
 
