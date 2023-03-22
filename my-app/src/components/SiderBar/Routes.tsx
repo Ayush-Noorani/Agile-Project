@@ -1,7 +1,15 @@
 import React from "react";
 
 import { SideBarItemProps } from "../../types/common";
-import { AccountTree, Home, List, ListAlt, Work } from "@mui/icons-material";
+import {
+  AccountTree,
+  Home,
+  List,
+  ListAlt,
+  ListAltRounded,
+  ListAltSharp,
+  Work,
+} from "@mui/icons-material";
 export const items: SideBarItemProps[] = [
   {
     label: "Dashboard",
@@ -26,5 +34,11 @@ export const items: SideBarItemProps[] = [
     icon: <List />,
     role: "user",
     path: "/backlog",
+  },
+  {
+    label: "Plan",
+    icon: <AccountTree />,
+    role: "lead",
+    path: "/plan",
   },
 ];

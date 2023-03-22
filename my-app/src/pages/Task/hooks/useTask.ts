@@ -12,6 +12,8 @@ import {
   Tasks,
   TasksRecord,
 } from "../../../types/common";
+import { consoleStatement } from "../../../utils/Common";
+import { useProject } from "../../Projects/hooks/useProject";
 type Task = {
   id?: string;
   description: string;
@@ -27,18 +29,19 @@ type Task = {
 export const useTask = (projectId?: string) => {
   const [tasks, setTasks] = useState<TasksRecord>({});
   const [value, setValue] = useState<any>();
+  const { fetchAllProjects } = useProject();
 
   const [newColumn, setNewColumn] = useState<Columntype>({
     label: "",
     value: "",
   });
   const dispatch = useDispatch();
+  useEffect(() => {
+    fetchAllProjects();
+  }, []);
   const projects = useSelector((state: RootState) => state.project.projects);
   const currentProject = projects.find((project) => project.id === projectId);
   const filters = useSelector((state: RootState) => state.filters);
-  useEffect(() => {
-    console.log("filters", filters);
-  }, [filters]);
   const columns: Columntype[] | [] = currentProject?.columns || [];
   const [formData, setFormData] = useState<Task>({
     id: undefined,
@@ -112,6 +115,7 @@ export const useTask = (projectId?: string) => {
         columns: columnValue,
       })
       .then((res) => {
+        consoleStatement("UPDATE COLUMNS", "green", res.data);
         console.log(res);
       })
       .catch((err) => {
@@ -119,17 +123,16 @@ export const useTask = (projectId?: string) => {
       });
   };
 
-  const getTasks = (TaskId?: string) => {
+  const getTasks = (TaskId?: string | undefined, projectId?: string) => {
     axiosInstance
       .get("/task/list/" + projectId)
       .then((res) => {
+        consoleStatement("FETCH ALL TASKS", "green", res.data);
         setTasks(res.data);
         if (TaskId) {
-          console.log(tasks);
           const value: Task = Object.values(res.data)
             .flatMap((value) => value)
             .find((task: any) => task.id === TaskId) as unknown as Task;
-          console.log(value);
           setFormData({
             id: value.id,
             description: value.description,
@@ -157,10 +160,10 @@ export const useTask = (projectId?: string) => {
   };
 
   const updateData = (data: FormData) => {
-    console.log("this is", data);
     axiosInstance
       .put(`/task/update/${formData.id}`, data)
       .then((res) => {
+        consoleStatement("UPDATE TASK", "green", res.data);
         console.log(res);
       })
       .catch((err) => {
@@ -173,7 +176,7 @@ export const useTask = (projectId?: string) => {
     axiosInstance
       .post(`/task/create/${projectId}`, data)
       .then(() => {
-        console.log("sent data");
+        consoleStatement("CREATE TASK", "green", data);
       })
       .catch((err) => {
         console.log(err);
@@ -198,6 +201,7 @@ export const useTask = (projectId?: string) => {
     axiosInstance
       .put(`/task/update/sequence/${projectId}`, data)
       .then((res) => {
+        consoleStatement("UPDATE SEQUENCE", "green", res.data);
         console.log(res);
       })
       .catch((err) => {

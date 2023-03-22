@@ -1,6 +1,6 @@
 import { axiosInstance } from "../../../helper/axios";
 import { ProjectData, Member } from "../../../types/common";
-import { onChange } from "./../../../utils/Common";
+import { consoleStatement, onChange } from "./../../../utils/Common";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
@@ -36,11 +36,13 @@ export const useProject = (id?: string) => {
 
   const fetchAllProjects = () => {
     axiosInstance.get("/project/list").then((res) => {
+      consoleStatement("FETCH ALL PROJECTS", "green", res.data.projects);
       dispatch(setData(res.data.projects));
     });
   };
   const fetchExistingData = (id: any) => {
     axiosInstance.get(`/project/get/${id}`).then((res) => {
+      consoleStatement("FETCH PROJECT", "green", res.data.project);
       setValue(res.data.project);
     });
   };
@@ -72,6 +74,7 @@ export const useProject = (id?: string) => {
       axiosInstance
         .put(`/project/${id}`, data)
         .then((res) => {
+          consoleStatement("UPDATE PROJECT", "green", res.data);
           uploadImage(res.data.id);
         })
         .catch((err) => {
@@ -84,6 +87,7 @@ export const useProject = (id?: string) => {
       axiosInstance
         .post("/project/create", data)
         .then((res) => {
+          consoleStatement("CREATE PROJECT", "green", res.data);
           console.log(res.data);
         })
         .catch((err) => {

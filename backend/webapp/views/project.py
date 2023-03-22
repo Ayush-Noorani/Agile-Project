@@ -40,6 +40,8 @@ def get_project_list():
                 'title': 1,
                 'description': 1,
                 'img': 1,
+                'name': 1,
+                'lead': 1,
                 'columns': 1,
                 'created_at': 1,
                 'members._id': 1,
@@ -53,14 +55,18 @@ def get_project_list():
         }
     ]
     projects = list(db.projects.aggregate(pipeline))
-    print(projects)
     for project in projects:
-
+        if project['lead'] != '':
+            project['lead'] = str(project['lead'])
         project["id"] = str(project["_id"])
         project['membersCount'] = len(project['members'])
         for i in project['members']:
             i['id'] = str(i['_id'])
+
             i.pop('_id')
+            if 'columns' in i.keys():
+                for j in i['columns']:
+                    j['fixed'] = True
         project.pop("_id")
     return {"projects": projects}
 
@@ -69,7 +75,6 @@ def get_project_list():
 @jwt_required()
 def save_columns(id):
     data = request.get_json()
-    print(data)
     current_project = db.projects.find_one(
         {"_id": ObjectId(id)}, {'columns': 1, 'tasks': 1})
     missing_elements = [x for x in data['columns']
@@ -87,7 +92,6 @@ def save_columns(id):
 @jwt_required()
 def create_project():
     data = json.loads(request.form["data"])
-    print(data)
 
     data['created_by'] = ObjectId(get_jwt_identity())
     img = request.files['img']
@@ -114,6 +118,8 @@ def create_project():
     for i in default_columns:
         data['tasks'][i]['value'] = []
     data['columns'] = default_columns
+    if data['lead'] != "":
+        data['lead'] = ObjectId(data['lead'])
     id = db.projects.insert_one(data).inserted_id
     img = request.files['img']
     if (img):
@@ -130,6 +136,11 @@ def create_project():
 @jwt_required()
 def get_project_column(id):
     data = request.get_json()
+    tasks = db.projects.find_one({"_id": ObjectId(id)}, {'tasks': 1})['tasks']
+    for i in data['columns']:
+        if i['value'] not in tasks.keys():
+            tasks[i['value']] = []
+
     db.projects.update_one({"_id": ObjectId(id)}, {
                            "$set": {"columns": data['columns']}})
     return {"status": "success"}
@@ -144,14 +155,12 @@ def delete_project(id):
 
 @app.route("/image/<path>/<id>", methods=["GET"])
 def get_image(path, id):
-    print(app.config["UPLOAD_FOLDER"]+"\\"+path+"\\"+id)
     return send_file(app.config["UPLOAD_FOLDER"]+"\\"+path+"\\"+id, mimetype='image/gif')
 
 
 @app.route("/project/members/<id>", methods=["GET"])
 @jwt_required()
 def get_project_members(id):
-    print(id)
     pipeline = [
         {"$match": {"_id": ObjectId(id)}},
         {'$project': {'members': 1, '_id': 0}},
@@ -178,7 +187,6 @@ def search_project_members(text):
     roles = ['user', 'lead', 'developer', 'tester', 'admin']
     members = []
     if (text == "*"):
-        print("in")
         members = list(db.user_details.find({"roles": {"$in": roles}},  {
             '_id': 1, "username": 1, "roles": 1, "img": 1, 'members.color': 1, 'members.name': 1}))
     else:
@@ -194,7 +202,6 @@ def search_project_members(text):
 @ app.route("/project/get/<id>", methods=["GET"])
 @ jwt_required()
 def get_project(id):
-    print(id)
     project = db.projects.find_one({"_id": ObjectId(id)})
     pipeline = [
         {'$match': {'_id': ObjectId(id)}},
@@ -209,8 +216,10 @@ def get_project(id):
                 'members.roles': 1,
                 'members.img': 1,
                 'members.color': 1,
+                'members.color': 1,
                 'created_by': 1,
                 'name': 1,
+
                 'description': 1,
                 'img': 1,
                 'lead': 1,
@@ -230,7 +239,6 @@ def get_project(id):
         member.pop("_id")
     project['created_by'] = str(project['created_by'])
 
-    print(project)
     return {"project": project}
 
 
@@ -246,9 +254,10 @@ def update_project(id):
                  str(id)+"."+"png")
     elif data['img'] == False:
         data['img'] = False
-    print(data)
     data['members'] = [ObjectId(member) for member in data['members']]
     data.pop("id")
+    if data['lead'] != "":
+        data['lead'] = ObjectId(data['lead'])
     db.projects.update_one({"_id": ObjectId(id)}, {"$set": data})
     create_notification(
         data['members'], "Project Information is updated", 2, ObjectId(user_id), ObjectId(id))

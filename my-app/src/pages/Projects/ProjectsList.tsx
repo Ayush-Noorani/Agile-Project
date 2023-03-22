@@ -6,18 +6,29 @@ import { Add, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useProject } from "./hooks/useProject";
 import { ProjectData } from "../../types/common";
+import PieChart from "../../components/PieChart/PieChart";
 
 interface ProjectProps {}
 
 export const ProjectsList = () => {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
+  const [pieChartProjectId, setPieChartProjectId] = useState<
+    undefined | string
+  >(undefined);
+  const [selectedProjectName, setSelectedProjectName] = useState<string>("");
   const [eTarget, setETarget] = useState<any>(null);
 
   const { projects, fetchAllProjects } = useProject();
   useEffect(() => {
     fetchAllProjects();
   }, []);
+
+  const showPieChart = (id?: string, projectName: string = "") => {
+    setPieChartProjectId(id);
+    setSelectedProjectName(projectName);
+  };
+
   return (
     <div className="project-container">
       {projects?.map((item: ProjectData, index: any) => (
@@ -51,6 +62,15 @@ export const ProjectsList = () => {
             <MenuItem onClick={() => navigate(`/project/${item.id}`)}>
               View Project Details
             </MenuItem>
+            <MenuItem
+              onClick={() => {
+                showPieChart(item.id, item.description);
+                setShow(false);
+                setETarget(null);
+              }}
+            >
+              View Project Status
+            </MenuItem>
           </Menu>
         </Fragment>
       ))}
@@ -61,6 +81,11 @@ export const ProjectsList = () => {
       >
         <Add />
       </Fab>
+      <PieChart
+        id={pieChartProjectId}
+        projectName={selectedProjectName}
+        closeHandler={setPieChartProjectId}
+      />
     </div>
   );
 };

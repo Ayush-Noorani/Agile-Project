@@ -37,6 +37,7 @@ export type SortOrder = "asc" | "desc";
 export type Columntype = {
   label: string;
   value: string;
+  fixed?: boolean;
 };
 export type ProjectData = {
   id?: any;
@@ -72,12 +73,16 @@ export type Priority = "minor" | "moderate" | "major" | "critical";
 export type Tasks = {
   id: string;
   title: string;
+  taskName?: string;
   description: string;
-  status: keyof typeof columnTitle;
+  status: string;
   assignee: Member[];
   reportTo: Member[];
   dueDate: Date;
+  projectId?: string;
   priority: Priority;
+  section?: string;
+  plan?: string;
 };
 
 export type Notification = {
