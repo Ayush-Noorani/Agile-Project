@@ -41,6 +41,7 @@ def get_project_list():
                 'description': 1,
                 'img': 1,
                 'name': 1,
+                'lead': 1,
                 'columns': 1,
                 'created_at': 1,
                 'members._id': 1,
@@ -55,12 +56,17 @@ def get_project_list():
     ]
     projects = list(db.projects.aggregate(pipeline))
     for project in projects:
-
+        if project['lead'] != '':
+            project['lead'] = str(project['lead'])
         project["id"] = str(project["_id"])
         project['membersCount'] = len(project['members'])
         for i in project['members']:
             i['id'] = str(i['_id'])
+
             i.pop('_id')
+            if 'columns' in i.keys():
+                for j in i['columns']:
+                    j['fixed'] = True
         project.pop("_id")
     return {"projects": projects}
 
@@ -112,6 +118,8 @@ def create_project():
     for i in default_columns:
         data['tasks'][i]['value'] = []
     data['columns'] = default_columns
+    if data['lead'] != "":
+        data['lead'] = ObjectId(data['lead'])
     id = db.projects.insert_one(data).inserted_id
     img = request.files['img']
     if (img):
@@ -128,6 +136,11 @@ def create_project():
 @jwt_required()
 def get_project_column(id):
     data = request.get_json()
+    tasks = db.projects.find_one({"_id": ObjectId(id)}, {'tasks': 1})['tasks']
+    for i in data['columns']:
+        if i['value'] not in tasks.keys():
+            tasks[i['value']] = []
+
     db.projects.update_one({"_id": ObjectId(id)}, {
                            "$set": {"columns": data['columns']}})
     return {"status": "success"}
@@ -203,8 +216,10 @@ def get_project(id):
                 'members.roles': 1,
                 'members.img': 1,
                 'members.color': 1,
+                'members.color': 1,
                 'created_by': 1,
                 'name': 1,
+
                 'description': 1,
                 'img': 1,
                 'lead': 1,
@@ -241,6 +256,8 @@ def update_project(id):
         data['img'] = False
     data['members'] = [ObjectId(member) for member in data['members']]
     data.pop("id")
+    if data['lead'] != "":
+        data['lead'] = ObjectId(data['lead'])
     db.projects.update_one({"_id": ObjectId(id)}, {"$set": data})
     create_notification(
         data['members'], "Project Information is updated", 2, ObjectId(user_id), ObjectId(id))

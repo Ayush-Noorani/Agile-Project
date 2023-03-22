@@ -25,13 +25,13 @@ const userSlice = createSlice({
       state.isLoggedIn = action.payload;
     },
     setUser: (state, action) => {
-      console.log(action);
       state = produce(state, (draft) => {
         draft.userName = action.payload.username;
         draft.email = action.payload.email;
         draft.isLoggedIn = true;
         draft.roles = action.payload.roles;
         draft.id = action.payload.id;
+        draft.color = action.payload?.color;
       });
       return state;
     },

@@ -12,6 +12,7 @@ import {
   Tasks,
   TasksRecord,
 } from "../../../types/common";
+import { consoleStatement } from "../../../utils/Common";
 import { useProject } from "../../Projects/hooks/useProject";
 type Task = {
   id?: string;
@@ -114,6 +115,7 @@ export const useTask = (projectId?: string) => {
         columns: columnValue,
       })
       .then((res) => {
+        consoleStatement("UPDATE COLUMNS", "green", res.data);
         console.log(res);
       })
       .catch((err) => {
@@ -125,6 +127,7 @@ export const useTask = (projectId?: string) => {
     axiosInstance
       .get("/task/list/" + projectId)
       .then((res) => {
+        consoleStatement("FETCH ALL TASKS", "green", res.data);
         setTasks(res.data);
         if (TaskId) {
           const value: Task = Object.values(res.data)
@@ -157,10 +160,10 @@ export const useTask = (projectId?: string) => {
   };
 
   const updateData = (data: FormData) => {
-    console.log("this is", data);
     axiosInstance
       .put(`/task/update/${formData.id}`, data)
       .then((res) => {
+        consoleStatement("UPDATE TASK", "green", res.data);
         console.log(res);
       })
       .catch((err) => {
@@ -173,7 +176,7 @@ export const useTask = (projectId?: string) => {
     axiosInstance
       .post(`/task/create/${projectId}`, data)
       .then(() => {
-        console.log("sent data");
+        consoleStatement("CREATE TASK", "green", data);
       })
       .catch((err) => {
         console.log(err);
@@ -198,6 +201,7 @@ export const useTask = (projectId?: string) => {
     axiosInstance
       .put(`/task/update/sequence/${projectId}`, data)
       .then((res) => {
+        consoleStatement("UPDATE SEQUENCE", "green", res.data);
         console.log(res);
       })
       .catch((err) => {

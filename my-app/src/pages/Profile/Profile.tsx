@@ -36,19 +36,7 @@ export const Profile = () => {
 
   const [error, setError] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
-  //Not required
-  // const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setFormFields((prevVal) => {
-  //     return {
-  //       ...prevVal,
-  //       [e.target.name]: e.target.value,
-  //     };
-  //   });
-  // };
-
-  //   const updateDetails = () => {
-
-  //   }
+  console.log(userData);
   return (
     <Box
       sx={{

@@ -74,6 +74,8 @@ export const useBackLog = () => {
         plan: id,
       })
       .then((res) => {
+        consoleStatement("POST Move Plan", "green", res.data);
+
         getALlTasks();
       })
       .catch((err) => {
