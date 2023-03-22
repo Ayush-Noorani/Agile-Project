@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useProject } from "./hooks/useProject";
 import { ProjectData } from "../../types/common";
 import PieChart from "../../components/PieChart/PieChart";
+import { useProjectContext } from "../../context/ProjectContext";
 
 interface ProjectProps {}
 
@@ -28,6 +29,7 @@ export const ProjectsList = () => {
     setPieChartProjectId(id);
     setSelectedProjectName(projectName);
   };
+  const { setSelected } = useProjectContext();
 
   return (
     <div className="project-container">
@@ -37,12 +39,12 @@ export const ProjectsList = () => {
             data={item}
             key={index}
             onClick={(e: any) => {
-              let target = eTarget;
-              setETarget((prev: any) => (prev === e.target ? null : e.target));
-              setShow((_prev) => (e.target !== target ? true : false));
+              console.log("HERE");
+              setSelected(item);
+              navigate("/project/tasks/" + item.id);
             }}
           />
-          <Menu
+          {/* <Menu
             id="basic-menu"
             anchorEl={eTarget}
             open={show}
@@ -70,7 +72,7 @@ export const ProjectsList = () => {
             >
               View Project Status
             </MenuItem>
-          </Menu>
+          </Menu> */}
         </Fragment>
       ))}
       <Fab

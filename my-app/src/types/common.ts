@@ -16,8 +16,9 @@ export interface SideBarItemProps {
   path: string;
   icon: React.ReactNode;
   role: Role;
+  require?: string[];
   label: string;
-  handleRedirect?: (path: string) => void;
+  handleRedirect?: (path: string, require: string[]) => void;
 }
 export type Member = {
   id: string;

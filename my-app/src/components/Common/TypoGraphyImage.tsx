@@ -8,6 +8,7 @@ interface TypoGraphyImageProps {
   onClick?: Function;
   id?: string;
   color?: string;
+  sx?: any;
 }
 
 export const TypoGraphyImage = ({
@@ -17,6 +18,7 @@ export const TypoGraphyImage = ({
   isSelected,
   onClick,
   color,
+  sx,
 }: TypoGraphyImageProps) => (
   <Typography
     onClick={() => {
@@ -33,11 +35,13 @@ export const TypoGraphyImage = ({
       width: "40px",
       padding: "5px",
       color: "black",
+      boxShadow: "0px 1px 4px 1px gray",
       justifyContent: "center",
       alignItems: "center",
       borderWidth: isSelected ? "0.5px" : "",
       borderStyle: isSelected ? "solid" : "",
       borderColor: "grey",
+      ...sx,
     }}
     className="profile-shadow"
     variant="h5"

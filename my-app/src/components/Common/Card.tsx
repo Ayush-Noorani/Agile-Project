@@ -7,7 +7,7 @@ import { baseURL } from "../../helper/axios";
 
 export const Card = ({ data, onClick }: { data: any; onClick: Function }) => {
   return (
-    <div key={data.id} className="project">
+    <div key={data.id} className="project" onClick={() => onClick()}>
       <img
         src={
           data?.img
@@ -31,13 +31,6 @@ export const Card = ({ data, onClick }: { data: any; onClick: Function }) => {
         }}
       >
         <h4>{data.name}</h4>
-        <IconButton
-          aria-label="more"
-          id="long-button"
-          onClick={(e) => onClick(e)}
-        >
-          <MoreVert />
-        </IconButton>
       </div>
       <p className="desc">{data.description}</p>
       <div

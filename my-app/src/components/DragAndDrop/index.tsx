@@ -93,7 +93,7 @@ export const DragAndDrop = ({
                       task.assignee.some((assigned: any) =>
                         filters.id.includes(assigned.username)
                       ) ||
-                      task.reporter_user.some((member: any) =>
+                      task.reportTo.some((member: any) =>
                         filters.id.includes(member.username)
                       )
                   );

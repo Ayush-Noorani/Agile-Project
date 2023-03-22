@@ -83,12 +83,13 @@ export const TaskHeader = ({ id, plans }: { id: string; plans: any[] }) => {
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "row" }}>
-        {currentProject?.members.map((value) => {
+        {currentProject?.members.map((value, index) => {
           return (
             <TypoGraphyImage
               onClick={() => onClick(value.username)}
               name={value.name}
               color={value.color}
+              sx={index > 0 ? { marginLeft: "-16px" } : {}}
               isSelected={filters?.id && filters?.id.includes(value.username)}
               url={value.img}
             />

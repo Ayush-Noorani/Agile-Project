@@ -7,6 +7,7 @@ import { items } from "./Routes";
 import { NavBar } from "../NavBar/NavBar";
 import { useUser } from "../../hooks/useUser";
 import { useCommon } from "../../hooks/useCommon";
+import { useProjectContext } from "../../context/ProjectContext";
 interface SideBarProps {
   children: React.ReactNode | React.ReactNode[];
 }
@@ -14,11 +15,12 @@ interface SideBarProps {
 export const SideBar = ({ children }: SideBarProps) => {
   let token = localStorage.getItem("token");
   const { user } = useUser();
+  const { selected } = useProjectContext();
   const { navigate } = useCommon();
   const [open, setOpen] = React.useState(false);
-  const handleRedirect = (path: string) => {
+  const handleRedirect = (path: string, require: string[]) => {
     setOpen(false);
-    navigate(path);
+    navigate(require.includes("projectId") ? path + selected!.id : path);
   };
   if (!token) {
     return <>{children}</>;
