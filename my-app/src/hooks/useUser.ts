@@ -12,7 +12,11 @@ export const useUser = () => {
     axiosInstance
       .get("/user/info")
       .then((res) => {
-        consoleStatement("FETCH USER INFO", "green", res.data);
+        console.log(
+          `%c ${"FETCH USER INFO"} \n`,
+          `background:green; color: white;  font-weight: bold;`,
+          res.data
+        );
         dispatch(setUser(res.data));
       })
       .catch((err) => {

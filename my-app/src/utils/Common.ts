@@ -19,9 +19,10 @@ export const formatDateTime = (date: any) => {
 };
 
 export const consoleStatement = (message: string, color: any, state?: any) => {
-  console.log(
-    `%c ${message} \n`,
-    `background: ${color}; color: white;  font-weight: bold;`,
-    state
-  );
+  return () =>
+    console.log(
+      `%c ${message} \n`,
+      `background: ${color}; color: white;  font-weight: bold;`,
+      state
+    );
 };

@@ -3,7 +3,14 @@ export type FormType = {
   label: string;
   type: string;
 };
-
+export type Plan = {
+  startDate: Date;
+  endDate: Date;
+  planName: string;
+  project: string;
+  projectName?: string;
+  status?: string;
+};
 export type User = {
   id: string;
   name: string;

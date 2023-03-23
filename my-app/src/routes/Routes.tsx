@@ -13,6 +13,9 @@ import { AdminProtected } from "../components/AdminProtected";
 import { BackLog } from "../pages/BackLog/BackLog";
 import { Home } from "../pages/Home/Home";
 import { PlanList } from "../pages/Plan/PlanList";
+import { RetrospectionList } from "../pages/Retrospection/RetrospectionList";
+import PieChart from "../components/PieChart/PieChart";
+import { Dashboard } from "@mui/icons-material";
 
 export const Routes = createBrowserRouter([
   {
@@ -44,7 +47,7 @@ export const Routes = createBrowserRouter([
     element: <Protected children={<ProjectDetail />} />,
   },
   {
-    path: "/project/:id",
+    path: "/project/settings/:id",
     element: <Protected children={<ProjectDetail />} />,
   },
 
@@ -57,15 +60,23 @@ export const Routes = createBrowserRouter([
     element: <AdminProtected children={<UserTable />} />,
   },
   {
-    path: "/backlog",
+    path: "/project/backlog/:id",
     element: <Protected children={<BackLog />} />,
   },
   {
-    path: "/home",
-    element: <Protected children={<Home />} />,
+    path: "/my-dashboard",
+    element: <Protected children={<Dashboard />} />,
   },
   {
-    path: "/plan",
+    path: "/project/plan/:id",
     element: <Protected children={<PlanList />} />,
+  },
+  {
+    path: "/project/retrospection/:id",
+    element: <Protected children={<RetrospectionList />} />,
+  },
+  {
+    path: "/project/pie-chart/:id",
+    element: <Protected children={<PieChart />} />,
   },
 ]);

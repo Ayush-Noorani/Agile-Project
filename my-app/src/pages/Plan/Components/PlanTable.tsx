@@ -13,13 +13,16 @@ import { formatDateTime } from "../../../utils/Common";
 import StopIcon from "@mui/icons-material/Stop";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { Check } from "@mui/icons-material";
+import { useCommon } from "../../../hooks/useCommon";
+import { Plan } from "../../../types/common";
 
 interface PlanTableProps {
-  plans: any[];
+  plans: Plan[];
 
   onClick: (row: any, status: string) => void;
 }
 export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
+  const { navigate } = useCommon();
   return (
     <TableContainer>
       <Table aria-label="simple table">
@@ -90,6 +93,14 @@ export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
                       : row.status === "2" || row.status === "0"
                       ? "Start"
                       : "ENDED"}
+                  </Button>
+                  <Button
+                    disabled={row.status !== "1"}
+                    onClick={() => {
+                      navigate("/project/tasks" + row.project);
+                    }}
+                  >
+                    View Plan
                   </Button>
                 </TableCell>
               </TableRow>

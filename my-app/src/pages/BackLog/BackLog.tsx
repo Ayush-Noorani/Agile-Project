@@ -34,8 +34,10 @@ import { TableComponent } from "./Components/TableComponent";
 import { Create } from "@mui/icons-material";
 import { CustomTable } from "./Components/CustomTable";
 import { PlanUtility } from "../Plan/PlanUtility";
+import { useParams } from "react-router-dom";
 export const BackLog = () => {
-  const { tasks, setTasks, getALlTasks, plans, moveToPlan } = useBackLog();
+  const { id } = useParams();
+  const { tasks, setTasks, getALlTasks, plans, moveToPlan } = useBackLog(id!);
   useEffect(() => {
     console.log(plans);
   }, [plans]);
@@ -64,63 +66,51 @@ export const BackLog = () => {
 
   return (
     <TableContainer component={Paper}>
-      <Box className="box">
-        <InputLabel>Back Log</InputLabel>
-        {tasks.length > 0 && (
-          <TableComponent
-            filter={"backLog"}
-            setSelectedTask={setSelectedTask}
-            menuOptions={plans.map((value: any) => (
-              <MenuItem onClick={() => handleMoveToPlan(value.id)}>
-                {value.planName}
-              </MenuItem>
-            ))}
-            tasks={tasks}
-          />
-        )}
-      </Box>
       <PlanUtility open={open} setOpen={setOpen} />
+
       <Box
-        className="box"
         style={{
-          height: "60%",
+          overflow: "auto",
         }}
       >
-        <InputLabel>Existing Plans</InputLabel>
-
-        <Box
-          style={{
-            height: "90%",
-            overflow: "auto",
-          }}
-        >
-          {plans.map((value, key) => (
-            <CustomTable
-              handleMoveToPlan={handleMoveToPlan}
-              value={value}
-              setSelectedTask={setSelectedTask}
-              menuOptions={
-                plans.length > 0
-                  ? [
-                      ...plans.filter((item) => item.id !== value.id),
-                      {
-                        id: "backLog",
-                        planName: "Back Log",
-                      },
-                    ].map((value: any) => (
-                      <MenuItem onClick={() => handleMoveToPlan(value.id)}>
-                        {value.planName}
-                      </MenuItem>
-                    ))
-                  : [<MenuItem>No plans found</MenuItem>]
-              }
-              filter={value.id}
-              plans={plans}
-              tasks={tasks}
-            />
-          ))}
-        </Box>
+        {plans.map((value, key) => (
+          <CustomTable
+            handleMoveToPlan={handleMoveToPlan}
+            value={value}
+            setSelectedTask={setSelectedTask}
+            menuOptions={
+              plans.length > 0
+                ? [
+                    ...plans.filter((item) => item.id !== value.id),
+                    {
+                      id: "backLog",
+                      planName: "Back Log",
+                    },
+                  ].map((value: any) => (
+                    <MenuItem onClick={() => handleMoveToPlan(value.id)}>
+                      {value.planName}
+                    </MenuItem>
+                  ))
+                : [<MenuItem>No plans found</MenuItem>]
+            }
+            filter={value.id}
+            plans={plans}
+            tasks={tasks}
+          />
+        ))}
       </Box>
+      <CustomTable
+        value={{
+          planName: "Back Log",
+          id: "backLog",
+        }}
+        setSelectedTask={setSelectedTask}
+        plans={plans}
+        tasks={tasks}
+        handleMoveToPlan={handleMoveToPlan}
+        menuOptions={[]}
+      />
+
       <SpeedDial
         ariaLabel="SpeedDial basic example"
         sx={{ position: "absolute", bottom: 16, right: 16 }}

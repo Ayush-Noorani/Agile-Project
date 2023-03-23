@@ -32,7 +32,7 @@ export const useRegister = () => {
         );
         dispatch(setUser(value));
         localStorage.setItem("token", res.data.token);
-        navigate("/home");
+        navigate("/my-dashboard");
       })
       .catch((err) => {
         if (!err.response?.data?.message) {

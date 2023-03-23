@@ -14,6 +14,7 @@ import {
   Paper,
 } from "@mui/material";
 import { MenuComponent } from "../../../components/MenuComponent";
+import { TaskPriorityIcon } from "../../../components/Common/Priority";
 
 interface TableProps {
   tasks: Tasks[];
@@ -78,7 +79,20 @@ export const TableComponent = ({
                 <TableCell>{task.taskName}</TableCell>
                 <TableCell>{task.assignee.length}</TableCell>
                 <TableCell>{task.reportTo.length}</TableCell>
-                <TableCell>{task.priority}</TableCell>
+                <TableCell>
+                  <label
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    {task.priority && (
+                      <TaskPriorityIcon priority={task.priority} />
+                    )}
+                    {task.priority}
+                  </label>
+                </TableCell>
                 <TableCell>{task.section ?? "-"}</TableCell>
                 <TableCell>
                   {task.plan == "backLog"

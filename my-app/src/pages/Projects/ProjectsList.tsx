@@ -29,7 +29,7 @@ export const ProjectsList = () => {
     setPieChartProjectId(id);
     setSelectedProjectName(projectName);
   };
-  const { setSelected } = useProjectContext();
+  const { setValue } = useProjectContext();
 
   return (
     <div className="project-container">
@@ -39,8 +39,8 @@ export const ProjectsList = () => {
             data={item}
             key={index}
             onClick={(e: any) => {
-              console.log("HERE");
-              setSelected(item);
+              console.log("HERE", item);
+              setValue(item);
               navigate("/project/tasks/" + item.id);
             }}
           />

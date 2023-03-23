@@ -24,7 +24,7 @@ interface TaskProps {}
 export const TaskList = ({}: TaskProps) => {
   const { id } = useParams();
   const [open, setOpen] = useState(false);
-  const { form, plans, createPlan, getPlans } = usePlan();
+  const { form, plans, createPlan, getPlans } = usePlan(id);
   useEffect(() => {
     getPlans({
       status: "1",

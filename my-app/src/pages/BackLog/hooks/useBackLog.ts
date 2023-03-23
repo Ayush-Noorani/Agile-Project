@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { useToastContext } from "../../../context/ToastContext";
 import { axiosInstance } from "../../../helper/axios";
 import { setTask } from "../../../store/reducers/tasks";
 import { RootState } from "../../../store/store";
-import { Tasks } from "../../../types/common";
+import { Plan, Tasks } from "../../../types/common";
 import { consoleStatement } from "../../../utils/Common";
-export type Plan = {
-  startDate: Date;
-  endDate: Date;
-  planName: string;
-  project: string;
-};
-export const useBackLog = () => {
+
+export const useBackLog = (id: string) => {
   const taskStore = useSelector((state: RootState) => state.tasks);
 
   const dispatch = useDispatch();
@@ -21,8 +17,10 @@ export const useBackLog = () => {
     startDate: new Date(),
     endDate: new Date(),
     planName: "",
+
     project: "",
   });
+  const { defaultValue, toast } = useToastContext();
   const [plans, setPlans] = useState<any[]>([]);
   useEffect(() => {
     getALlTasks();
@@ -43,9 +41,13 @@ export const useBackLog = () => {
 
   const getPlans = () => {
     axiosInstance
-      .get("/plans/list")
+      .get(`/plans/list?status=active&&id=${id}`)
       .then((res) => {
-        consoleStatement("GET Plan list", "green", res.data.plans);
+        console.log(
+          `%c GET All ACTIVE PLAN LIST \n`,
+          `background:green; color: white;  font-weight: bold;`,
+          res.data
+        );
         setPlans(res.data.plans);
       })
       .catch((err) => {
@@ -57,8 +59,11 @@ export const useBackLog = () => {
     axiosInstance
       .post("/plans/create", form)
       .then((res) => {
-        consoleStatement("CREATE Plan", "green", res.data);
-
+        console.log(
+          `%c CREATE PLAN \n`,
+          `background:green; color: white;  font-weight: bold;`,
+          res.data
+        );
         console.log(res.data);
         getPlans();
       })
@@ -74,26 +79,50 @@ export const useBackLog = () => {
         plan: id,
       })
       .then((res) => {
-        consoleStatement("POST Move Plan", "green", res.data);
-
+        console.log(
+          `%c POST MOVE PLAN" \n`,
+          `background:green; color: white;  font-weight: bold;`,
+          res.data
+        );
         getALlTasks();
       })
       .catch((err) => {
         console.error(err);
+        if (err?.reponse?.message) {
+          console.log(
+            `%c POST MOVE PLAN" \n`,
+            `background:green; color: white;  font-weight: bold;`,
+            err.reponse.message
+          );
+          toast.error(err.reponse.message, defaultValue);
+        }
       });
   };
 
   const updatePlanStatus = (data: any, status: any) => {
+    console.log(
+      `%c UPDATE PLAN STATUS \n`,
+      `background:green; color: white;  font-weight: bold;`
+    );
     axiosInstance
       .post("/plan/status/" + status, {
         id: data.id,
         projectId: data.project,
       })
       .then((res) => {
+        console.log(res.data);
         getPlans();
       })
 
       .catch((err) => {
+        if (err?.response?.data?.message) {
+          console.log(
+            `%c  ERROR: UPDATE PLAN STATUS \n`,
+            `background:red; color: white;  font-weight: bold;`,
+            err.response.data.message
+          );
+          toast.error(err.response.data.message, defaultValue);
+        }
         console.error(err);
       });
   };

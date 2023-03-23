@@ -68,7 +68,7 @@ const navBarItems: SideBarItemProps[] = [
     label: "Dashboard",
     icon: <Home />,
     role: "user",
-    path: "/home",
+    path: "/my-dashboard",
   },
   {
     label: "Projects",
@@ -131,7 +131,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
   const [typeSelected, setTypeSelected] = useState<string>("all");
   const { navigate } = useCommon();
   const { user } = useUser();
-  const { selected, setSelected } = useProjectContext();
+  const { selected, setValue } = useProjectContext();
   useEffect(() => {
     let interval = setInterval(() => {
       if (socket.connected) {
@@ -254,7 +254,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
                     key={index.toString()}
                     variant="text"
                     onClick={() => {
-                      selected && setSelected(undefined);
+                      selected && setValue(undefined);
                       navigate(link.path);
                     }}
                     sx={{ color: "black" }}

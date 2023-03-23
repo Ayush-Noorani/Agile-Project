@@ -20,38 +20,48 @@ export const items: SideBarItemProps[] = [
     label: "Active Plan",
     icon: <Start />,
     role: "user",
-    path: "/projects",
+    require: ["projectId"],
+
+    path: "/tasks/",
   },
   {
     label: "RetroSpection",
     icon: <Archive />,
     role: "user",
-    path: "/projects",
+    require: ["projectId"],
+
+    path: "/retrospection/",
   },
 
   {
     label: "Backlog",
     icon: <List />,
     role: "user",
-    path: "/backlog",
+    require: ["projectId"],
+
+    path: "/backlog/",
   },
   {
     label: "Plan",
     icon: <AccountTree />,
     role: "lead",
-    path: "/plan",
+    require: ["projectId"],
+
+    path: "/plan/",
   },
   {
     label: "Reports",
     icon: <PieChart />,
     role: "user",
-    path: "/plan",
+    require: ["projectId"],
+
+    path: "/pie-chart/",
   },
   {
     label: "Project Detail",
     icon: <Settings />,
     role: "user",
     require: ["projectId"],
-    path: "/project/",
+    path: "/settings/",
   },
 ];
