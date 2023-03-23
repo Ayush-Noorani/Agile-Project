@@ -101,7 +101,11 @@ export const CustomTable = ({
               <Fragment>
                 <Button
                   startIcon={<Check />}
-                  onClick={() => updatePlanStatus(value, 3)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    updatePlanStatus(value, 3);
+                  }}
                   variant="outlined"
                   disabled={value.status === "3"}
                 >
@@ -129,9 +133,10 @@ export const CustomTable = ({
                     )
                   }
                   disabled={value.status === "3"}
-                  onClick={() =>
-                    updatePlanStatus(value, value.status === "1" ? "2" : "1")
-                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updatePlanStatus(value, value.status === "1" ? "2" : "1");
+                  }}
                 >
                   {value.status === "1"
                     ? "Stop"

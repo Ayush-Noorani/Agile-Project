@@ -27,11 +27,9 @@ def list_plans():
 
                 {'project': ObjectId(id)},
 
-                {'endDate': {
-                    '$lte': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-                } if status == 'inactive' else {
-                    '$gte': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-                }, }]}
+                {'status': {
+                    '$ne': '3'
+                } if status != 'inactive' else '3', }]}
          },
         {
             '$lookup': {

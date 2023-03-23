@@ -1,6 +1,6 @@
 
 .sidebar{
-    width: 11vw;
+    width:11vw;
     height: 100;
     background-color:white;
     padding: 5px;
@@ -8,10 +8,8 @@
     flex-direction: column;
     overflow-y: auto;
     overflow-x: hidden;
-    left:0;
     box-shadow: rgba(60, 66, 87, 0.12) 0px 7px 14px 0px, rgba(0, 0, 0, 0.12) 0px 3px 6px 0px;
 
-    align-items: center ;
 
 
 }
@@ -21,8 +19,9 @@
     flex-direction: row;
     padding: 10px;
     align-items: center;
+    justify-content: center;
     height: 7%;
-    width: 60%;
+    width: 100%;
 }
 .sidebar-item:hover{
     background-color: #f2f2f2;

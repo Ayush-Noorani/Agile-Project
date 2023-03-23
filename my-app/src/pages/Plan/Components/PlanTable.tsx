@@ -95,9 +95,13 @@ export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
                       : "ENDED"}
                   </Button>
                   <Button
-                    disabled={row.status !== "1"}
+                    variant="outlined"
+                    sx={{
+                      marginLeft: "5px",
+                    }}
+                    disabled={row.status === "0"}
                     onClick={() => {
-                      navigate("/project/tasks" + row.project);
+                      navigate("/project/tasks/" + row.project);
                     }}
                   >
                     View Plan
