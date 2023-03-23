@@ -15,7 +15,7 @@ export const useRetroSpection = (id: string) => {
       `background:green; color: white;  font-weight: bold;`
     );
     axiosInstance
-      .get(`/plans/list/${id}?status=inactive}`)
+      .get(`/plans/list?status=inactive&id=${id}`)
       .then((res) => {
         console.log(res.data.plans);
         setPlans(res.data.plans);
