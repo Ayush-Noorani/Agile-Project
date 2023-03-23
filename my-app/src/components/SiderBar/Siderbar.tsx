@@ -8,6 +8,8 @@ import { NavBar } from "../NavBar/NavBar";
 import { useUser } from "../../hooks/useUser";
 import { useCommon } from "../../hooks/useCommon";
 import { useProjectContext } from "../../context/ProjectContext";
+import { consoleStatement } from "../../utils/Common";
+import { useParams } from "react-router-dom";
 interface SideBarProps {
   children: React.ReactNode | React.ReactNode[];
 }
@@ -15,12 +17,19 @@ interface SideBarProps {
 export const SideBar = ({ children }: SideBarProps) => {
   let token = localStorage.getItem("token");
   const { user } = useUser();
-  const { selected } = useProjectContext();
+  const { selected, setValue } = useProjectContext();
   const { navigate } = useCommon();
+  const { id } = useParams();
+
   const [open, setOpen] = React.useState(false);
   const handleRedirect = (path: string, require: string[]) => {
     setOpen(false);
-    navigate(require.includes("projectId") ? path + selected!.id : path);
+    console.log(id, require);
+    // consoleStatement(
+    //   "/project" + (require.includes("projectId") ? path + id : path),
+    //   "red"
+    // );
+    navigate("/project" + (require.includes("projectId") ? path + id : path));
   };
   if (!token) {
     return <>{children}</>;
@@ -60,6 +69,7 @@ export const SideBar = ({ children }: SideBarProps) => {
                   handleRedirect={handleRedirect}
                   path={value.path}
                   role={"admin"}
+                  require={value.require}
                 />
               ) : (
                 <></>

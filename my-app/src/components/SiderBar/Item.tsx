@@ -6,7 +6,7 @@ export const Item = (props: SideBarItemProps) => {
   return (
     <Box
       className="sidebar-item"
-      onClick={() => props.handleRedirect!(props.path, props.require || [])}
+      onClick={() => props.handleRedirect!(props.path, props.require!)}
     >
       {props.icon}
 

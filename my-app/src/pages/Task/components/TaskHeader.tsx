@@ -40,10 +40,7 @@ export const ShowDateDiff = ({ endDate }: any) => {
         <Typography variant="subtitle1" sx={{ fontWeight: "bold", mr: 1 }}>
           Time left:
         </Typography>
-        <Typography
-          variant="body2"
-          sx={{ fontStyle: "italic", color: "text.secondary" }}
-        >
+        <Typography variant="body2" sx={{ fcolor: "text.secondary" }}>
           {daysLeft} days, {hoursLeft} hours, and {minsLeft} minutes
         </Typography>
       </Typography>
@@ -119,6 +116,7 @@ export const TaskHeader = ({ id, plans }: { id: string; plans: any[] }) => {
                 id="planName"
                 name="planName"
                 label="Plan Name"
+                disabled={true}
                 value={filters.plan}
                 defaultChecked={filters.plan}
                 defaultValue={filters.plan}

@@ -12,8 +12,10 @@ import { Create } from "@mui/icons-material";
 import { PlanUtility } from "../Plan/PlanUtility";
 import { usePlan } from "./hooks/usePlan";
 import { PlanTable } from "./Components/PlanTable";
+import { useParams } from "react-router-dom";
 export const PlanList = () => {
-  const { getPlans, createPlan, plans, updatePlanStatus } = usePlan();
+  const { id } = useParams();
+  const { getPlans, createPlan, plans, updatePlanStatus } = usePlan(id);
 
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Tasks | null>(null); // state for the task currently selected in the menu
@@ -24,7 +26,7 @@ export const PlanList = () => {
   }[] = [
     {
       icon: <Create />,
-      name: "Create Task",
+      name: "Create Plan",
       onClick: () => {
         setOpen(true);
       },

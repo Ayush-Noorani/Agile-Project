@@ -3,9 +3,10 @@ import { useDispatch } from "react-redux";
 import { useToastContext } from "../../../context/ToastContext";
 import { axiosInstance } from "../../../helper/axios";
 import { setFilter } from "../../../store/reducers/filters";
-import { Plan } from "../../BackLog/hooks/useBackLog";
+import { Plan } from "../../../types/common";
+import { consoleStatement } from "../../../utils/Common";
 
-export const usePlan = () => {
+export const usePlan = (id: any) => {
   const [plans, setPlans] = useState<any[]>([]);
   const { toast, defaultValue } = useToastContext();
   const dispatch = useDispatch();
@@ -27,6 +28,11 @@ export const usePlan = () => {
         projectId: data.project,
       })
       .then((res) => {
+        console.log(
+          `%cCHANGE PLAN STATUS \n`,
+          `background:green; color: white;  font-weight: bold;`,
+          res.data
+        );
         getPlans();
       })
 
@@ -42,16 +48,20 @@ export const usePlan = () => {
       });
   };
   const getPlans = (data?: any) => {
-    let urlParams = "";
+    let urlParams = "?";
     if (data) {
       Object.entries(data).map(([key, value], index) => {
         urlParams += `${key}=${value}&`;
       });
-      urlParams = "?" + urlParams.slice(0, -1);
     }
     axiosInstance
-      .get("/plans/list" + urlParams)
+      .get("/plans/list" + urlParams + "id=" + id)
       .then((res) => {
+        console.log(
+          `%cFETCH PLAN LIST\n`,
+          `background:green; color: white;  font-weight: bold;`,
+          res.data
+        );
         console.log(res.data.plans);
         if (res.data.plans) {
           dispatch(
@@ -70,7 +80,11 @@ export const usePlan = () => {
     axiosInstance
       .post("/plans/create", form)
       .then((res) => {
-        console.log(res.data);
+        console.log(
+          `%CREATE PLAN \n`,
+          `background:green; color: white;  font-weight: bold;`,
+          res.data
+        );
         getPlans();
       })
       .catch((err) => {

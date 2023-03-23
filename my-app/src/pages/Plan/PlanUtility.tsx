@@ -19,6 +19,7 @@ import { onChange } from "../../utils/Common";
 import project from "../../store/reducers/project";
 import { useProject } from "../Projects/hooks/useProject";
 import { usePlan } from "./hooks/usePlan";
+import { useParams } from "react-router-dom";
 
 interface PlanUtilityProps {
   setOpen: (open: boolean) => void;
@@ -26,7 +27,8 @@ interface PlanUtilityProps {
 }
 
 export const PlanUtility = ({ setOpen, open }: PlanUtilityProps) => {
-  const { form, setForm, createPlan } = usePlan();
+  const { id } = useParams();
+  const { form, setForm, createPlan } = usePlan(id);
   const { projects, fetchAllProjects } = useProject();
 
   useEffect(() => {

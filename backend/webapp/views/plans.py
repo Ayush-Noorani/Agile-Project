@@ -18,8 +18,21 @@ collection = db.plans
 @app.route('/plans/list', methods=['GET'])
 @jwt_required()
 def list_plans():
-
+    status = request.args.get('status')
+    id = request.args.get('id')
+    print(id)
     pipeline = [
+        {'$match': {
+            '$and': [
+
+                {'project': ObjectId(id)},
+
+                {'endDate': {
+                    '$lte': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+                } if status == 'inactive' else {
+                    '$gte': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+                }, }]}
+         },
         {
             '$lookup': {
                 'from': 'projects',
@@ -50,12 +63,11 @@ def list_plans():
         }
     ]
     params = request.args.to_dict()
-    if params:
-        pipeline = [
-            {
-                '$match': params
-            }
-        ]+pipeline
+    if 'status' in params.keys() and params['status'] != 'active':
+        pipeline[0]['$match']['$and'].append({
+            'status': '3'
+        })
+    print(pipeline)
     plans = list(collection.aggregate(pipeline))
     for i in plans:
         i['id'] = str(i['_id'])
@@ -152,3 +164,38 @@ def set_plan_status(value):
             '$set': {'status': value}})
         return {'message': 'plan status updated'}, 200
     return {'message': 'plan already marked as completed cannot change status now.'}, 200
+
+
+# @app.route("/plan/retroSpection/")
+# @jwt_required()
+# def retro_spection():
+#     project_id = request.args.get('project_id')
+#     # user_id=get_jwt_identity()
+#     pipe_line = [
+#         {
+#             '$match': {'project': ObjectId(project_id)}
+#         }, {
+#             '$lookup': {
+#                 'from': 'projects',
+#                 'localField': 'project',
+#                 'foreignField': '_id',
+#                 'as': 'project'
+#             }
+#         },
+#         {'$unwind': '$project'}
+
+#     ]
+#     plans = list(collection.aggregate(pipe_line))
+#     for i in plans:
+#         i['id'] = str(i['_id'])
+#         i.pop('_id')
+#         i['project']['id'] = str(i['project']['_id'])
+#         i['project'].pop('_id')
+#         i['project']['members'] = [str(j) for j in i['project']['members']]
+#         for j in i['project']['tasks'].keys():
+#             j['project']['tasks'][j] = [str(x)
+#                                         for x in j['project']['tasks'][j]]
+
+#     return {
+#         'data': plans
+#     }, 200

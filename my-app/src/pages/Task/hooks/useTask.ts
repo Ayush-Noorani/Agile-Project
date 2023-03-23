@@ -115,7 +115,10 @@ export const useTask = (projectId?: string) => {
         columns: columnValue,
       })
       .then((res) => {
-        consoleStatement("UPDATE COLUMNS", "green", res.data);
+        console.log(
+          `%c UPDATE COLUMNS \n`,
+          `background:green; color: white;  font-weight: bold;`
+        );
         console.log(res);
       })
       .catch((err) => {
@@ -127,7 +130,10 @@ export const useTask = (projectId?: string) => {
     axiosInstance
       .get("/task/list/" + projectId)
       .then((res) => {
-        consoleStatement("FETCH ALL TASKS", "green", res.data);
+        console.log(
+          `%c FETCH ALL TASKS \n`,
+          `background:green; color: white;  font-weight: bold;`
+        );
         setTasks(res.data);
         if (TaskId) {
           const value: Task = Object.values(res.data)
@@ -163,7 +169,11 @@ export const useTask = (projectId?: string) => {
     axiosInstance
       .put(`/task/update/${formData.id}`, data)
       .then((res) => {
-        consoleStatement("UPDATE TASK", "green", res.data);
+        console.log(
+          `%c UPDATE TASKS \n`,
+          `background:green; color: white;  font-weight: bold;`,
+          res.data
+        );
         console.log(res);
       })
       .catch((err) => {
@@ -176,7 +186,11 @@ export const useTask = (projectId?: string) => {
     axiosInstance
       .post(`/task/create/${projectId}`, data)
       .then(() => {
-        consoleStatement("CREATE TASK", "green", data);
+        console.log(
+          `%c CREATE TASKS \n`,
+          `background:green; color: white;  font-weight: bold;`,
+          data
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -201,7 +215,11 @@ export const useTask = (projectId?: string) => {
     axiosInstance
       .put(`/task/update/sequence/${projectId}`, data)
       .then((res) => {
-        consoleStatement("UPDATE SEQUENCE", "green", res.data);
+        console.log(
+          `%c UPDATE SEQUENCE \n`,
+          `background:green; color: white;  font-weight: bold;`,
+          data
+        );
         console.log(res);
       })
       .catch((err) => {

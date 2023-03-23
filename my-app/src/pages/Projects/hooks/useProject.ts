@@ -36,14 +36,22 @@ export const useProject = (id?: string) => {
 
   const fetchAllProjects = () => {
     axiosInstance.get("/project/list").then((res) => {
-      consoleStatement("FETCH ALL PROJECTS", "green", res.data.projects);
+      console.log(
+        `%c FETCH ALL PROJECTS \n`,
+        `background:green; color: white;  font-weight: bold;`,
+        res.data
+      );
       dispatch(setData(res.data.projects));
     });
   };
   const fetchExistingData = (id: any) => {
     axiosInstance.get(`/project/get/${id}`).then((res) => {
-      consoleStatement("FETCH PROJECT", "green", res.data.project);
       setValue(res.data.project);
+      console.log(
+        `%c FETCH PROJECT \n`,
+        `background:green; color: white;  font-weight: bold;`,
+        res.data
+      );
     });
   };
 
@@ -74,7 +82,11 @@ export const useProject = (id?: string) => {
       axiosInstance
         .put(`/project/${id}`, data)
         .then((res) => {
-          consoleStatement("UPDATE PROJECT", "green", res.data);
+          console.log(
+            `%c UPDATE PROJECT \n`,
+            `background:green; color: white;  font-weight: bold;`,
+            res.data
+          );
           uploadImage(res.data.id);
         })
         .catch((err) => {
@@ -87,7 +99,11 @@ export const useProject = (id?: string) => {
       axiosInstance
         .post("/project/create", data)
         .then((res) => {
-          consoleStatement("CREATE PROJECT", "green", res.data);
+          console.log(
+            `%c CREATE PROJECT \n`,
+            `background:green; color: white;  font-weight: bold;`,
+            res.data
+          );
           console.log(res.data);
         })
         .catch((err) => {
