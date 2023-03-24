@@ -8,3 +8,6 @@ backend/webapp/views/__pycache__
 backend/webapp/views/__pycache__/user.cpython-38.pyc
 my-app/package-lock.json
 my-app/package-lock.json
+my-app/build
+backend/webapp/helpers/__pycache__/jwt.cpython-38.pyc
+backend/webapp/helpers/__pycache__/notification.cpython-38.pyc

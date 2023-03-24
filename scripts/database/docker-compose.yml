@@ -1,21 +1,15 @@
 version: '3.7'
 services:
   database:
-    build: ./scripts
+    build: 
+      context: .
+      dockerfile: ./DockerFile
+    container_name: database
     restart: always
-    ports:
-      - 27017:27017
+    image: database:v1
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: test
       MONGO_INITDB_DATABASE: projects
-    volumes:
-      - mongo: /data/db
-  frontend:
-    build: ./my-app
     ports:
-      - 3000:80
-  backend:
-    build: ./backend
-    ports:
-      - 5000:80
+      - 9009:27017
