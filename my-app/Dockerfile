@@ -1,6 +1,9 @@
-FROM node:18-alpine
+FROM node:18-alpine as build
 WORKDIR /app
 COPY . .
 RUN npm install 
-CMD ["npm start", "src/index.tsx"]
-EXPOSE 3000
+RUN npm run build
+
+FROM nginx
+COPY --from=build /app/build/ /usr/share/nginx/html
+EXPOSE 80

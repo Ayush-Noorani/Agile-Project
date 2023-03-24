@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  backend:
+    build: .
+    container_name: backend
+    restart: always
+    image: backend:v1
+    ports:
+      - 5000:80
