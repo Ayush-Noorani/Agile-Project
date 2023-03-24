@@ -1,9 +1,11 @@
 version: '3.7'
 services:
   backend:
-    build: .
+    build: 
+      context: .
+      dockerfile: ./Dockerfile      
     container_name: backend
     restart: always
     image: backend:v1
     ports:
-      - 5000:80
+      - 5000:8000
