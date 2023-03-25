@@ -15,7 +15,7 @@ import { Home } from "../pages/Home/Home";
 import { PlanList } from "../pages/Plan/PlanList";
 import { RetrospectionList } from "../pages/Retrospection/RetrospectionList";
 import PieChart from "../components/PieChart/PieChart";
-import { Dashboard } from "@mui/icons-material";
+import { DashboardView } from "../pages/Dashboard/DashboardView";
 
 export const Routes = createBrowserRouter([
   {
@@ -65,7 +65,7 @@ export const Routes = createBrowserRouter([
   },
   {
     path: "/my-dashboard",
-    element: <Protected children={<Dashboard />} />,
+    element: <Protected children={<DashboardView />} />,
   },
   {
     path: "/project/plan/:id",
