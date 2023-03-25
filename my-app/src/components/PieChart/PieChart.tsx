@@ -6,16 +6,18 @@ import React, { useEffect, useState } from "react";
 import { useTask } from "../../pages/Task/hooks/useTask";
 import "./pieChartCss.css";
 import Colors from "../../helper/colors";
+import { useParams } from "react-router-dom";
 
 const PieChart = ({ id, projectName, closeHandler }: any) => {
   const [pieData, setPieData] = useState<number[]>([]);
   const [pieLabels, setPieLabels] = useState<string[]>([]);
 
-  const { getTasks, tasks, columns } = useTask(id);
+  const params = useParams();
+  const { getTasks, tasks, columns } = useTask(params.id);
 
   useEffect(() => {
-    getTasks(undefined, id);
-  }, [id]);
+    getTasks(undefined, params.id);
+  }, [params.id]);
 
   useEffect(() => {
     loadPieChartData();
@@ -45,12 +47,6 @@ const PieChart = ({ id, projectName, closeHandler }: any) => {
     ],
   };
 
-  const closeModal = () => {
-    if (id) {
-      closeHandler(undefined);
-    }
-  };
-
   const options = {
     plugins: {
       title: {
@@ -60,13 +56,10 @@ const PieChart = ({ id, projectName, closeHandler }: any) => {
   };
 
   return (
-    <Box visibility={id ? "visible" : "hidden"} className={"parentWrapper"}>
+    <Box className={"parentWrapper"}>
       <Box className={"contentWrapper"}>
         <Box className={"headerWrapper"}>
           <h3>Project status for {projectName}</h3>
-          <button onClick={closeModal} className={"closeButton"}>
-            Close
-          </button>
         </Box>
         <Box className={"chartWrapper"}>
           <Pie data={data} options={options} />

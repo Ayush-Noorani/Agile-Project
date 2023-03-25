@@ -25,10 +25,6 @@ export const ProjectsList = () => {
     fetchAllProjects();
   }, []);
 
-  const showPieChart = (id?: string, projectName: string = "") => {
-    setPieChartProjectId(id);
-    setSelectedProjectName(projectName);
-  };
   const { setValue } = useProjectContext();
 
   return (
@@ -82,11 +78,6 @@ export const ProjectsList = () => {
       >
         <Add />
       </Fab>
-      <PieChart
-        id={pieChartProjectId}
-        projectName={selectedProjectName}
-        closeHandler={setPieChartProjectId}
-      />
     </div>
   );
 };
