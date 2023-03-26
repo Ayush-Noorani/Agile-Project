@@ -6,7 +6,7 @@ import { Add, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useProject } from "./hooks/useProject";
 import { ProjectData } from "../../types/common";
-import PieChart from "../../components/PieChart/PieChart";
+import PieChart from "../PieChart/PieChart";
 import { useProjectContext } from "../../context/ProjectContext";
 
 interface ProjectProps {}
@@ -25,10 +25,6 @@ export const ProjectsList = () => {
     fetchAllProjects();
   }, []);
 
-  const showPieChart = (id?: string, projectName: string = "") => {
-    setPieChartProjectId(id);
-    setSelectedProjectName(projectName);
-  };
   const { setValue } = useProjectContext();
 
   return (
@@ -82,11 +78,6 @@ export const ProjectsList = () => {
       >
         <Add />
       </Fab>
-      <PieChart
-        id={pieChartProjectId}
-        projectName={selectedProjectName}
-        closeHandler={setPieChartProjectId}
-      />
     </div>
   );
 };
