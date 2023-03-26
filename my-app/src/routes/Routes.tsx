@@ -14,8 +14,8 @@ import { BackLog } from "../pages/BackLog/BackLog";
 import { Home } from "../pages/Home/Home";
 import { PlanList } from "../pages/Plan/PlanList";
 import { RetrospectionList } from "../pages/Retrospection/RetrospectionList";
-import PieChart from "../components/PieChart/PieChart";
 import { DashboardView } from "../pages/Dashboard/DashboardView";
+import PieChart from "../pages/PieChart/PieChart";
 
 export const Routes = createBrowserRouter([
   {
