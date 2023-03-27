@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useToastContext } from "../../../context/ToastContext";
 import { axiosInstance } from "../../../helper/axios";
-import { setFilter } from "../../../store/reducers/filters";
+import { setFilter } from "../../../redux/reducers/filters";
 import { Plan } from "../../../types/common";
 import { consoleStatement } from "../../../utils/Common";
 

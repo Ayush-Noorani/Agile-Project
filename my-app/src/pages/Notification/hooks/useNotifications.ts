@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { axiosInstance } from "../../../helper/axios";
-import { RootState } from "../../../store/store";
+import { RootState } from "../../../redux/store";
 
 export const useNotifcation = () => {
   const notification = useSelector((state: RootState) => state.notification);

@@ -165,10 +165,16 @@ def get_task_list(id):
             i['assignee'] = i['assigned_user']
             i['reportTo'] = i['reporter_user']
             for x in i['assignee']:
-                x['img'] = decode_base64(x['img'])
+                if 'img' in x.keys():
+                    x['img'] = decode_base64(x['img'])
+                else:
+                    x['img'] = ''
             for x in i['reporter_user']:
-                x['img'] = decode_base64(x['img'])
-            i.pop('assigned_user')
+                if 'img' in x.keys():
+                    x['img'] = decode_base64(x['img'])
+                else:
+                    x['img'] = ''
+                i.pop('assigned_user')
             i.pop('reporter_user')
             if i['plan'] != 'backLog':
                 i['plan'] = str(i['plan'])
@@ -367,9 +373,15 @@ def list_tasks():
         i['assignee'] = i['assigned_user']
         i['reportTo'] = i['reporter_user']
         for x in i['assignee']:
-            x['img'] = decode_base64(x['img'])
+            if 'img' in x.keys():
+                x['img'] = decode_base64(x['img'])
+            else:
+                x['img'] = ''
         for x in i['reporter_user']:
-            x['img'] = decode_base64(x['img'])
+            if 'img' in x.keys():
+                x['img'] = decode_base64(x['img'])
+            else:
+                x['img'] = ''
         i.pop('assigned_user')
         i.pop('reporter_user')
         if i['plan'] != 'backLog':

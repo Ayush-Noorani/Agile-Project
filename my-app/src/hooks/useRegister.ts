@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 import { axiosInstance } from "../helper/axios";
 import { useDispatch } from "react-redux";
-import { setUser } from "../store/reducers/user";
+import { setUser } from "../redux/reducers/user";
 import { useToastContext } from "../context/ToastContext";
 import { generateRandomColor } from "../helper/common";
 

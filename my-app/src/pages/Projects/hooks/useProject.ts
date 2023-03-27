@@ -3,10 +3,10 @@ import { ProjectData, Member } from "../../../types/common";
 import { consoleStatement, onChange } from "./../../../utils/Common";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../store/store";
+import { RootState } from "../../../redux/store";
 import produce from "immer";
 import { useDispatch } from "react-redux";
-import { setData } from "../../../store/reducers/project";
+import { setData } from "../../../redux/reducers/project";
 
 export const useProject = (id?: string) => {
   const projects = useSelector((state: RootState) => state.project.projects);
