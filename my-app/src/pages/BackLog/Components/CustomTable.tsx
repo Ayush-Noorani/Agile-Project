@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { Fragment, useState } from "react";
 import { TableComponent } from "./TableComponent";
-import tasks from "../../../store/reducers/tasks";
+import tasks from "../../../redux/reducers/tasks";
 import { Tasks } from "../../../types/common";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Button } from "@mui/material";

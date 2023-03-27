@@ -16,7 +16,7 @@ import {
   TextField,
 } from "@mui/material";
 import { onChange } from "../../utils/Common";
-import project from "../../store/reducers/project";
+import project from "../../redux/reducers/project";
 import { useProject } from "../Projects/hooks/useProject";
 import { usePlan } from "./hooks/usePlan";
 import { useParams } from "react-router-dom";

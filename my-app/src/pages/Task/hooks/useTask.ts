@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { axiosInstance } from "../../../helper/axios";
-import { setFilter } from "../../../store/reducers/filters";
-import { setColumns } from "../../../store/reducers/project";
-import { RootState } from "../../../store/store";
+import { setFilter } from "../../../redux/reducers/filters";
+import { setColumns } from "../../../redux/reducers/project";
+import { RootState } from "../../../redux/store";
 import {
   Columntype,
   Member,

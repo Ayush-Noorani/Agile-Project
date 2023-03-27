@@ -34,10 +34,13 @@ def user_info():
         'email': 1, 'username': 1, 'roles': 1, '_id': 1, 'color': 1})
     data['id'] = str(data['_id'])
     data.pop("_id")
-    if data['img'] != '':
+
+    if 'img' in data.keys() and data['img'] != '':
         base64_data = codecs.encode(data['img'], 'base64')
 
         data['img'] = base64_data.decode("utf-8")
+    else:
+        data['img'] =''
     return data, 200
 
 
@@ -220,10 +223,16 @@ def get_user_dashboard():
                     i['assignee'] = i['assigned_user']
                     i['reportTo'] = i['reporter_user']
                     for x in i['assignee']:
-                        x['img'] = decode_base64(x['img'])
+                        if 'img' in x.keys():
+                            x['img'] = decode_base64(x['img'])
+                        else:
+                            x['img'] =''
                     for x in i['reportTo']:
-                        x['img'] = decode_base64(x['img'])
-                    i.pop('assigned_user')
+                        if 'img' in x.keys():
+                            x['img'] = decode_base64(x['img'])
+                        else:
+                            x['img'] =''
+                        i.pop('assigned_user')
                     i.pop('reporter_user')
                     if i['plan'] != 'backLog':
                         i['plan'] = str(i['plan'])

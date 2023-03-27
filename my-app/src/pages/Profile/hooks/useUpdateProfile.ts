@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { axiosInstance } from "../../../helper/axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../store/store";
+import { RootState } from "../../../redux/store";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../../store/reducers/user";
+import { setUser } from "../../../redux/reducers/user";
 
 export const useUpdateProfile = () => {
   const navigate = useNavigate();

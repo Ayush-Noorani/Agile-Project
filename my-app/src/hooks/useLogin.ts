@@ -3,7 +3,7 @@ import { axiosInstance } from "../helper/axios";
 import { useNavigate } from "react-router-dom";
 import { useToastContext } from "../context/ToastContext";
 import { useDispatch } from "react-redux";
-import { setUser } from "../store/reducers/user";
+import { setUser } from "../redux/reducers/user";
 export const useLogin = () => {
   const navigate = useNavigate();
   const { toast, defaultValue } = useToastContext();

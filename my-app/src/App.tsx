@@ -3,7 +3,7 @@ import { RouterProvider } from "react-router-dom";
 import "./App.css";
 import { Routes } from "./routes/Routes";
 import { Provider } from "react-redux";
-import { store } from "./store/store";
+import { store } from "./redux/store";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import "./css/common.css";

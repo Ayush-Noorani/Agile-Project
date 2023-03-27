@@ -3,9 +3,9 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useToastContext } from "../../../context/ToastContext";
 import { axiosInstance } from "../../../helper/axios";
-import { setDashboard } from "../../../store/reducers/project";
-import { setTask } from "../../../store/reducers/tasks";
-import { RootState } from "../../../store/store";
+import { setDashboard } from "../../../redux/reducers/project";
+import { setTask } from "../../../redux/reducers/tasks";
+import { RootState } from "../../../redux/store";
 import {
   DashBoard,
   Member,

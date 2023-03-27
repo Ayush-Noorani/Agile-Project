@@ -54,7 +54,7 @@ const TaskList = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Task taskName</TableCell>
+              <TableCell>Task</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Created By</TableCell>
             </TableRow>
