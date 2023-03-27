@@ -1,3 +1,4 @@
+from webapp.helpers.common import decode_base64
 from webapp import app
 from flask import request
 from pymongo import MongoClient
@@ -122,10 +123,11 @@ def set_plan_status(value):
     if not data['id']:
         return {'message': 'id is required'}, 400
     check_plan = db.plans.find_one(
-        {'_id': ObjectId(data['id'])}, {'status': 1})
+        {'_id': ObjectId(data['id'])}, {'status': 1, '_id': 1, 'project': 1})
     if check_plan['status'] != '3':
         if (value == '1'):
             check_if_plan_started = collection.find_one({
+                '_id': {'$ne': ObjectId(data['id'])},
                 'project': ObjectId(data['projectId']), 'status': "1",
                 'endDate': {
                     '$gt': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
@@ -150,7 +152,7 @@ def set_plan_status(value):
             })
             tasks = [ObjectId(i['_id']) for i in tasks if ObjectId(
                 i['_id']) not in projects['tasks']['toDo']]
-            projects['tasks']['toDo'] = tasks+projects['tasks']['toDo']
+            projects['tasks']['toDo'] = tasks
             db.projects.update_one({
                 '_id': projects['_id'],
             }, {
@@ -158,11 +160,126 @@ def set_plan_status(value):
                     'tasks': projects['tasks']
                 }
             })
-        collection.update_one({'_id': ObjectId(data['id'])}, {
-            '$set': {'status': value}})
+        if value == '3':
+            project = db.projects.find_one(
+                {'_id': ObjectId(check_plan['project'])}, {'tasks': 1, 'columns': 1})
+            db.plans.update_one({'_id': ObjectId(data['id'])}, {
+                '$set': {'status': value, 'tasks': project['tasks'],
+                         'columns': project['columns']}})
+            for k, v in project['tasks'].items():
+                project['tasks'][k] = []
+            print(project['tasks'])
+            db.projects.update_one({'_id': ObjectId(check_plan['project'])}, {
+                '$set': {'tasks': project['tasks']}
+            })
+
+        else:
+            collection.update_one({'_id': ObjectId(data['id'])}, {
+                '$set': {'status': value}})
         return {'message': 'plan status updated'}, 200
     return {'message': 'plan already marked as completed cannot change status now.'}, 200
 
+
+@app.route('/plan/retroSpection/<plan_id>')
+@jwt_required()
+def retro_spection(plan_id):
+
+    plan = collection.find_one({
+        '_id': ObjectId(plan_id)
+    })
+    tasks_dict = {}
+
+    for task_status in plan["tasks"].keys():
+        task_pipeline = [
+            {"$match": {
+                "_id": {"$in":  plan["tasks"][task_status]}}},
+            {"$lookup": {
+                "from": "user_details",
+                "localField": "assignedTo",
+                "foreignField": "_id",
+                "as": "assigned_user"
+            }},
+            {"$lookup": {
+                "from": "user_details",
+                "localField": "reportTo",
+                "foreignField": "_id",
+                "as": "reporter_user"
+            }},
+            {"$project": {
+                "_id": 0,
+                "id": {"$toString": "$_id"},
+                "taskName": 1,
+                "description": 1,
+                'summary': 1,
+                "status": 1,
+                "created_at": 1,
+                "updated_at": 1,
+                'plan': 1,
+                "project": 1,
+
+                "priority": 1,
+                'section': 1,
+                "due_date": 1,
+                "assigned_user_id": {"$arrayElemAt": ["$assigned_user._id", 0]},
+                "reporter_user_id": {"$arrayElemAt": ["$reporter_user._id", 0]},
+            }},
+            {"$lookup": {
+                "from": "user_details",
+                "localField": "assigned_user_id",
+                "foreignField": "_id",
+                "as": "assigned_user"
+            }},
+            {"$lookup": {
+                "from": "user_details",
+                "localField": "reporter_user_id",
+                "foreignField": "_id",
+                "as": "reporter_user"
+            }},
+            {"$project": {
+                "_id": 0,
+                "id": 1,
+                "taskName": 1,
+                "description": 1,
+                "status": 1,
+                "created_at": 1,
+                "project": 1,
+                "summary": 1,
+                'plan': 1,
+                "updated_at": 1,
+                "due_date": 1,
+                "section": 1,
+                "priority": 1,
+                "assigned_user.username": 1,
+                "assigned_user.color": 1,
+                "assigned_user.name": 1,
+                "reporter_user.color": 1,
+                "reporter_user.username": 1,
+                "reporter_user.name": 1
+
+            }}
+        ]
+
+        results = list(db.tasks.aggregate(task_pipeline))
+        for i in results:
+            i['assignee'] = i['assigned_user']
+            i['reportTo'] = i['reporter_user']
+            for x in i['assignee']:
+                if 'img' in x.keys():
+                    x['img'] = decode_base64(x['img'])
+                else:
+                    x['img'] = ''
+            for x in i['reporter_user']:
+                if 'img' in x.keys():
+                    x['img'] = decode_base64(x['img'])
+                else:
+                    x['img'] = ''
+                i.pop('assigned_user')
+            i.pop('reporter_user')
+            if i['plan'] != 'backLog':
+                i['plan'] = str(i['plan'])
+        tasks_dict[task_status] = results
+    plan['tasks'] = tasks_dict
+    return plan, 200
 
 # @app.route("/plan/retroSpection/")
 # @jwt_required()
