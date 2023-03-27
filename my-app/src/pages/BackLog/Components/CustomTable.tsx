@@ -107,7 +107,7 @@ export const CustomTable = ({
                     updatePlanStatus(value, 3);
                   }}
                   variant="outlined"
-                  disabled={value.status === "3"}
+                  disabled={value.status === "3" || value.status !== "1"}
                 >
                   {value.status !== "3" ? "Mark as completed" : "Completed"}
                 </Button>

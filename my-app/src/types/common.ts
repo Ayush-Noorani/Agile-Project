@@ -4,6 +4,7 @@ export type FormType = {
   type: string;
 };
 export type Plan = {
+  id?: string;
   startDate: Date;
   endDate: Date;
   planName: string;

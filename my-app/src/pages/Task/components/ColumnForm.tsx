@@ -37,7 +37,7 @@ const columnHeaders: Headers[] = [
 
 export const ColumnForm = ({ id }: ColumnProps) => {
   const {
-    columns,
+    column: columns,
     newColumn,
     setNewColumn,
     saveColumns,

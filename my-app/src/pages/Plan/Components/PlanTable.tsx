@@ -60,7 +60,7 @@ export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
                     startIcon={<Check />}
                     onClick={() => onClick(row, "3")}
                     variant="outlined"
-                    disabled={row.status === "3"}
+                    disabled={row.status === "3" || row.status !== "1"}
                   >
                     {row.status !== "3" ? "Mark as completed" : "Completed"}
                   </Button>
@@ -101,7 +101,7 @@ export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
                     }}
                     disabled={row.status === "0"}
                     onClick={() => {
-                      navigate("/project/tasks/" + row.project);
+                      navigate("/project/tasks/" + row.project + "/" + row.id);
                     }}
                   >
                     View Plan

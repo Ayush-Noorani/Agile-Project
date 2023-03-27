@@ -9,7 +9,7 @@ import { useDashboard } from "./hooks/useDashboard";
 
 const DashboardView = () => {
   const { user } = useUser();
-  const { getDashboardData, projects } = useDashboard();
+  const { getDashboardData, projects, dashboard } = useDashboard();
   useEffect(() => {
     getDashboardData();
   }, []);
@@ -38,11 +38,11 @@ const DashboardView = () => {
             marginRight={"20px"}
           >
             <TaskPerfromance
-              remaining={projects.reduce(
+              remaining={dashboard.reduce(
                 (acc, curr) => acc + curr.status.remaining_tasks,
                 0
               )}
-              complete={projects.reduce(
+              complete={dashboard.reduce(
                 (acc, curr) => acc + curr.status.completed_tasks,
                 0
               )}
