@@ -1,5 +1,4 @@
 import {
-  Alert,
   Box,
   Chip,
   Paper,
@@ -11,85 +10,87 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import TaskAltSharpIcon from "@mui/icons-material/TaskAltSharp";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import AccessTimeSharpIcon from "@mui/icons-material/AccessTimeSharp";
 import React from "react";
+import { useDashboard } from "../hooks/useDashboard";
+import { Tasks } from "../../../types/common";
 
 const testData = [
-  { name: "Task1", status: "inProgress", createdBy: "Jason" },
-  { name: "Task2", status: "complete", createdBy: "Jason" },
-  { name: "Task3", status: "inProgress", createdBy: "Jason" },
-  { name: "Task4", status: "toDo", createdBy: "Jason" },
-  { name: "Task5", status: "complete", createdBy: "Jason" },
-  { name: "Task6", status: "inProgress", createdBy: "Jason" },
-  { name: "Task7", status: "complete", createdBy: "Jason" },
-  { name: "Task8", status: "inProgress", createdBy: "Jason" },
-  { name: "Task9", status: "toDo", createdBy: "Jason" },
-  { name: "Task10", status: "complete", createdBy: "Jason" },
+  { taskName: "Task1", status: "inProgress", createdBy: "Jason" },
+  { taskName: "Task2", status: "complete", createdBy: "Jason" },
+  { taskName: "Task3", status: "inProgress", createdBy: "Jason" },
+  { taskName: "Task4", status: "toDo", createdBy: "Jason" },
+  { taskName: "Task5", status: "complete", createdBy: "Jason" },
+  { taskName: "Task6", status: "inProgress", createdBy: "Jason" },
+  { taskName: "Task7", status: "complete", createdBy: "Jason" },
+  { taskName: "Task8", status: "inProgress", createdBy: "Jason" },
+  { taskName: "Task9", status: "toDo", createdBy: "Jason" },
+  { taskName: "Task10", status: "complete", createdBy: "Jason" },
 ];
 
 const TaskList = () => {
+  const { projects, dashboard } = useDashboard();
+
   return (
-    <>
-      <Paper
-        component={Box}
-        elevation={6}
+    <Paper
+      component={Box}
+      elevation={6}
+      sx={{
+        borderRadius: "20px",
+        paddingY: "23px",
+        paddingX: "10px",
+        width: "100%",
+        marginTop: "10px",
+        height: "52%",
+      }}
+    >
+      <Typography variant="h5" gutterBottom align="center">
+        Your Tasks
+      </Typography>
+      <TableContainer
         sx={{
-          borderRadius: "20px",
-          paddingY: "23px",
-          paddingX: "10px",
-          width: "100%",
+          height: "90%",
         }}
       >
-        <Typography variant="h5" gutterBottom align="center">
-          Your Tasks
-        </Typography>
-        <TableContainer sx={{ maxHeight: "430px" }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Task Name</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Created By</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {testData.map((row) => {
-                var icon;
-                var color: any;
-                switch (row.status) {
-                  case "complete":
-                    icon = <TaskAltSharpIcon />;
-                    color = "success";
-                    break;
-                  case "toDo":
-                    icon = <InfoOutlinedIcon />;
-                    color = "primary";
-                    break;
-                  case "inProgress":
-                    icon = <AccessTimeSharpIcon />;
-                    color = "warning";
-                    break;
-                }
-
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Task taskName</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Created By</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody
+            sx={{
+              overflow: "auto",
+            }}
+          >
+            {dashboard
+              .map((project) =>
+                Object.values(project.tasks).flatMap((value) => value)
+              )
+              .flatMap((value) => value)
+              .map((row: Tasks, index) => {
                 return (
-                  <TableRow key={row.name} sx={{ "td, th": { border: 0 } }}>
+                  <TableRow
+                    key={index.toString()}
+                    sx={{ "td, th": { border: 0 } }}
+                  >
                     <TableCell component="th" scope="row">
-                      {row.name}
+                      {row.taskName}
                     </TableCell>
                     <TableCell>
-                      <Chip label={row.status} icon={icon} color={color} />
+                      {row.status && <Chip label={row.status} />}
                     </TableCell>
-                    <TableCell>{row.createdBy}</TableCell>
+                    <TableCell>
+                      {/* <TaskPriorityIcon priority={row?.priority} /> */}
+                    </TableCell>
                   </TableRow>
                 );
               })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-    </>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 };
 

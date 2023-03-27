@@ -18,7 +18,7 @@ export const useProject = (id?: string) => {
     members: [],
     img: "",
     startDate: new Date(),
-    expectedEndDate: new Date(),
+    endDate: new Date(),
     category: "",
     lead: "",
     columns: [],
@@ -72,8 +72,6 @@ export const useProject = (id?: string) => {
     if (value.img && typeof value.img == "object") {
       request["img"] = true;
       data.append("img", value.img);
-    } else {
-      request["img"] = false;
     }
     if (value.id) {
       request.members = request.members.map((value: Member) => value.id);

@@ -21,6 +21,7 @@ import { useProject } from "./hooks/useProject";
 import { baseURL } from "../../helper/axios";
 import { useCommon } from "../../hooks/useCommon";
 import { TypoGraphyImage } from "../../components/Common/TypoGraphyImage";
+import Compressor from "compressorjs";
 
 interface ProjectDetailProps {}
 
@@ -69,8 +70,13 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
   }, []);
 
   const handleImageUpload = (e: any) => {
-    updateState(e.target.files[0], "img");
-
+    new Compressor(e.target.files[0], {
+      quality: 0.7,
+      success: (compressedResult) => {
+        console.log(compressedResult);
+        updateState(compressedResult, "img");
+      },
+    });
     reader.readAsDataURL(e.target.files[0] as File);
     reader.addEventListener("load", () => {
       setImage(reader.result as string);
@@ -83,10 +89,10 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
         <img
           alt="img"
           src={
-            image.length > 0
+            typeof value.img === "string" && value.img.length > 30
+              ? `data:image/png;base64,${value.img}`
+              : image
               ? image
-              : value.img
-              ? `${baseURL}/image/project/${id}.png`
               : "https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YmxvYnxlbnwwfHwwfHw%3D&w=1000&q=80"
           }
           height="200px"
@@ -194,7 +200,7 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
               onChange={(item: any) => {
                 updateState(item.selection.startDate, "startDate");
 
-                updateState(item.selection.expectedEndDate, "expectedEndDate");
+                updateState(item.selection.expectedEndDate, "endDate");
 
                 setState([item.selection]);
               }}

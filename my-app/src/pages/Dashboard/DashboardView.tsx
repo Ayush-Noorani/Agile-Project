@@ -1,11 +1,18 @@
 import { Box, Grid, Stack } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import React from "react";
+import React, { useEffect } from "react";
+import { useUser } from "../../hooks/useUser";
 import { ProjectList } from "./Components/ProjectList";
 import { TaskList } from "./Components/TaskList";
 import { TaskPerfromance } from "./Components/TaskPerformance";
+import { useDashboard } from "./hooks/useDashboard";
 
 const DashboardView = () => {
+  const { user } = useUser();
+  const { getDashboardData, projects } = useDashboard();
+  useEffect(() => {
+    getDashboardData();
+  }, []);
   return (
     <>
       <Box
@@ -16,7 +23,7 @@ const DashboardView = () => {
         }}
       >
         <Typography variant="h4" mb={3}>
-          Welcome, PersonX
+          Welcome, {user.userName}
         </Typography>
         <Box
           sx={{
@@ -26,11 +33,20 @@ const DashboardView = () => {
         >
           <Stack
             direction="column"
-            justifyContent="space-between"
             alignItems="center"
             width={"36%"}
+            marginRight={"20px"}
           >
-            <TaskPerfromance remaining={5} complete={12} />
+            <TaskPerfromance
+              remaining={projects.reduce(
+                (acc, curr) => acc + curr.status.remaining_tasks,
+                0
+              )}
+              complete={projects.reduce(
+                (acc, curr) => acc + curr.status.completed_tasks,
+                0
+              )}
+            />
             <TaskList />
           </Stack>
           <ProjectList />

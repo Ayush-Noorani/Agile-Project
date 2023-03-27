@@ -11,6 +11,14 @@ export type Plan = {
   projectName?: string;
   status?: string;
 };
+export type DashBoard = ProjectData & {
+  tasks: Record<string, Tasks[]>;
+  members_count: Number;
+  status: {
+    completed_tasks: number;
+    remaining_tasks: number;
+  };
+};
 export type User = {
   id: string;
   name: string;
@@ -54,7 +62,7 @@ export type ProjectData = {
   members: Member[];
   img: string | boolean | File;
   startDate: Date;
-  expectedEndDate: Date;
+  endDate: Date;
   category: string;
   lead: string;
   columns: Columntype[];

@@ -1,3 +1,4 @@
+from webapp.helpers.common import decode_base64
 from webapp import app
 from flask import request
 from pymongo import MongoClient

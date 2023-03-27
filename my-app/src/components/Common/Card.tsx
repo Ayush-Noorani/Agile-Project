@@ -10,8 +10,8 @@ export const Card = ({ data, onClick }: { data: any; onClick: Function }) => {
     <div key={data.id} className="project" onClick={() => onClick()}>
       <img
         src={
-          data?.img
-            ? `${baseURL}/image/project/${data.id}.png`
+          data?.img.length > 0
+            ? `data:image/png;base64,${data.img}`
             : "https://picsum.photos/200"
         }
         alt="img"

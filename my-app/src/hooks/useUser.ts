@@ -20,7 +20,7 @@ export const useUser = () => {
         dispatch(setUser(res.data));
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
   return {

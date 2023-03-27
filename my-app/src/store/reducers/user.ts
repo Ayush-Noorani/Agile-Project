@@ -8,6 +8,7 @@ type initialStateType = {
   roles: Role[];
   id: string | undefined;
   color?: string;
+  img: string;
 };
 
 const initialState: initialStateType = {
@@ -16,6 +17,7 @@ const initialState: initialStateType = {
   email: "",
   roles: [],
   id: undefined,
+  img: "",
 };
 const userSlice = createSlice({
   name: "user",
@@ -30,6 +32,7 @@ const userSlice = createSlice({
         draft.email = action.payload.email;
         draft.isLoggedIn = true;
         draft.roles = action.payload.roles;
+        draft.img = action.payload.img;
         draft.id = action.payload.id;
         draft.color = action.payload?.color;
       });

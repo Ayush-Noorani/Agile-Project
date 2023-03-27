@@ -35,7 +35,6 @@ export const ProjectsList = () => {
             data={item}
             key={index}
             onClick={(e: any) => {
-              console.log("HERE", item);
               setValue(item);
               navigate("/project/tasks/" + item.id);
             }}
