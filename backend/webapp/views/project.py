@@ -65,7 +65,7 @@ def get_project_list():
             print("converting project")
             project['img'] = decode_base64(project['img'])
         else:
-            project['img'] = ''            
+            project['img'] = ''
         project["id"] = str(project["_id"])
         project['membersCount'] = len(project['members'])
         for i in project['members']:
@@ -77,7 +77,8 @@ def get_project_list():
             i.pop('_id')
             if 'columns' in i.keys():
                 for j in i['columns']:
-                    j['fixed'] = True
+                    if len(project['tasks'][j['value']]) > 0:
+                        j['fixed'] = True
         project.pop("_id")
     return {"projects": projects}
 
@@ -205,10 +206,10 @@ def search_project_members(text):
     members = []
     if (text == "*"):
         members = list(db.user_details.find({"roles": {"$in": roles}},  {
-            '_id': 1, "username": 1, "roles": 1, "img": 1, 'members.color': 1, 'members.name': 1,'members.img':1}))
+            '_id': 1, "username": 1, "roles": 1, "img": 1, 'members.color': 1, 'members.name': 1, 'members.img': 1}))
     else:
         members = list(db.user_details.find({"roles": {"$in": roles}, 'username': "/" + text + "/"}, {
-            '_id': 1, "username": 1, "roles": 1, "img": 1, 'members.color': 1, 'members.name': 1,'members.img':1}))
+            '_id': 1, "username": 1, "roles": 1, "img": 1, 'members.color': 1, 'members.name': 1, 'members.img': 1}))
     for member in members:
         if 'img' in member.keys():
             member['img'] = decode_base64(member['img'])
