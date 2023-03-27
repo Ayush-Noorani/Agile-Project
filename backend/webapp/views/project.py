@@ -1,3 +1,4 @@
+from webapp.helpers.common import decode_base64
 from webapp import app
 from flask import request
 from pymongo import MongoClient
@@ -8,9 +9,11 @@ from bson import ObjectId
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import requests
 from webapp.helpers.notification import create_notification
-
+from werkzeug.datastructures import FileStorage
 import json
 from flask import send_file
+import codecs
+
 collection = db.projects
 
 # collection
@@ -62,7 +65,7 @@ def get_project_list():
         project['membersCount'] = len(project['members'])
         for i in project['members']:
             i['id'] = str(i['_id'])
-
+            i['img'] = decode_base64(i['img'])
             i.pop('_id')
             if 'columns' in i.keys():
                 for j in i['columns']:
@@ -82,6 +85,9 @@ def save_columns(id):
 
     for i in missing_elements:
         current_project['tasks'][i['value']] = []
+    done_project = current_project['tasks']['done']
+    current_project['tasks'].pop('done')
+    current_project['tasks']['done'] = current_project
     db.projects.update_one({"_id": ObjectId(id)}, {
                            "$set": {"columns": data['columns'],
                                     'tasks': current_project['tasks']}, })
@@ -115,16 +121,17 @@ def create_project():
             "value": "done"
         }
     ]
+    if isinstance(img, FileStorage):
+        data['img'] = img.stream.read()  # type: ignore
+    elif len(data['img'] > 0):
+        data['img'] = ''
     for i in default_columns:
         data['tasks'][i]['value'] = []
     data['columns'] = default_columns
     if data['lead'] != "":
         data['lead'] = ObjectId(data['lead'])
     id = db.projects.insert_one(data).inserted_id
-    img = request.files['img']
-    if (img):
-        img.save(app.config["UPLOAD_FOLDER"]+"\\project\\" +
-                 str(id)+"."+"png")
+
     create_notification(
         data['members'], "You have been assigned to a project by", 1, ObjectId(data['created_by']), id)
 
@@ -177,6 +184,8 @@ def get_project_members(id):
         member = member['members']
         member["id"] = str(member["_id"])
         member.pop("_id")
+        member['img'] = decode_base64(member['img'])
+
         result.append(member)
     return {"members": result}
 
@@ -193,6 +202,7 @@ def search_project_members(text):
         members = list(db.user_details.find({"roles": {"$in": roles}, 'username': "/" + text + "/"}, {
             '_id': 1, "username": 1, "roles": 1, "img": 1, 'members.color': 1, 'members.name': 1}))
     for member in members:
+        member['img'] = decode_base64(member['img'])
 
         member["id"] = str(member["_id"])
         member.pop("_id")
@@ -234,11 +244,14 @@ def get_project(id):
     project = list(db.projects.aggregate(pipeline))[0]
     project["id"] = id
     project.pop("_id")
+    if project['img'] != '':
+        base64_data = codecs.encode(project['img'], 'base64')
+
+        project['img'] = base64_data.decode("utf-8")
     for member in project['members']:
         member["id"] = str(member["_id"])
         member.pop("_id")
     project['created_by'] = str(project['created_by'])
-
     return {"project": project}
 
 
@@ -248,19 +261,21 @@ def update_project(id):
     data = json.loads(request.form["data"])
     img = request.files['img'] if 'img' in request.files.keys() else False
     user_id = get_jwt_identity()
-    if (img) and data['img'] != True:
-        data['img'] = True
-        img.save(app.config["UPLOAD_FOLDER"]+"\\project\\" +
-                 str(id)+"."+"png")
-    elif data['img'] == False:
-        data['img'] = False
+
+    if isinstance(img, FileStorage):
+        data['img'] = img.stream.read()  # type: ignore
+    elif len(data['img'] > 0):
+        data['img'] = ''
     data['members'] = [ObjectId(member) for member in data['members']]
     data.pop("id")
     if data['lead'] != "":
         data['lead'] = ObjectId(data['lead'])
+    print('insert')
     db.projects.update_one({"_id": ObjectId(id)}, {"$set": data})
-    create_notification(
-        data['members'], "Project Information is updated", 2, ObjectId(user_id), ObjectId(id))
+    print('done')
+
+    # create_notification(
+    #     data['members'], "Project Information is updated", 2, ObjectId(user_id), ObjectId(id))
     return {"status": "success"}
 
 

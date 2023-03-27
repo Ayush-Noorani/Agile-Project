@@ -15,7 +15,7 @@ interface formFields {
 }
 
 export const Profile = () => {
-  const { onSubmit, userData, saveImage } = useUpdateProfile();
+  const { onSubmit, userData, setImage: saveImage } = useUpdateProfile();
   const fileRef = useRef<any>(null);
   const [image, setImage] = useState<string>("");
   const reader = new FileReader();
@@ -31,7 +31,12 @@ export const Profile = () => {
     reader.addEventListener("load", () => {
       setImage(reader.result as string);
     });
-    saveImage(e.target.files[0]);
+    new Compressor(e.target.files[0], {
+      quality: 0.7,
+      success: (compressedResult) => {
+        saveImage(compressedResult);
+      },
+    });
   };
 
   const [error, setError] = useState<string | undefined>("");
@@ -71,7 +76,13 @@ export const Profile = () => {
           <div style={{ position: "relative" }}>
             <Avatar
               alt="profile image"
-              src={`${baseURL}/image/profile/${userData.id}.png`}
+              src={
+                typeof userData.img === "string" && userData.img.length > 30
+                  ? `data:image/png;base64,${userData.img}`
+                  : image
+                  ? image
+                  : "https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YmxvYnxlbnwwfHwwfHw%3D&w=1000&q=80"
+              }
               sx={{ width: 200, height: 200 }}
             />
             <Fab

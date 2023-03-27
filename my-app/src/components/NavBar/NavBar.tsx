@@ -234,7 +234,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
               mr="10px"
               sx={{ display: { sm: "block" } }}
             >
-              Jira Clone
+              ProjectCentral
             </Typography>
             {navBarItems.map((link, index) =>
               user.roles.includes("admin") ? (

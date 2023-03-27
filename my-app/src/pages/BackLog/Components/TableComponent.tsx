@@ -14,7 +14,7 @@ import {
   Paper,
 } from "@mui/material";
 import { MenuComponent } from "../../../components/MenuComponent";
-import { TaskPriorityIcon } from "../../../components/Common/Priority";
+import { TaskPriorityIcon } from "../../../components/Common/TaskPriorityIcon";
 
 interface TableProps {
   tasks: Tasks[];

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { axiosInstance } from "../../../helper/axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -10,12 +10,15 @@ export const useUpdateProfile = () => {
   const navigate = useNavigate();
   const userData = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
-
+  const [image, setImage] = useState<any>("");
   const onSubmit = (
     value: any,
     setLoader: React.Dispatch<React.SetStateAction<boolean>>,
     setError: Function
   ) => {
+    const data = new FormData();
+    data.append("data", value);
+    data.append("img", image);
     setError("");
     setLoader(true);
     axiosInstance
@@ -38,12 +41,5 @@ export const useUpdateProfile = () => {
     setLoader(false);
   };
 
-  const saveImage = (image: any) => {
-    const form = new FormData();
-    form.append("img", image);
-    axiosInstance.put("/user/save-image/" + userData.id, form).catch((err) => {
-      console.log(err);
-    });
-  };
-  return { onSubmit, userData, saveImage };
+  return { onSubmit, userData, image, setImage };
 };

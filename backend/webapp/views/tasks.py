@@ -1,3 +1,4 @@
+from webapp.helpers.common import decode_base64
 from webapp import app
 from flask import request
 from pymongo import MongoClient
@@ -163,6 +164,10 @@ def get_task_list(id):
         for i in results:
             i['assignee'] = i['assigned_user']
             i['reportTo'] = i['reporter_user']
+            for x in i['assignee']:
+                x['img'] = decode_base64(x['img'])
+            for x in i['reporter_user']:
+                x['img'] = decode_base64(x['img'])
             i.pop('assigned_user')
             i.pop('reporter_user')
             if i['plan'] != 'backLog':
@@ -361,6 +366,10 @@ def list_tasks():
     for i in results:
         i['assignee'] = i['assigned_user']
         i['reportTo'] = i['reporter_user']
+        for x in i['assignee']:
+            x['img'] = decode_base64(x['img'])
+        for x in i['reporter_user']:
+            x['img'] = decode_base64(x['img'])
         i.pop('assigned_user')
         i.pop('reporter_user')
         if i['plan'] != 'backLog':
