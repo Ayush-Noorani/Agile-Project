@@ -1,3 +1,5 @@
+import codecs
+from webapp.helpers.common import decode_base64
 from webapp import app
 from flask import request
 from pymongo import MongoClient
@@ -7,6 +9,7 @@ from webapp.helpers.jwt import generateToken
 from webapp import bcrypt
 from webapp import db
 from bson import ObjectId
+from werkzeug.datastructures import FileStorage
 
 
 collection = db.user_details
@@ -31,7 +34,10 @@ def user_info():
         'email': 1, 'username': 1, 'roles': 1, '_id': 1, 'color': 1})
     data['id'] = str(data['_id'])
     data.pop("_id")
+    if data['img'] != '':
+        base64_data = codecs.encode(data['img'], 'base64')
 
+        data['img'] = base64_data.decode("utf-8")
     return data, 200
 
 
@@ -65,8 +71,14 @@ def register():
 @app.route('/user/update-details', methods=['POST'])
 @jwt_required()
 def updateDetails():
-    data = request.get_json()
+    data = request.form('data')
+    img = request.files['img']
     username = data['username']
+
+    if isinstance(img, FileStorage):
+        data['img'] = img.stream.read()  # type: ignore
+    elif len(data['img'] > 0):
+        data['img'] = ''
     if (username == '' or username == None):
         return {'message': 'Username cannot be empty'}, 304
     else:
@@ -95,3 +107,125 @@ def saveImage(id):
 # def private():
 #     current_user = get_jwt_identity() //get user identity
 #    , return jsonify(logged_in_as=current_user)
+
+
+@app.route("/user/get-dashboard", methods=["GET"])
+@jwt_required()
+def get_user_dashboard():
+    user_id = get_jwt_identity()
+    projects = list(db.projects.aggregate(
+        [
+            {
+
+                '$match': {'members': {'$in': [ObjectId(user_id)]}}
+            },
+
+            {
+                '$project': {
+                    '_id': 1,
+                    'members_count': {'$size': '$members'},
+                    'category': 1,
+                    'tasks': 1,
+                    'name': 1,
+                    'startDate': 1,
+                    'endDate': 1,
+                }
+            }
+        ]
+
+    ))
+    for project in projects:
+        project['status'] = {
+            "completed_tasks": len(project["tasks"]["done"]),
+
+            "remaining_tasks": sum([len(project["tasks"][task]) for task in project["tasks"].keys() if task != "done"])
+        }
+        project['id'] = str(project['_id'])
+        project.pop("_id")
+        for task_status, value in project["tasks"].items():
+
+            if (len(value) > 0):
+                task_pipeline = [
+                    {"$match": {
+                        "_id": {"$in":  project["tasks"][task_status]}}},
+                    {"$lookup": {
+                        "from": "user_details",
+                        "localField": "assignedTo",
+                        "foreignField": "_id",
+                        "as": "assigned_user"
+                    }},
+                    {"$lookup": {
+                        "from": "user_details",
+                        "localField": "reportTo",
+                        "foreignField": "_id",
+                        "as": "reporter_user"
+                    }},
+                    {"$project": {
+                        "_id": 0,
+                        "id": {"$toString": "$_id"},
+                        "taskName": 1,
+                        "description": 1,
+                        'summary': 1,
+                        "status": 1,
+                        "created_at": 1,
+                        "updated_at": 1,
+                        'plan': 1,
+                        "project": 1,
+
+                        "priority": 1,
+                        'section': 1,
+                        "due_date": 1,
+                        "assigned_user_id": {"$arrayElemAt": ["$assigned_user._id", 0]},
+                        "reporter_user_id": {"$arrayElemAt": ["$reporter_user._id", 0]},
+                    }},
+                    {"$lookup": {
+                        "from": "user_details",
+                        "localField": "assigned_user_id",
+                        "foreignField": "_id",
+                        "as": "assigned_user"
+                    }},
+                    {"$lookup": {
+                        "from": "user_details",
+                        "localField": "reporter_user_id",
+                        "foreignField": "_id",
+                        "as": "reporter_user"
+                    }},
+                    {"$project": {
+                        "_id": 0,
+                        "id": 1,
+                        "taskName": 1,
+                        "description": 1,
+                        "status": 1,
+                        "created_at": 1,
+                        "project": 1,
+                        "summary": 1,
+                        'plan': 1,
+                        "updated_at": 1,
+                        "due_date": 1,
+                        "section": 1,
+                        "priority": 1,
+                        "assigned_user.username": 1,
+                        "assigned_user.color": 1,
+                        "assigned_user.name": 1,
+                        "reporter_user.color": 1,
+                        "reporter_user.username": 1,
+                        "reporter_user.name": 1
+
+                    }}
+                ]
+
+                results = list(db.tasks.aggregate(task_pipeline))
+                for i in results:
+
+                    i['assignee'] = i['assigned_user']
+                    i['reportTo'] = i['reporter_user']
+                    for x in i['assignee']:
+                        x['img'] = decode_base64(x['img'])
+                    for x in i['reportTo']:
+                        x['img'] = decode_base64(x['img'])
+                    i.pop('assigned_user')
+                    i.pop('reporter_user')
+                    if i['plan'] != 'backLog':
+                        i['plan'] = str(i['plan'])
+                project["tasks"][task_status] = results
+    return {"projects": list(projects)}, 200

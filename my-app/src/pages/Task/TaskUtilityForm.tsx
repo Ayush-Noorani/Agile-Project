@@ -23,7 +23,7 @@ import { axiosInstance } from "../../helper/axios";
 import { useTask } from "./hooks/useTask";
 import { useCommon } from "../../hooks/useCommon";
 import { Member, Priority } from "../../types/common";
-import { TaskPriorityIcon } from "../../components/Common/Priority";
+import { TaskPriorityIcon } from "../../components/Common/TaskPriorityIcon";
 
 type PriorityOptionsType = {
   taskType: string;

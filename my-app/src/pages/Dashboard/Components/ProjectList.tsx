@@ -1,6 +1,9 @@
 import { Box, Card, CardMedia, Grid, Paper, Typography } from "@mui/material";
 import React from "react";
+import { DashBoard } from "../../../types/common";
 import "../CSS/styles.css";
+import { useDashboard } from "../hooks/useDashboard";
+import { ProjectCard } from "./ProjectCard";
 
 const testData = {
   title: "Project 1",
@@ -14,45 +17,12 @@ const testCompnents: any = [];
 const style = {};
 
 for (var i = 0; i < 9; i++) {
-  testCompnents.push(
-    <Grid item xs={6}>
-      <Card
-        className="growDashboardProject"
-        onClick={() => {
-          console.log("clicked card");
-        }}
-        elevation={8}
-        sx={{
-          display: "flex",
-          backgroundColor: "#1A2027",
-          color: "white",
-          borderRadius: "20px",
-          transition: "all .2s ease-in-out",
-        }}
-      >
-        <CardMedia
-          component="img"
-          sx={{ width: 100 }}
-          image="https://picsum.photos/200"
-          alt="Live from space album cover"
-        />
-        <Box paddingX={3} paddingY={1}>
-          <Typography component="div" variant="h6">
-            {testData.title}
-          </Typography>
-          <Typography component="div" variant="body2" gutterBottom>
-            {testData.additional.substring(0, 60) + "......"}
-          </Typography>
-          <Typography component="div" variant="button">
-            members: {testData.members}
-          </Typography>
-        </Box>
-      </Card>
-    </Grid>
-  );
+  testCompnents.push();
 }
 
 const ProjectList = () => {
+  const { projects, dashboard } = useDashboard();
+
   return (
     <>
       <Paper
@@ -72,7 +42,9 @@ const ProjectList = () => {
           </Typography>
 
           <Grid container rowSpacing={3} columnSpacing={3}>
-            {testCompnents.map((val: any) => val)}
+            {dashboard.map((val) => (
+              <ProjectCard data={val} />
+            ))}
           </Grid>
         </Box>
       </Paper>

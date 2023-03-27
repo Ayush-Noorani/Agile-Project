@@ -24,7 +24,7 @@ export const useCommon = () => {
       .then((res) => {
         setMembers(res.data.members);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   };
   return {
     navigate,

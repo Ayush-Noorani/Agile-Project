@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import { Box } from "@mui/material";
-import { TaskPriorityIcon } from "../../Common/Priority";
+import { TaskPriorityIcon } from "../../Common/TaskPriorityIcon";
 import { TypoGraphyImage } from "../../Common/TypoGraphyImage";
 import { Member } from "../../../types/common";
 const Container = styled.div`
@@ -72,7 +72,6 @@ export const Item = ({ ...props }: any) => (
               }}
             >
               <TaskPriorityIcon priority={props.task.priority} />
-              {props.task.priority}
             </Box>
           )}
         </div>
