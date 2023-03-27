@@ -22,9 +22,9 @@ import { usePlan } from "../Plan/hooks/usePlan";
 interface TaskProps {}
 
 export const TaskList = ({}: TaskProps) => {
-  const { id } = useParams();
+  const { id, planId } = useParams();
   const [open, setOpen] = useState(false);
-  const { form, plans, createPlan, getPlans } = usePlan(id);
+  const { form, plans, createPlan, getPlans } = usePlan(id, planId);
   useEffect(() => {
     getPlans({
       status: "1",
@@ -56,23 +56,30 @@ export const TaskList = ({}: TaskProps) => {
     updateSequence,
     getExistingTaskData,
     value,
-    columns,
+    column,
     filters,
-  } = useTask(id);
+    getRetoRespectiveTasks,
+  } = useTask(id, planId);
   const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>(
     undefined
   );
   useEffect(() => {
-    getTasks(undefined, id);
-    getPlans({
-      status: 1,
-    });
+    if (planId) {
+      console.log("Retrospective");
+      getRetoRespectiveTasks();
+    } else {
+      console.log("Task");
+      getTasks(undefined, id);
+      getPlans({
+        status: 1,
+      });
+    }
   }, [id]);
   const getExistingTask = (id: string) => {
     setSelectedTaskId(id);
     setOpen(true);
   };
-
+  console.log("planId", planId);
   return (
     <Box
       style={{
@@ -97,31 +104,33 @@ export const TaskList = ({}: TaskProps) => {
       <Dialog open={openColumn} onClose={() => setOpenColumn(false)}>
         <ColumnForm id={id} />
       </Dialog>
-      <TaskHeader id={id!} plans={plans} />
+      {planId === undefined && <TaskHeader id={id!} plans={plans} />}
       {Object.keys(tasks).length > 0 && (
         <DragAndDrop
           data={tasks}
-          columns={columns}
+          columns={column}
           filters={filters}
           onClick={getExistingTask}
           onValueChange={(data) => updateSequence(data)}
           order={columnOrder ? JSON.parse(columnOrder) : undefined}
         />
       )}
-      <SpeedDial
-        ariaLabel="SpeedDial basic example"
-        sx={{ position: "absolute", bottom: 16, right: 16 }}
-        icon={<SpeedDialIcon />}
-      >
-        {actions.map((action) => (
-          <SpeedDialAction
-            key={action.name}
-            icon={action.icon}
-            onClick={() => action.onClick && action.onClick()}
-            tooltipTitle={action.name}
-          />
-        ))}
-      </SpeedDial>
+      {planId === undefined && (
+        <SpeedDial
+          ariaLabel="SpeedDial basic example"
+          sx={{ position: "absolute", bottom: 16, right: 16 }}
+          icon={<SpeedDialIcon />}
+        >
+          {actions.map((action) => (
+            <SpeedDialAction
+              key={action.name}
+              icon={action.icon}
+              onClick={() => action.onClick && action.onClick()}
+              tooltipTitle={action.name}
+            />
+          ))}
+        </SpeedDial>
+      )}
     </Box>
   );
 };

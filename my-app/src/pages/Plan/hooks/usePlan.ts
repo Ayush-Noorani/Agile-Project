@@ -6,7 +6,7 @@ import { setFilter } from "../../../redux/reducers/filters";
 import { Plan } from "../../../types/common";
 import { consoleStatement } from "../../../utils/Common";
 
-export const usePlan = (id: any) => {
+export const usePlan = (id: any, planId?: string) => {
   const [plans, setPlans] = useState<any[]>([]);
   const { toast, defaultValue } = useToastContext();
   const dispatch = useDispatch();
@@ -17,7 +17,9 @@ export const usePlan = (id: any) => {
     project: "",
   });
   useEffect(() => {
-    getPlans();
+    if (id) {
+      getPlans();
+    }
   }, []);
   const updatePlanStatus = (data: any, status: Number | string) => {
     console.log(data);
@@ -63,7 +65,7 @@ export const usePlan = (id: any) => {
           res.data
         );
         console.log(res.data.plans);
-        if (res.data.plans) {
+        if (res.data.plans.length > 0) {
           dispatch(
             setFilter({
               plan: res.data.plans[0].id,

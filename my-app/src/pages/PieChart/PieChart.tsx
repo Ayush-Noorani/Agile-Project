@@ -13,7 +13,12 @@ const PieChart = ({ id, projectName, closeHandler }: any) => {
   const [pieLabels, setPieLabels] = useState<string[]>([]);
 
   const params = useParams();
-  const { getTasks, tasks, columns, currentProject } = useTask(params.id);
+  const {
+    getTasks,
+    tasks,
+    column: columns,
+    currentProject,
+  } = useTask(params.id);
 
   useEffect(() => {
     getTasks(undefined, params.id);

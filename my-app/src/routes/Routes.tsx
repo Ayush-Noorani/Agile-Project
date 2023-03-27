@@ -39,7 +39,7 @@ export const Routes = createBrowserRouter([
     element: <Protected children={<ProjectsList />} />,
   },
   {
-    path: "/project/tasks/:id",
+    path: "/project/tasks/:id/:planId?",
     element: <Protected children={<TaskList />} />,
   },
   {

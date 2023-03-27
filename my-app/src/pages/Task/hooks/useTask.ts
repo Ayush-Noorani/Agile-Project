@@ -26,7 +26,7 @@ type Task = {
   priority: Priority;
 };
 
-export const useTask = (projectId?: string) => {
+export const useTask = (projectId?: string, planId?: string) => {
   const [tasks, setTasks] = useState<TasksRecord>({});
   const [value, setValue] = useState<any>();
   const { fetchAllProjects } = useProject();
@@ -43,6 +43,7 @@ export const useTask = (projectId?: string) => {
   const currentProject = projects.find((project) => project.id === projectId);
   const filters = useSelector((state: RootState) => state.filters);
   const columns: Columntype[] | [] = currentProject?.columns || [];
+  const [column, setColumn] = useState(columns);
   const [formData, setFormData] = useState<Task>({
     id: undefined,
     description: "",
@@ -123,6 +124,21 @@ export const useTask = (projectId?: string) => {
       })
       .catch((err) => {
         console.log(err);
+      });
+  };
+  const getRetoRespectiveTasks = () => {
+    axiosInstance
+      .get(`/task/list/${projectId}`)
+      .then((res) => {
+        console.log(
+          `%c FETCH RETRORESPECTIVE \n`,
+          `background:green; color: white;  font-weight: bold;`
+        );
+        setTasks(res.data.tasks);
+        setColumn(res.data.columns);
+      })
+      .catch((err) => {
+        console.error(err);
       });
   };
 
@@ -243,7 +259,7 @@ export const useTask = (projectId?: string) => {
     tasks,
     value,
     formData,
-    columns,
+    column,
     newColumn,
     filters,
     currentProject,
@@ -258,5 +274,6 @@ export const useTask = (projectId?: string) => {
     submitFormData,
     handleDeleteForAdditionalFiles,
     handleFormDataUpdate,
+    getRetoRespectiveTasks,
   };
 };
