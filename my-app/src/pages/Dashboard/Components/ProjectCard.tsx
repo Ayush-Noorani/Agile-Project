@@ -6,6 +6,7 @@ import { DashBoard } from "../../../types/common";
 export const ProjectCard = ({ data }: { data: DashBoard }) => {
   const { setValue } = useProjectContext();
   const { navigate } = useCommon();
+  console.log(data.img);
   return (
     <Grid item xs={6}>
       <Card
@@ -25,13 +26,13 @@ export const ProjectCard = ({ data }: { data: DashBoard }) => {
       >
         <CardMedia
           component="img"
-          sx={{ width: 100 }}
-          image={
-            typeof data.img == "string" && data.img.length > 0
+          sx={{ width: "30%" }}
+          src={
+            typeof data.img == "string" && data.img !== ""
               ? `data:image/png;base64,${data.img}`
               : "https://picsum.photos/200"
           }
-          alt="Live from space album cover"
+          alt="Project img"
         />
         <Box paddingX={3} paddingY={1}>
           <Typography component="div" variant="h6">

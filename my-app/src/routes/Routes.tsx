@@ -16,6 +16,7 @@ import { PlanList } from "../pages/Plan/PlanList";
 import { RetrospectionList } from "../pages/Retrospection/RetrospectionList";
 import { DashboardView } from "../pages/Dashboard/DashboardView";
 import PieChart from "../pages/PieChart/PieChart";
+import Members from "../pages/Members/Members";
 
 export const Routes = createBrowserRouter([
   {
@@ -78,5 +79,9 @@ export const Routes = createBrowserRouter([
   {
     path: "/project/pie-chart/:id",
     element: <Protected children={<PieChart />} />,
+  },
+  {
+    path: "/project/members/:id",
+    element: <Protected children={<Members />} />,
   },
 ]);

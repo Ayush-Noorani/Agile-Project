@@ -48,7 +48,15 @@ export const ShowDateDiff = ({ endDate }: any) => {
   }
   return <></>;
 };
-export const TaskHeader = ({ id, plans }: { id: string; plans: any[] }) => {
+export const TaskHeader = ({
+  id,
+  plans,
+  planId,
+}: {
+  id: string | undefined;
+  plans: any[];
+  planId: string | undefined;
+}) => {
   const { currentProject, setFilters, filters } = useTask(id);
   const onClick = (id: string) => {
     if (filters?.id && filters?.id.includes(id)) {
@@ -128,9 +136,13 @@ export const TaskHeader = ({ id, plans }: { id: string; plans: any[] }) => {
               </Select>
             </FormControl>
           </Box>
-          <ShowDateDiff
-            endDate={plans?.find((value) => value.id === filters.plan).endDate}
-          />
+          {!planId && (
+            <ShowDateDiff
+              endDate={
+                plans?.find((value) => value.id === filters.plan).endDate
+              }
+            />
+          )}
         </>
       )}
     </Box>

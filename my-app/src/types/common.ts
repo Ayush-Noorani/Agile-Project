@@ -41,6 +41,7 @@ export type Member = {
   username: string;
   role?: Role;
   name: string;
+  email: string;
   img?: string;
   color?: string;
 };

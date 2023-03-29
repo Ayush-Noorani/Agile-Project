@@ -10,6 +10,7 @@ import {
   ListAlt,
   ListAltRounded,
   ListAltSharp,
+  People,
   PieChart,
   Settings,
   Start,
@@ -56,6 +57,13 @@ export const items: SideBarItemProps[] = [
     require: ["projectId"],
 
     path: "/pie-chart/",
+  },
+  {
+    label: "Members",
+    icon: <People />,
+    role: "user",
+    require: ["projectId"],
+    path: "/members/",
   },
   {
     label: "Project Detail",

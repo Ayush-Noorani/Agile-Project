@@ -33,7 +33,34 @@ export const useProject = (id?: string) => {
       );
     });
   };
-
+  const unAssign = (projectId: string, userId: string) => {
+    console.log(
+      `%c UNASSIGN ${userId} \n`,
+      `background:green; color: white;  font-weight: bold;`
+    );
+    axiosInstance
+      .post("/project/unassign/" + projectId, {
+        user_id: userId,
+      })
+      .then((res) => {})
+      .catch((err) => {
+        console.error(err.response);
+      });
+  };
+  const assign = (projectId: string, userId: string) => {
+    console.log(
+      `%c ASSIGN ${userId} \n`,
+      `background:green; color: white;  font-weight: bold;`
+    );
+    axiosInstance
+      .post("/project/assign/" + projectId, {
+        user_id: userId,
+      })
+      .then((res) => {})
+      .catch((err) => {
+        console.error(err.response);
+      });
+  };
   const fetchAllProjects = () => {
     axiosInstance.get("/project/list").then((res) => {
       console.log(
@@ -117,5 +144,7 @@ export const useProject = (id?: string) => {
     fetchExistingData,
     fetchMembers,
     fetchAllProjects,
+    unAssign,
+    assign,
   };
 };

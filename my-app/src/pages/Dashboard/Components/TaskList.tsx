@@ -14,19 +14,6 @@ import React from "react";
 import { useDashboard } from "../hooks/useDashboard";
 import { Tasks } from "../../../types/common";
 
-const testData = [
-  { taskName: "Task1", status: "inProgress", createdBy: "Jason" },
-  { taskName: "Task2", status: "complete", createdBy: "Jason" },
-  { taskName: "Task3", status: "inProgress", createdBy: "Jason" },
-  { taskName: "Task4", status: "toDo", createdBy: "Jason" },
-  { taskName: "Task5", status: "complete", createdBy: "Jason" },
-  { taskName: "Task6", status: "inProgress", createdBy: "Jason" },
-  { taskName: "Task7", status: "complete", createdBy: "Jason" },
-  { taskName: "Task8", status: "inProgress", createdBy: "Jason" },
-  { taskName: "Task9", status: "toDo", createdBy: "Jason" },
-  { taskName: "Task10", status: "complete", createdBy: "Jason" },
-];
-
 const TaskList = () => {
   const { projects, dashboard } = useDashboard();
 
