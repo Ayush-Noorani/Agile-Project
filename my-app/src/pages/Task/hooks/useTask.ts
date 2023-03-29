@@ -40,9 +40,16 @@ export const useTask = (projectId?: string, planId?: string) => {
     fetchAllProjects();
   }, []);
   const projects = useSelector((state: RootState) => state.project.projects);
-  const currentProject = projects.find((project) => project.id === projectId);
+  const currentProjectState = projects.find(
+    (project) => project.id === projectId
+  );
+  const [currentProject, setCurrentProject] = useState(currentProjectState);
   const filters = useSelector((state: RootState) => state.filters);
   const columns: Columntype[] | [] = currentProject?.columns || [];
+
+  useEffect(() => {
+    setCurrentProject(projects.find((project) => project.id === projectId));
+  }, [projects]);
   const [column, setColumn] = useState(columns);
   const [formData, setFormData] = useState<Task>({
     id: undefined,
@@ -126,14 +133,15 @@ export const useTask = (projectId?: string, planId?: string) => {
         console.log(err);
       });
   };
-  const getRetoRespectiveTasks = () => {
+  const getRetroRespectiveTasks = () => {
+    console.log(
+      `%c FETCH RETRORESPECTIVE \n`,
+      `background:green; color: white;  font-weight: bold;`
+    );
     axiosInstance
-      .get(`/task/list/${projectId}`)
+      .get(`/plan/retroSpection/${planId}`)
       .then((res) => {
-        console.log(
-          `%c FETCH RETRORESPECTIVE \n`,
-          `background:green; color: white;  font-weight: bold;`
-        );
+        console.log(res.data);
         setTasks(res.data.tasks);
         setColumn(res.data.columns);
       })
@@ -253,7 +261,6 @@ export const useTask = (projectId?: string, planId?: string) => {
         ...data,
       })
     );
-    console.log(filters);
   };
   return {
     tasks,
@@ -274,6 +281,6 @@ export const useTask = (projectId?: string, planId?: string) => {
     submitFormData,
     handleDeleteForAdditionalFiles,
     handleFormDataUpdate,
-    getRetoRespectiveTasks,
+    getRetroRespectiveTasks,
   };
 };

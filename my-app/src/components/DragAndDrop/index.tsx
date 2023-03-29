@@ -11,6 +11,7 @@ interface DragAndDropProps {
   onClick?: (value: any) => void;
   columns: Columntype[];
   filters?: any;
+  planId: string | undefined;
 }
 export const DragAndDrop = ({
   data,
@@ -18,11 +19,15 @@ export const DragAndDrop = ({
   onClick,
   columns,
   filters,
+  planId,
   onValueChange,
 }: DragAndDropProps) => {
   let defaultOrder = columns;
   const [columnOrder, setColumnOrder] = useState<Columntype[]>(defaultOrder);
   const onDragEnd = (result: any) => {
+    if (!planId) {
+      return;
+    }
     const { destination, source, draggableId, type } = result;
 
     if (!destination) {

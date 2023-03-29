@@ -58,7 +58,7 @@ export const TaskList = ({}: TaskProps) => {
     value,
     column,
     filters,
-    getRetoRespectiveTasks,
+    getRetroRespectiveTasks,
   } = useTask(id, planId);
   const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>(
     undefined
@@ -66,7 +66,7 @@ export const TaskList = ({}: TaskProps) => {
   useEffect(() => {
     if (planId) {
       console.log("Retrospective");
-      getRetoRespectiveTasks();
+      getRetroRespectiveTasks();
     } else {
       console.log("Task");
       getTasks(undefined, id);
@@ -79,7 +79,7 @@ export const TaskList = ({}: TaskProps) => {
     setSelectedTaskId(id);
     setOpen(true);
   };
-  console.log("planId", planId);
+  console.log(id, plans, tasks);
   return (
     <Box
       style={{
@@ -104,14 +104,21 @@ export const TaskList = ({}: TaskProps) => {
       <Dialog open={openColumn} onClose={() => setOpenColumn(false)}>
         <ColumnForm id={id} />
       </Dialog>
-      {planId === undefined && <TaskHeader id={id!} plans={plans} />}
-      {Object.keys(tasks).length > 0 && (
+      {planId !== undefined && (
+        <TaskHeader planId={planId} id={id} plans={plans} />
+      )}
+      {tasks !== undefined && Object.keys(tasks).length > 0 && (
         <DragAndDrop
           data={tasks}
           columns={column}
           filters={filters}
           onClick={getExistingTask}
-          onValueChange={(data) => updateSequence(data)}
+          planId={planId}
+          onValueChange={(data) => {
+            if (!planId) {
+              updateSequence(data);
+            }
+          }}
           order={columnOrder ? JSON.parse(columnOrder) : undefined}
         />
       )}

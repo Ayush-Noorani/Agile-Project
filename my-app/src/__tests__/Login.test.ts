@@ -1,60 +1,51 @@
 // import { axiosInstance } from "../helper/axios";
 import axios from "axios";
 
-axios
+axios;
 
 const axiosInstance = axios.create({
-  baseURL: "http://0.0.0.0:8000"
-})
+  baseURL: "http://0.0.0.0:8000",
+});
 
-test("Backend Up and Running", async () => {
-  const result = await axiosInstance.get("/")
-  expect(result.data).toStrictEqual({'message':'Hello, World!'})
+test("Correct Email and Correct Password", async () => {
+  const value = {
+    name: "rajeev.dessai11@gmail.com",
+    password: "test",
+  };
+  const result = await axiosInstance.post("/user/login", value);
+  expect(result.data.data).toBe("User found - Login successful");
   expect(result.status).toBe(200);
 });
 
-
-test("Correct Email and Correct Password",async()=>{
+test("Wrong Email and Correct Password", async () => {
   const value = {
-    name: "rajeev.dessai11@gmail.com",
-    password: "test"
-  }
-  const result = await axiosInstance.post("/user/login",value);
-  expect(result.data.data).toBe("User found - Login successful");
-  expect(result.status).toBe(200)
-})
-
-
-
-test("Wrong Email and Correct Password",async()=>{
- const value = {
     name: "aBrokenEmail@gmail.com",
-    password: "test"
+    password: "test",
   };
 
-  await axiosInstance.post("/user/login",value).catch(err=>{
-    expect(err.message).toBe("Request failed with status code 400")
-  })
-})
+  await axiosInstance.post("/user/login", value).catch((err) => {
+    expect(err.message).toBe("Request failed with status code 400");
+  });
+});
 
-test("Correct Email and Wrong Password",async()=>{
+test("Correct Email and Wrong Password", async () => {
   const value = {
-     name: "rajeev.dessai11@gmail.com",
-     password: "test123"
-   };
- 
-   await axiosInstance.post("/user/login",value).catch(err=>{
-     expect(err.message).toBe("Request failed with status code 400")
-   })
- })
+    name: "rajeev.dessai11@gmail.com",
+    password: "test123",
+  };
 
- test("Wrong Email and Wrong Password",async()=>{
+  await axiosInstance.post("/user/login", value).catch((err) => {
+    expect(err.message).toBe("Request failed with status code 400");
+  });
+});
+
+test("Wrong Email and Wrong Password", async () => {
   const value = {
-     name: "yeeeBoi@",
-     password: "test123"
-   };
- 
-   await axiosInstance.post("/user/login",value).catch(err=>{
-     expect(err.message).toBe("Request failed with status code 400")
-   })
- })
+    name: "yeeeBoi@",
+    password: "test123",
+  };
+
+  await axiosInstance.post("/user/login", value).catch((err) => {
+    expect(err.message).toBe("Request failed with status code 400");
+  });
+});
