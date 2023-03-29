@@ -40,7 +40,7 @@ def user_info():
 
         data['img'] = base64_data.decode("utf-8")
     else:
-        data['img'] =''
+        data['img'] = ''
     return data, 200
 
 
@@ -132,6 +132,7 @@ def get_user_dashboard():
                     'name': 1,
                     'startDate': 1,
                     'endDate': 1,
+                    'img': 1
                 }
             }
         ]
@@ -145,6 +146,7 @@ def get_user_dashboard():
         }
         project['id'] = str(project['_id'])
         project.pop("_id")
+        project['img'] = decode_base64(project['img'])
         for task_status, value in project["tasks"].items():
 
             if (len(value) > 0):
@@ -226,12 +228,12 @@ def get_user_dashboard():
                         if 'img' in x.keys():
                             x['img'] = decode_base64(x['img'])
                         else:
-                            x['img'] =''
+                            x['img'] = ''
                     for x in i['reportTo']:
                         if 'img' in x.keys():
                             x['img'] = decode_base64(x['img'])
                         else:
-                            x['img'] =''
+                            x['img'] = ''
                         i.pop('assigned_user')
                     i.pop('reporter_user')
                     if i['plan'] != 'backLog':

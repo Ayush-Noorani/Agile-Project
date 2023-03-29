@@ -50,6 +50,8 @@ def get_project_list():
                 'members._id': 1,
                 'members.username': 1,
                 'members.color': 1,
+
+                'members.email': 1,
                 'members.name': 1,
                 'members.roles': 1,
                 'members.img': 1
@@ -289,21 +291,21 @@ def update_project(id):
     return {"status": "success"}
 
 
-@ app.route("/project/assign", methods=["POST"])
+@ app.route("/project/unassign/<id>", methods=["POST"])
 @ jwt_required()
-def assign_project():
+def unassign_project(id):
     data = request.get_json()
-    db.projects.update({'_id': ObjectId(data['_d'])}, {
-                       "$push": {"members": ObjectId(data['user_id'])}})
+    db.projects.update({'_id': ObjectId(id)}, {
+                       "$pull": {"members": ObjectId(data['user_id'])}})
     return {"status": "success"}
 
 
-@ app.route("/project/unassign", methods=["POST"])
+@ app.route("/project/assign/<id>", methods=["POST"])
 @ jwt_required()
-def unassign_project():
+def assign_project(id):
     data = request.get_json()
-    db.projects.update({'_id': ObjectId(data['_d'])}, {
-                       "$pull": {"members": ObjectId(data['user_id'])}})
+    db.projects.update({'_id': ObjectId(id)}, {
+                       "$push": {"members": ObjectId(data['user_id'])}})
     return {"status": "success"}
 
 # Path: backend\webapp\views\user.py

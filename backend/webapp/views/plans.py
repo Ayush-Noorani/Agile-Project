@@ -184,11 +184,34 @@ def set_plan_status(value):
 @jwt_required()
 def retro_spection(plan_id):
 
-    plan = collection.find_one({
-        '_id': ObjectId(plan_id)
-    })
-    tasks_dict = {}
+    plan = list(collection.aggregate([
+        {
+            '$match':     {
+                '_id': ObjectId(plan_id)
+            }
+        },
+        {"$lookup": {
+            "from": "projects",
+            "localField": "project",
+            "foreignField": "_id",
+            "as": "project"
+        }},
 
+
+    ]))[0]
+    tasks_dict = {}
+    print(len(plan['project']))
+    plan['project'] = plan['project'][0]
+    plan['project'].pop('img')
+    plan['project'].pop('members')
+    plan['project'].pop('tasks')
+    plan['project']['created_by'] = str(plan['project']['created_by'])
+    plan['id'] = str(plan['_id'])
+    plan.pop('_id')
+    plan.pop('created_by')
+    plan['project']['id'] = str(plan['project']['_id'])
+    plan['project'].pop('_id')
+    print(plan, str(plan['project']['created_by']))
     for task_status in plan["tasks"].keys():
         task_pipeline = [
             {"$match": {
@@ -279,6 +302,7 @@ def retro_spection(plan_id):
                 i['plan'] = str(i['plan'])
         tasks_dict[task_status] = results
     plan['tasks'] = tasks_dict
+    print(plan, 'heere')
     return plan, 200
 
 # @app.route("/plan/retroSpection/")
