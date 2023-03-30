@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
 
 test("Valid Registeration", async () => {
   const value = {
-    name: "test@123.com",
+    email: "test@1233.com",
     password: "test",
   };
   const result = await axiosInstance.post("/user/register", value);
@@ -16,7 +16,7 @@ test("Valid Registeration", async () => {
 
 test("Invalid Registeration", async () => {
   const value = {
-    name: "test@123.com",
+    email: "test@123.com",
     password: "test",
   };
   const result = await axiosInstance.post("/user/register", value);
