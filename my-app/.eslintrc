@@ -19,7 +19,7 @@
         "jsx": true
       }
     },
-    "plugins": ["@typescript-eslint", "react", "react-hooks","eslint-plugin-unused-imports"],
+    "plugins": ["@typescript-eslint", "react-hooks","eslint-plugin-unused-imports"],
     "settings": {
       "react": {
         "version": "detect"
