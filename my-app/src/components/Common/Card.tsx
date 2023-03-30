@@ -1,9 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { WeightLabel } from "./Common";
 import "../../css/project.css";
-import { IconButton } from "@mui/material";
-import { MoreVert } from "@mui/icons-material";
-import { baseURL } from "../../helper/axios";
 
 export const Card = ({ data, onClick }: { data: any; onClick: Function }) => {
   return (

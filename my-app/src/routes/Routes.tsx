@@ -11,7 +11,6 @@ import { Profile } from "../pages/Profile/Profile";
 import { TaskForm } from "../pages/Task/components/TaskForm";
 import { AdminProtected } from "../components/AdminProtected";
 import { BackLog } from "../pages/BackLog/BackLog";
-import { Home } from "../pages/Home/Home";
 import { PlanList } from "../pages/Plan/PlanList";
 import { RetrospectionList } from "../pages/Retrospection/RetrospectionList";
 import { DashboardView } from "../pages/Dashboard/DashboardView";

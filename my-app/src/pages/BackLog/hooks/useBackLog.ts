@@ -6,7 +6,6 @@ import { axiosInstance } from "../../../helper/axios";
 import { setTask } from "../../../redux/reducers/tasks";
 import { RootState } from "../../../redux/store";
 import { Plan, Tasks } from "../../../types/common";
-import { consoleStatement } from "../../../utils/Common";
 
 export const useBackLog = (id: string) => {
   const taskStore = useSelector((state: RootState) => state.tasks);

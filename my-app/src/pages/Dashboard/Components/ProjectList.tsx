@@ -1,6 +1,5 @@
-import { Box, Card, CardMedia, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import React from "react";
-import { DashBoard } from "../../../types/common";
 import "../CSS/styles.css";
 import { useDashboard } from "../hooks/useDashboard";
 import { ProjectCard } from "./ProjectCard";
@@ -16,7 +15,7 @@ const testCompnents: any = [];
 
 const style = {};
 
-for (var i = 0; i < 9; i++) {
+for (let i = 0; i < 9; i++) {
   testCompnents.push();
 }
 

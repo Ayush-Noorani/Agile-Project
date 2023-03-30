@@ -7,7 +7,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {
-  Avatar,
   InputAdornment,
   TablePagination,
   TableSortLabel,
@@ -83,7 +82,7 @@ export const UserTable = () => {
       ? Math.max(0, (1 + currentPage) * rowsPerPage - data.length)
       : 0;
 
-  let newRows = data.filter(filterBySearch);
+  const newRows = data.filter(filterBySearch);
 
   return (
     <>

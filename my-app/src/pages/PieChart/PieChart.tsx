@@ -1,6 +1,5 @@
 import { Box } from "@mui/material";
 import "chart.js/auto";
-import { Chart } from "react-chartjs-2";
 import { Pie } from "react-chartjs-2";
 import React, { useEffect, useState } from "react";
 import { useTask } from "../Task/hooks/useTask";
@@ -30,8 +29,8 @@ const PieChart = ({ id, projectName, closeHandler }: any) => {
 
   const loadPieChartData = () => {
     if (tasks) {
-      let tempLabels: string[] = [];
-      let tempData: number[] = [];
+      const tempLabels: string[] = [];
+      const tempData: number[] = [];
       columns.forEach((col) => {
         tempLabels.push(col?.label);
         tempData.push(tasks[col?.value]?.length);

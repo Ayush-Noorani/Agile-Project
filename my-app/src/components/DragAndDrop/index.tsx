@@ -22,7 +22,7 @@ export const DragAndDrop = ({
   planId,
   onValueChange,
 }: DragAndDropProps) => {
-  let defaultOrder = columns;
+  const defaultOrder = columns;
   const [columnOrder, setColumnOrder] = useState<Columntype[]>(defaultOrder);
   const onDragEnd = (result: any) => {
     if (!planId) {

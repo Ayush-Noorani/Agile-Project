@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import { Fragment, useState } from "react";
 import { TableComponent } from "./TableComponent";
-import tasks from "../../../redux/reducers/tasks";
 import { Tasks } from "../../../types/common";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Button } from "@mui/material";
@@ -17,7 +16,6 @@ import StopIcon from "@mui/icons-material/Stop";
 import { formatDateTime } from "../../../utils/Common";
 import { Check } from "@mui/icons-material";
 import { useBackLog } from "../hooks/useBackLog";
-import { usePlan } from "../../Plan/hooks/usePlan";
 import { useParams } from "react-router-dom";
 
 interface CustomTableProps {

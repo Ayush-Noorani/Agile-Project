@@ -4,7 +4,6 @@ import "../../css/project.css";
 import { FormType, Member, ProjectData } from "../../types/common";
 import {
   Autocomplete,
-  Avatar,
   Box,
   Button,
   Fab,
@@ -18,7 +17,6 @@ import { addDays } from "date-fns";
 import { Add, Delete } from "@mui/icons-material";
 import { ListView } from "../../components/ListView";
 import { useProject } from "./hooks/useProject";
-import { baseURL } from "../../helper/axios";
 import { useCommon } from "../../hooks/useCommon";
 import { TypoGraphyImage } from "../../components/Common/TypoGraphyImage";
 import Compressor from "compressorjs";

@@ -14,7 +14,7 @@ export const socket = io(baseURL);
 axiosInstance.interceptors.request.use(async (config: any) => {
   if (["post", "get", "put", "delete"].includes(config.method)) {
     try {
-      let token = await localStorage.getItem("token");
+      const token = await localStorage.getItem("token");
       config.headers["Authorization"] = `Bearer ${token}`;
       config.headers["Access-Control-Allow-Origin"] = "*";
     } catch (e) {

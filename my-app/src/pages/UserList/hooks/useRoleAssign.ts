@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useToastContext } from "../../../context/ToastContext";
 import { axiosInstance } from "../../../helper/axios";
-import { setData } from "../../../redux/reducers/project";
 import { Role, User } from "../../../types/common";
 
 export const useRoleAssign = () => {

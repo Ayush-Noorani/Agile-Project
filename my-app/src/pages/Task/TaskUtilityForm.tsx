@@ -1,8 +1,6 @@
 import React, {
   ChangeEvent,
-  ChangeEventHandler,
   useEffect,
-  useState,
 } from "react";
 import {
   MenuItem,
@@ -12,17 +10,14 @@ import {
   CardContent,
   Chip,
   Paper,
-  Checkbox,
-  ListItemText,
 } from "@mui/material";
 import { Typography } from "@mui/material";
 import { FileUpload } from "@mui/icons-material";
 import ReactQuill from "react-quill";
 import { useParams } from "react-router";
-import { axiosInstance } from "../../helper/axios";
 import { useTask } from "./hooks/useTask";
 import { useCommon } from "../../hooks/useCommon";
-import { Member, Priority } from "../../types/common";
+import { Priority } from "../../types/common";
 import { TaskPriorityIcon } from "../../components/Common/TaskPriorityIcon";
 
 type PriorityOptionsType = {
@@ -133,7 +128,7 @@ const TaskUtility = ({ taskId }: { taskId?: string }) => {
             (value: any) =>
               formData.assignedTo.find((item) => item == value.id) === undefined
           )
-          .map((value: any, index: Number) => (
+          .map((value: any, index: number) => (
             <MenuItem key={index.toString()} value={value.id}>
               {value.username}
             </MenuItem>
@@ -172,7 +167,7 @@ const TaskUtility = ({ taskId }: { taskId?: string }) => {
             (value: any) =>
               formData.reportTo.find((item) => item === value.id) === undefined
           )
-          .map((value: any, index: Number) => (
+          .map((value: any, index: number) => (
             <MenuItem key={index.toString()} value={value.id}>
               {value.username}
             </MenuItem>

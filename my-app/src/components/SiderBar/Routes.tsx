@@ -4,17 +4,11 @@ import { SideBarItemProps } from "../../types/common";
 import {
   AccountTree,
   Archive,
-  Details,
-  Home,
   List,
-  ListAlt,
-  ListAltRounded,
-  ListAltSharp,
   People,
   PieChart,
   Settings,
   Start,
-  Work,
 } from "@mui/icons-material";
 export const items: SideBarItemProps[] = [
   {

@@ -1,10 +1,9 @@
 import { Box, Button, Avatar, Alert, TextField, Fab } from "@mui/material";
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useUpdateProfile } from "./hooks/useUpdateProfile";
 import "../../css/profile.css";
 import { onChange } from "../../utils/Common";
 import { Role } from "../../types/common";
-import { axiosInstance, baseURL } from "../../helper/axios";
 import { Add } from "@mui/icons-material";
 
 interface formFields {

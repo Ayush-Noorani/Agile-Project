@@ -7,20 +7,18 @@ import { setColumns } from "../../../redux/reducers/project";
 import { RootState } from "../../../redux/store";
 import {
   Columntype,
-  Member,
   Priority,
   Tasks,
   TasksRecord,
 } from "../../../types/common";
-import { consoleStatement } from "../../../utils/Common";
 import { useProject } from "../../Projects/hooks/useProject";
 type Task = {
   id?: string;
   description: string;
   summary: string;
   taskName: string;
-  assignedTo: String[];
-  reportTo: String[];
+  assignedTo: string[];
+  reportTo: string[];
   additionalFiles?: File[];
   status: "toDo" | "inProgres";
   priority: Priority;
@@ -223,7 +221,7 @@ export const useTask = (projectId?: string, planId?: string) => {
 
   const submitFormData = () => {
     const submitData: any = new FormData();
-    for (var key in formData) {
+    for (const key in formData) {
       submitData.append(key, formData[key as keyof Task]);
     }
     // submitData.append("data", JSON.stringify(formData));

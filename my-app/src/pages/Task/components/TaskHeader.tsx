@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   FormControl,
   InputLabel,
@@ -9,7 +8,6 @@ import {
 } from "@mui/material";
 import React from "react";
 import { TypoGraphyImage } from "../../../components/Common/TypoGraphyImage";
-import { formatDateTime } from "../../../utils/Common";
 import { useTask } from "../hooks/useTask";
 
 export const ShowDateDiff = ({ endDate }: any) => {

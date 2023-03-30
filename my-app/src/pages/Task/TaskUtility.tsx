@@ -1,8 +1,6 @@
 import React, {
   ChangeEvent,
-  ChangeEventHandler,
   useEffect,
-  useState,
 } from "react";
 import {
   MenuItem,
@@ -19,10 +17,9 @@ import { Typography } from "@mui/material";
 import { FileUpload } from "@mui/icons-material";
 import ReactQuill from "react-quill";
 import { useParams } from "react-router";
-import { axiosInstance } from "../../helper/axios";
 import { useTask } from "./hooks/useTask";
 import { useCommon } from "../../hooks/useCommon";
-import { Member, Priority } from "../../types/common";
+import { Priority } from "../../types/common";
 import { TaskPriorityIcon } from "../../components/Common/TaskPriorityIcon";
 
 type PriorityOptionsType = {

@@ -9,12 +9,11 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TableSortLabel,
   TextField,
 } from "@mui/material";
 import { useTask } from "../hooks/useTask";
 import { onChange } from "../../../utils/Common";
-import { Columntype, Headers, SortOrder } from "../../../types/common";
+import { Columntype, Headers } from "../../../types/common";
 import DeleteIcon from "@mui/icons-material/Delete";
 interface ColumnProps {
   id?: string;

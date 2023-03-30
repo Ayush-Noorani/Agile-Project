@@ -1,7 +1,7 @@
 import React from "react";
 import "../../css/sidebar.css";
 import { SideBarItemProps } from "../../types/common";
-import { Box, Button, Tooltip } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 export const Item = (props: SideBarItemProps) => {
   return (
     <Tooltip title={props.label}>
