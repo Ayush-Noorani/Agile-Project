@@ -1,13 +1,10 @@
 import React from "react";
 import {
-  Avatar,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Button,
 } from "@mui/material";
-import { baseURL } from "../helper/axios";
 import { TypoGraphyImage } from "./Common/TypoGraphyImage";
 export interface ListProps {
   data: any[];

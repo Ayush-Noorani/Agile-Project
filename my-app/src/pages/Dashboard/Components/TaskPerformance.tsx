@@ -1,4 +1,4 @@
-import { Card, Typography, Box, Grid, Paper } from "@mui/material";
+import { Typography, Box, Grid, Paper } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import React from "react";
 

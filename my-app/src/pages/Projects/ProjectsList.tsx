@@ -1,12 +1,11 @@
 import { useEffect, useState, Fragment } from "react";
 import "../../css/project.css";
-import { Fab, MenuItem, Menu } from "@mui/material";
+import { Fab } from "@mui/material";
 import { Card } from "../../components/Common/Card";
-import { Add, Edit } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useProject } from "./hooks/useProject";
 import { ProjectData } from "../../types/common";
-import PieChart from "../PieChart/PieChart";
 import { useProjectContext } from "../../context/ProjectContext";
 
 interface ProjectProps {}

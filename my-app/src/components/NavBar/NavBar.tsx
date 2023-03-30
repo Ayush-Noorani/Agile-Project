@@ -14,8 +14,8 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import Button from "@mui/material/Button";
 import { useCommon } from "../../hooks/useCommon";
 import { MenuItem, Menu, Divider, Tabs, Tab, InputLabel } from "@mui/material";
-import { Fragment, useEffect, useMemo, useState } from "react";
-import { axiosInstance, socket } from "../../helper/axios";
+import { Fragment, useEffect, useState } from "react";
+import { socket } from "../../helper/axios";
 import { TypoGraphyImage } from "../Common/TypoGraphyImage";
 import { Home, Work, ListAlt } from "@mui/icons-material";
 import { SideBarItemProps } from "../../types/common";
@@ -119,7 +119,7 @@ let unreadCount = 0;
 notificationTest.forEach((notification) => {
   if (notification?.read == false) unreadCount++;
 });
-let notificationCount = unreadCount;
+const notificationCount = unreadCount;
 interface NavBarProps {
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -133,7 +133,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
   const { user } = useUser();
   const { selected, setValue } = useProjectContext();
   useEffect(() => {
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       if (socket.connected) {
         socket.emit("notification-list", localStorage.getItem("token"));
       }
@@ -150,7 +150,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
     .filter((value: any) => {
       return typeSelected === "all" || typeSelected.includes(value.type);
     })
-    .map((value: any, index: Number) => (
+    .map((value: any, index: number) => (
       <Box
         sx={{
           margin: "2px",
@@ -279,7 +279,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
             <IconButton
               size="medium"
               onClick={(e: any) => {
-                let target = eTarget;
+                const target = eTarget;
                 setETarget((prev: any) =>
                   prev === e.target ? null : e.target
                 );

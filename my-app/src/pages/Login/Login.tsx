@@ -5,7 +5,6 @@ import { Alert, Box, Button, Container, TextField } from "@mui/material";
 import { useLogin } from "../../hooks/useLogin";
 import "../../css/common.css";
 import { useToastContext } from "../../context/ToastContext";
-import { Label } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const form: FormType[] = [

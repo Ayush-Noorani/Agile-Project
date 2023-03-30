@@ -1,8 +1,6 @@
 import { Tasks } from "../../../types/common";
-import React, { useEffect, useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-import { Box, Button, Menu, MenuItem } from "@mui/material";
+import React, { useState } from "react";
+import { Button } from "@mui/material";
 import {
   Table,
   TableBody,

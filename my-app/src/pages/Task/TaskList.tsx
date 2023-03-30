@@ -1,7 +1,6 @@
 import { DragAndDrop } from "../../components/DragAndDrop";
 import {
   Box,
-  Container,
   Dialog,
   DialogContent,
   DialogTitle,

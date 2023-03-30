@@ -4,7 +4,6 @@ import { useToastContext } from "../../../context/ToastContext";
 import { axiosInstance } from "../../../helper/axios";
 import { setFilter } from "../../../redux/reducers/filters";
 import { Plan } from "../../../types/common";
-import { consoleStatement } from "../../../utils/Common";
 
 export const usePlan = (id: any, planId?: string) => {
   const [plans, setPlans] = useState<any[]>([]);
@@ -21,7 +20,7 @@ export const usePlan = (id: any, planId?: string) => {
       getPlans();
     }
   }, []);
-  const updatePlanStatus = (data: any, status: Number | string) => {
+  const updatePlanStatus = (data: any, status: number | string) => {
     console.log(data);
 
     axiosInstance

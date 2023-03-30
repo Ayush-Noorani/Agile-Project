@@ -1,19 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { useToastContext } from "../../../context/ToastContext";
 import { axiosInstance } from "../../../helper/axios";
 import { setDashboard } from "../../../redux/reducers/project";
-import { setTask } from "../../../redux/reducers/tasks";
 import { RootState } from "../../../redux/store";
 import {
   DashBoard,
-  Member,
-  Plan,
-  ProjectData,
-  Tasks,
 } from "../../../types/common";
-import { consoleStatement } from "../../../utils/Common";
 
 export const useDashboard = () => {
   const dashboard = useSelector((state: RootState) => state.project.dashboard);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DateRangePicker, DateRange, RangeKeyDict } from "react-date-range";
+import { DateRangePicker, RangeKeyDict } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import {
@@ -7,7 +7,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   FormControl,
   InputLabel,
@@ -52,7 +51,7 @@ export const PlanUtility = ({ setOpen, open }: PlanUtilityProps) => {
   const handleDateChange = (ranges: RangeKeyDict) => {
     console.log(ranges);
     if (ranges) {
-      let value: any = ranges?.selection;
+      const value: any = ranges?.selection;
       setDateRange([value]);
       onChange(value.startDate, "startDate", setForm);
 

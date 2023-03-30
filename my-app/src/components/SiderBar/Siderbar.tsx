@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 import "../../css/sidebar.css";
 
 import { Item } from "./Item";
@@ -8,14 +8,13 @@ import { NavBar } from "../NavBar/NavBar";
 import { useUser } from "../../hooks/useUser";
 import { useCommon } from "../../hooks/useCommon";
 import { useProjectContext } from "../../context/ProjectContext";
-import { consoleStatement } from "../../utils/Common";
 import { useParams } from "react-router-dom";
 interface SideBarProps {
   children: React.ReactNode | React.ReactNode[];
 }
 
 export const SideBar = ({ children }: SideBarProps) => {
-  let token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const { user } = useUser();
   const { selected, setValue } = useProjectContext();
   const { navigate } = useCommon();

@@ -1,6 +1,6 @@
 import { axiosInstance } from "../../../helper/axios";
 import { ProjectData, Member } from "../../../types/common";
-import { consoleStatement, onChange } from "./../../../utils/Common";
+import { onChange } from "./../../../utils/Common";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
@@ -87,15 +87,15 @@ export const useProject = (id?: string) => {
 
   const uploadImage = (id: any) => {
     if (typeof value.img == "object") {
-      let img = new FormData();
+      const img = new FormData();
       img.append("img", value.img);
       axiosInstance.put(`/project/image/${id}`, img).then((res) => {});
     }
   };
   const submitData = () => {
-    let request: any = { ...value };
+    const request: any = { ...value };
     delete request.img;
-    let data = new FormData();
+    const data = new FormData();
     if (value.img && typeof value.img == "object") {
       request["img"] = true;
       data.append("img", value.img);

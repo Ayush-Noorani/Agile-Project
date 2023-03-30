@@ -51,7 +51,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "fix-lint":"eslint --ext .ts,.tsx src/ --fix"
   },
   "eslintConfig": {
     "extends": [

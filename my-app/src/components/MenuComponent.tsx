@@ -1,4 +1,4 @@
-import { Box, Button, Menu, MenuItem } from "@mui/material";
+import { Menu } from "@mui/material";
 
 interface MenuProps {
   menuOptions: any[];

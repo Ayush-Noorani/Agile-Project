@@ -62,6 +62,11 @@ def login():
 @app.route('/user/register', methods=['POST'])
 def register():
     data = request.get_json()
+    check_if_already_exists = collection.find_one({
+        'email': data['email']
+    })
+    if (check_if_already_exists):
+        return {'message': 'email already exists!'}, 403
     data['password'] = bcrypt.generate_password_hash(data['password'])
     data['roles'] = ['user']
     is_registered = collection.insert_one(data)

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../../helper/axios";
 import { Plan } from "../../../types/common";
-import { consoleStatement } from "../../../utils/Common";
 
 export const useRetroSpection = (id: string) => {
   const [plans, setPlans] = useState<Plan[]>([]);

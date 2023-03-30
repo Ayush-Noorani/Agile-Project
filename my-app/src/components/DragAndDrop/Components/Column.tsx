@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Item } from "./Item";
-import { columnTitle } from "../../../types/common";
 
 const Container = styled.div`
   margin: 8px;

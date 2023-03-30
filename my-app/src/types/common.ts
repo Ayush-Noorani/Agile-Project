@@ -14,7 +14,7 @@ export type Plan = {
 };
 export type DashBoard = ProjectData & {
   tasks: Record<string, Tasks[]>;
-  members_count: Number;
+  members_count: number;
   status: {
     completed_tasks: number;
     remaining_tasks: number;

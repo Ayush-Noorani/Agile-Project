@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { axiosInstance } from "../helper/axios";
 import { setUser } from "../redux/reducers/user";
 import { RootState } from "../redux/store";
-import { consoleStatement } from "../utils/Common";
 
 export const useUser = () => {
   const user = useSelector((state: RootState) => state.user);
