@@ -27,9 +27,7 @@ collection = db.projects
 def get_project_list():
     id = get_jwt_identity()
     pipeline = [
-        {
-            '$match': {'members': {'$in': [ObjectId(id)]}}
-        },
+
         {
             '$lookup': {
                 'from': 'user_details',
@@ -49,8 +47,11 @@ def get_project_list():
                 'created_at': 1,
                 'members._id': 1,
                 'members.username': 1,
+                'tasks': 1,
                 'members.color': 1,
-
+                'startDate': 1,
+                'endDate': 1,
+                'members_count': {'$size': '$members'},
                 'members.email': 1,
                 'members.name': 1,
                 'members.roles': 1,
@@ -61,6 +62,11 @@ def get_project_list():
     ]
     projects = list(db.projects.aggregate(pipeline))
     for project in projects:
+        project['status'] = {
+            "completed_tasks": len(project["tasks"]["done"]),
+
+            "remaining_tasks": sum([len(project["tasks"][task]) for task in project["tasks"].keys() if task != "done"])
+        }
         if project['lead'] != '':
             project['lead'] = str(project['lead'])
         if 'img' in project.keys():
@@ -69,7 +75,6 @@ def get_project_list():
         else:
             project['img'] = ''
         project["id"] = str(project["_id"])
-        project['membersCount'] = len(project['members'])
         for i in project['members']:
             i['id'] = str(i['_id'])
             if 'img' in i.keys():
