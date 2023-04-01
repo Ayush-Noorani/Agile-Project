@@ -7,8 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useProject } from "./hooks/useProject";
 import { ProjectData } from "../../types/common";
 import { useProjectContext } from "../../context/ProjectContext";
-
-interface ProjectProps {}
+import { ProjectCard } from "../Dashboard/Components/ProjectCard";
 
 export const ProjectsList = () => {
   const navigate = useNavigate();
@@ -30,14 +29,8 @@ export const ProjectsList = () => {
     <div className="project-container">
       {projects?.map((item: ProjectData, index: any) => (
         <Fragment key={index}>
-          <Card
-            data={item}
-            key={index}
-            onClick={(e: any) => {
-              setValue(item);
-              navigate("/project/tasks/" + item.id);
-            }}
-          />
+          <ProjectCard data={item} />
+
           {/* <Menu
             id="basic-menu"
             anchorEl={eTarget}

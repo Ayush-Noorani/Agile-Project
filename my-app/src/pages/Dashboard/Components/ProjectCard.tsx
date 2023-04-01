@@ -1,14 +1,14 @@
 import { Grid, Card, CardMedia, Box, Typography } from "@mui/material";
 import { useProjectContext } from "../../../context/ProjectContext";
 import { useCommon } from "../../../hooks/useCommon";
-import { DashBoard } from "../../../types/common";
+import { DashBoard, ProjectData } from "../../../types/common";
 
-export const ProjectCard = ({ data }: { data: DashBoard }) => {
+export const ProjectCard = ({ data }: { data: DashBoard | ProjectData }) => {
   const { setValue } = useProjectContext();
   const { navigate } = useCommon();
   console.log(data.img);
   return (
-    <Grid item xs={6}>
+    <Grid item xs={4}>
       <Card
         className="growDashboardProject"
         onClick={(e: any) => {

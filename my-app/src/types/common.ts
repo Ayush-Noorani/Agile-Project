@@ -14,11 +14,6 @@ export type Plan = {
 };
 export type DashBoard = ProjectData & {
   tasks: Record<string, Tasks[]>;
-  members_count: number;
-  status: {
-    completed_tasks: number;
-    remaining_tasks: number;
-  };
 };
 export type User = {
   id: string;
@@ -68,6 +63,11 @@ export type ProjectData = {
   category: string;
   lead: string;
   columns: Columntype[];
+  members_count: number;
+  status: {
+    completed_tasks: number;
+    remaining_tasks: number;
+  };
 };
 
 export type ProjectType = {
