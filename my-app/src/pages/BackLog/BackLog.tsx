@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-
 import { useBackLog } from "./hooks/useBackLog";
 import {
   Box,
@@ -9,10 +8,7 @@ import {
   SpeedDialAction,
   SpeedDialIcon,
 } from "@mui/material";
-import {
-  TableContainer,
-  Paper,
-} from "@mui/material";
+import { TableContainer, Paper } from "@mui/material";
 import { Tasks } from "../../types/common";
 import { Create } from "@mui/icons-material";
 import { CustomTable } from "./Components/CustomTable";
@@ -20,10 +16,8 @@ import { PlanUtility } from "../Plan/PlanUtility";
 import { useParams } from "react-router-dom";
 export const BackLog = () => {
   const { id } = useParams();
-  const { tasks, setTasks, getALlTasks, plans, moveToPlan } = useBackLog(id!);
-  useEffect(() => {
-    console.log(plans);
-  }, [plans]);
+  const { tasks, plans, moveToPlan } = useBackLog(id!);
+
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Tasks | null>(null); // state for the task currently selected in the menu
   const actions: {
@@ -56,7 +50,7 @@ export const BackLog = () => {
           overflow: "auto",
         }}
       >
-        {plans.map((value, key) => (
+        {plans.map((value) => (
           <CustomTable
             handleMoveToPlan={handleMoveToPlan}
             value={value}
