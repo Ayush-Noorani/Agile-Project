@@ -63,8 +63,8 @@ export type ProjectData = {
   category: string;
   lead: string;
   columns: Columntype[];
-  members_count: number;
-  status: {
+  members_count?: number;
+  status?: {
     completed_tasks: number;
     remaining_tasks: number;
   };

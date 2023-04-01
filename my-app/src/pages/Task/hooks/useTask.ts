@@ -38,6 +38,7 @@ export const useTask = (projectId?: string, planId?: string) => {
     fetchAllProjects();
   }, []);
   const projects = useSelector((state: RootState) => state.project.projects);
+  console.log(projects);
   const currentProjectState = projects.find(
     (project) => project.id === projectId
   );

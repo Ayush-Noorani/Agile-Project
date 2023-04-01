@@ -40,19 +40,20 @@ export const ProjectCard = ({ data }: { data: DashBoard | ProjectData }) => {
           </Typography>
 
           <Typography component="div" variant="button">
-            members: {data.members_count.toString()}
+            members: {data?.members_count?.toString()}
           </Typography>
           <Typography component="div" variant="body2" gutterBottom>
-            Remaining: {data.status.remaining_tasks}
+            Remaining: {data?.status?.remaining_tasks}
           </Typography>
           <Typography component="div" variant="body2" gutterBottom>
-            Completed: {data.status.completed_tasks}
+            Completed: {data?.status?.completed_tasks}
           </Typography>
           <Typography component="div" variant="body2" gutterBottom>
-            Total: {data.status.completed_tasks + data.status.remaining_tasks}
+            Total:{" "}
+            {data?.status?.completed_tasks! + data?.status?.remaining_tasks!}
           </Typography>
           <Typography component="div" variant="caption">
-            Timeline: {data.startDate.toString().split("T")[0]}-
+            Timeline: {data?.startDate?.toString().split("T")[0]}-
             {data.endDate.toString().split("T")[0]}
           </Typography>
         </Box>

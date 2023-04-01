@@ -39,11 +39,11 @@ const DashboardView = () => {
           >
             <TaskPerfromance
               remaining={dashboard.reduce(
-                (acc, curr) => acc + curr.status.remaining_tasks,
+                (acc, curr) => acc + curr.status!.remaining_tasks,
                 0
               )}
               complete={dashboard.reduce(
-                (acc, curr) => acc + curr.status.completed_tasks,
+                (acc, curr) => acc + curr.status!.completed_tasks,
                 0
               )}
             />
