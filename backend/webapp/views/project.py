@@ -87,6 +87,8 @@ def get_project_list():
                     if len(project['tasks'][j['value']]) > 0:
                         j['fixed'] = True
         project.pop("_id")
+        for k,v in project['tasks'].items():
+            project['tasks'][k] = [str(x) for x in v]
     return {"projects": projects}
 
 
