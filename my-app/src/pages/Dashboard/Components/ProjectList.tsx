@@ -41,8 +41,8 @@ const ProjectList = () => {
           </Typography>
 
           <Grid container rowSpacing={3} columnSpacing={3}>
-            {dashboard.map((val) => (
-              <ProjectCard data={val} />
+            {dashboard.map((val, index) => (
+              <ProjectCard key={index.toString()} data={val} />
             ))}
           </Grid>
         </Box>
