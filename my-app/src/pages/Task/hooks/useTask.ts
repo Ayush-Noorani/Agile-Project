@@ -75,13 +75,17 @@ export const useTask = (projectId?: string, planId?: string) => {
   const handleFormDataUpdate = (key: keyof Task, value: any) => {
     setFormData((prev) => {
       switch (key) {
-        case "additionalFiles":
-          const files: File[] = value ? Array.from(value) : [];
+        case "additionalFiles": {
+          let files: File[] = [];
+          if (value) {
+            files = Array.from(value);
+          }
           return {
             ...prev,
             additionalFiles:
               prev.additionalFiles && prev.additionalFiles.concat(files),
           };
+        }
 
         default:
           return {

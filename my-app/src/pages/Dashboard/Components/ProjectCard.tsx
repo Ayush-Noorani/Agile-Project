@@ -1,3 +1,4 @@
+import React from "react";
 import { Grid, Card, CardMedia, Box, Typography } from "@mui/material";
 import { useProjectContext } from "../../../context/ProjectContext";
 import { useCommon } from "../../../hooks/useCommon";
@@ -50,7 +51,7 @@ export const ProjectCard = ({ data }: { data: DashBoard | ProjectData }) => {
           </Typography>
           <Typography component="div" variant="body2" gutterBottom>
             Total:{" "}
-            {data?.status?.completed_tasks! + data?.status?.remaining_tasks!}
+            {data!.status!.completed_tasks! + data!.status!.remaining_tasks!}
           </Typography>
           <Typography component="div" variant="caption">
             Timeline: {data?.startDate?.toString().split("T")[0]}-

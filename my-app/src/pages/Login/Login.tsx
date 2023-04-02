@@ -65,6 +65,8 @@ export const Login = () => {
               onChange(e.target.value, item.name, setValue)
             }
             variant="outlined"
+            type={item.type}
+            key={item.name}
           />
         ))}
 
