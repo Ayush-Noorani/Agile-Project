@@ -155,7 +155,9 @@ def get_task_list(id):
                 "assigned_user.name": 1,
                 "reporter_user.color": 1,
                 "reporter_user.username": 1,
-                "reporter_user.name": 1
+                "reporter_user.name": 1,
+                'reporter_user._id': 1,
+                'assigned_user._id': 1
 
             }}
         ]
@@ -169,17 +171,21 @@ def get_task_list(id):
                     x['img'] = decode_base64(x['img'])
                 else:
                     x['img'] = ''
+                x['id'] = str(x['_id'])
+                x.pop('_id')
             for x in i['reporter_user']:
                 if 'img' in x.keys():
                     x['img'] = decode_base64(x['img'])
                 else:
                     x['img'] = ''
-                i.pop('assigned_user')
+                x['id'] = str(x['_id'])
+                x.pop('_id')
+            i.pop('assigned_user')
             i.pop('reporter_user')
             if i['plan'] != 'backLog':
                 i['plan'] = str(i['plan'])
         tasks_dict[task_status] = results
-    print(tasks_dict)
+    print(tasks_dict, 'tasks_dict')
     return tasks_dict, 200
 
 # save columns
@@ -209,13 +215,15 @@ def create_task_backlog(projectId):
 @app.route("/task/create/<projectId>", methods=["POST"])
 @jwt_required()
 def create_task(projectId):
-    data = request.form
+    data = request.get_json()
     parsedData = {}
     user_id = get_jwt_identity()
     for key in data.keys():
         parsedData[key] = data[key]
-    parsedData.pop("id")
-    parsedData['section'] = ObjectId(projectId)
+
+    plan = db.plans.find_one({"project": ObjectId(projectId), 'status': '1'})
+    print(plan)
+    parsedData['plan'] = plan['_id']
     parsedData["reportTo"] = [ObjectId(user['id'])
                               for user in parsedData["reportTo"]]
     parsedData["assignedTo"] = [ObjectId(user['id'])
@@ -224,8 +232,9 @@ def create_task(projectId):
     db.projects.update_one({"_id": ObjectId(projectId)}, {
                            "$push": {"tasks."+data["status"]: taskID}})
     ids = parsedData['reportTo']+parsedData['assignedTo']
+
     create_notification(ids, 'assigned you a task in project ',
-                        3, user_id, ObjectId(taskID))
+                        3, ObjectId(user_id), ObjectId(taskID))
     return {}, 200
 # route for update
 
@@ -270,7 +279,7 @@ def update_task(id):
     ids = data['reportTo']+data['assignedTo']
 
     create_notification(ids, 'has updated task information in project ',
-                        3, user_id, ObjectId(id))
+                        3, ObjectId(user_id), ObjectId(id))
     return {"status": "success"}
 
 # assign task to user

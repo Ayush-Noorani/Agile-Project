@@ -137,7 +137,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
       if (socket.connected) {
         socket.emit("notification-list", localStorage.getItem("token"));
       }
-    }, 5000);
+    }, 15000);
     socket.on("notification", (data: any) => {
       setNotification(data);
     });

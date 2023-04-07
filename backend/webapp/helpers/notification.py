@@ -113,7 +113,8 @@ def get_notfication(id):
                     'id': str(notification['task'][0]['_id']),
 
                 }
-                message += f"  in task {notification['task'][0]['name']} (in project {notification['project'][0]['name']})\n"
+
+                message += f"  in task {notification['task'][0]['taskName']} \n"
             message += "\n"
             message_obj['message'] = message
             messagelist.append(message_obj)

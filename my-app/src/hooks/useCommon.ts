@@ -2,14 +2,21 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../helper/axios";
 import { Member } from "../types/common";
+import { setLoading } from "../redux/reducers/user";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 export const useCommon = () => {
   const navigate = useNavigate();
-  const [members, setMembers] = useState<Member[]>([]);
-  useEffect(() => {
-    callDefaultSearch();
-  }, []);
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+  const loading = user.isLoading;
 
+  const [members, setMembers] = useState<Member[]>([]);
+
+  const setLoaderState = (state: boolean) => {
+    dispatch(setLoading(state));
+  };
   const callDefaultSearch = () => {
     searchUser("*");
   };
@@ -30,5 +37,7 @@ export const useCommon = () => {
     navigate,
     searchUser,
     members,
+    loading,
+    setLoaderState,
   };
 };

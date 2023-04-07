@@ -69,7 +69,7 @@ def get_project_list():
         }
         if project['lead'] != '':
             project['lead'] = str(project['lead'])
-        if 'img' in project.keys():
+        if 'img' in project.keys() and project['img'] != '' and project['img'] != None:
             print("converting project")
             project['img'] = decode_base64(project['img'])
         else:
@@ -87,7 +87,7 @@ def get_project_list():
                     if len(project['tasks'][j['value']]) > 0:
                         j['fixed'] = True
         project.pop("_id")
-        for k,v in project['tasks'].items():
+        for k, v in project['tasks'].items():
             project['tasks'][k] = [str(x) for x in v]
     return {"projects": projects}
 
@@ -263,7 +263,7 @@ def get_project(id):
     project = list(db.projects.aggregate(pipeline))[0]
     project["id"] = id
     project.pop("_id")
-    if project['img'] != '':
+    if project['img'] != '' and project['img'] != None:
         base64_data = codecs.encode(project['img'], 'base64')
 
         project['img'] = base64_data.decode("utf-8")
@@ -283,7 +283,7 @@ def update_project(id):
 
     if isinstance(img, FileStorage):
         data['img'] = img.stream.read()  # type: ignore
-    elif len(data['img'] > 0):
+    elif 'img' in data.keys() and len(data['img']) > 0:
         data['img'] = ''
     data['members'] = [ObjectId(member) for member in data['members']]
     data.pop("id")

@@ -120,6 +120,7 @@ def saveImage(id):
 @app.route("/user/get-dashboard", methods=["GET"])
 @jwt_required()
 def get_user_dashboard():
+    print("dashboard")
     user_id = get_jwt_identity()
     projects = list(db.projects.aggregate(
         [
@@ -144,6 +145,7 @@ def get_user_dashboard():
 
     ))
     for project in projects:
+        print("HERE")
         project['status'] = {
             "completed_tasks": len(project["tasks"]["done"]),
 
@@ -151,8 +153,11 @@ def get_user_dashboard():
         }
         project['id'] = str(project['_id'])
         project.pop("_id")
-        project['img'] = decode_base64(project['img'])
+        print(project['img'])
+        if project['img'] != '' and project['img'] != None:
+            project['img'] = decode_base64(project['img'])
         for task_status, value in project["tasks"].items():
+            print("HERE", task_status, value)
 
             if (len(value) > 0):
                 task_pipeline = [
@@ -226,7 +231,7 @@ def get_user_dashboard():
 
                 results = list(db.tasks.aggregate(task_pipeline))
                 for i in results:
-
+                    print("HERE")
                     i['assignee'] = i['assigned_user']
                     i['reportTo'] = i['reporter_user']
                     for x in i['assignee']:
@@ -241,7 +246,9 @@ def get_user_dashboard():
                             x['img'] = ''
                         i.pop('assigned_user')
                     i.pop('reporter_user')
+                    print(i)
                     if i['plan'] != 'backLog':
                         i['plan'] = str(i['plan'])
                 project["tasks"][task_status] = results
+    print(projects)
     return {"projects": list(projects)}, 200

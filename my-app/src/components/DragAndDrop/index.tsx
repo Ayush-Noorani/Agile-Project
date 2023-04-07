@@ -1,5 +1,5 @@
 import produce from "immer";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { Columntype } from "../../types/common";
 import { Columnlist } from "./Components/ColumnList";
@@ -23,9 +23,9 @@ export const DragAndDrop = ({
   onValueChange,
 }: DragAndDropProps) => {
   const defaultOrder = columns;
-  const [columnOrder, setColumnOrder] = useState<Columntype[]>(defaultOrder);
+  const [columnOrder, setColumnOrder] = useState<Columntype[]>(columns);
   const onDragEnd = (result: any) => {
-    if (!planId) {
+    if (planId) {
       return;
     }
     const { destination, source, draggableId, type } = result;
@@ -71,11 +71,45 @@ export const DragAndDrop = ({
         draftState[destination.droppableId].splice(destination.index, 0, data);
       });
     }
+    console.log("SEQUENCE CHANGE", newData);
     onValueChange(newData);
   };
 
+  const renderColumns = useMemo(() => {
+    console.log("render");
+    return columns.map((column: Columntype, index: any) => {
+      let columnData: any = [];
+
+      if (filters?.id && filters?.id.length > 0) {
+        console.log(data[column.value], filters.id);
+        columnData = data[column.value].filter(
+          (task: any) =>
+            task.assignee.some((assigned: any) =>
+              filters.id.includes(assigned.username)
+            ) ||
+            task.reportTo.some((member: any) =>
+              filters.id.includes(member.username)
+            )
+        );
+      } else {
+        columnData = data[column.value] || [];
+      }
+
+      return (
+        <Columnlist
+          key={column.value}
+          onClick={onClick}
+          column={column}
+          taskMap={columnData}
+          index={index}
+        />
+      );
+    });
+  }, [columnOrder, data]);
   return (
-    <div style={{ backgroundColor: "#f8fafc" }}>
+    <div
+      style={{ backgroundColor: "#f8fafc", overflow: "auto", height: "100%" }}
+    >
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable
           droppableId="all-columns"
@@ -88,34 +122,7 @@ export const DragAndDrop = ({
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {columnOrder.map((column: Columntype, index: any) => {
-                let columnData: any = [];
-
-                if (filters?.id && filters?.id.length > 0) {
-                  console.log(data[column.value], filters.id);
-                  columnData = data[column.value].filter(
-                    (task: any) =>
-                      task.assignee.some((assigned: any) =>
-                        filters.id.includes(assigned.username)
-                      ) ||
-                      task.reportTo.some((member: any) =>
-                        filters.id.includes(member.username)
-                      )
-                  );
-                } else {
-                  columnData = data[column.value] || [];
-                }
-
-                return (
-                  <Columnlist
-                    key={column.value}
-                    onClick={onClick}
-                    column={column}
-                    taskMap={columnData}
-                    index={index}
-                  />
-                );
-              })}
+              {renderColumns}
               {provided.placeholder}
             </div>
           )}

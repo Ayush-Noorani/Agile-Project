@@ -4,31 +4,31 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  IconButton,
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
+  Stack,
   Typography,
 } from "@mui/material";
-import { Create, Info } from "@mui/icons-material";
+import { CloseOutlined, Create, Info } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import { useTask } from "./hooks/useTask";
 import { useParams } from "react-router-dom";
-import { TaskUtility } from "./TaskUtilityForm";
+import { TaskUtilityForm } from "./TaskUtilityForm";
 import { ColumnForm } from "./components/ColumnForm";
 import { TaskHeader } from "./components/TaskHeader";
 import { usePlan } from "../Plan/hooks/usePlan";
 
-interface TaskProps {}
-
-export const TaskList = ({}: TaskProps) => {
+export const TaskList = () => {
   const { id, planId } = useParams();
   const [open, setOpen] = useState(false);
-  const { form, plans, createPlan, getPlans } = usePlan(id, planId);
-  useEffect(() => {
-    getPlans({
-      status: "1",
-    });
-  }, []);
+  const { plans } = usePlan(id, planId);
+  // useEffect(() => {
+  //   getPlans({
+  //     status: "1",
+  //   });
+  // }, []);
   const [openColumn, setOpenColumn] = useState(false);
   const actions: {
     icon: JSX.Element;
@@ -49,51 +49,52 @@ export const TaskList = ({}: TaskProps) => {
   ];
 
   const columnOrder = localStorage.getItem("columnOrder");
-  const {
-    getTasks,
-    tasks,
-    updateSequence,
-    getExistingTaskData,
-    value,
-    column,
-    filters,
-    getRetroRespectiveTasks,
-  } = useTask(id, planId);
+  const { tasks, updateSequence, column, filters, getTasks } = useTask(
+    id,
+    planId
+  );
   const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>(
     undefined
   );
-  useEffect(() => {
-    if (planId) {
-      console.log("Retrospective");
-      getRetroRespectiveTasks();
-    } else {
-      console.log("Task");
-      getTasks(undefined, id);
-      getPlans({
-        status: 1,
-      });
-    }
-  }, [id]);
+
   const getExistingTask = (id: string) => {
     setSelectedTaskId(id);
     setOpen(true);
   };
-  console.log(id, plans, tasks);
+  console.log(column, "column", tasks, Object.keys(tasks).length > 0);
   return (
     <Box
       style={{
         padding: 0,
         width: "100%",
+        overflow: "auto",
+        height: "100%",
       }}
     >
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
         <DialogTitle>
-          <Typography fontSize={30} fontWeight={"bold"}>
-            {selectedTaskId ? "Update Task" : "Create Task"}
-          </Typography>
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography fontSize={20} fontWeight={"bold"}>
+              {selectedTaskId ? "Update task" : "Create task"}
+            </Typography>
+            <IconButton onClick={() => setOpen(false)}>
+              <CloseOutlined color="error" />
+            </IconButton>
+          </Stack>
         </DialogTitle>
         <DialogContent>
-          <TaskUtility taskId={selectedTaskId} />
+          <TaskUtilityForm
+            closeModal={() => {
+              setOpen(false);
+              getTasks();
+            }}
+            taskId={selectedTaskId}
+          />
         </DialogContent>
         {/* <DialogActions>
           <Button onClick={() => setOpen(false)}>Close</Button>
@@ -103,9 +104,8 @@ export const TaskList = ({}: TaskProps) => {
       <Dialog open={openColumn} onClose={() => setOpenColumn(false)}>
         <ColumnForm id={id} />
       </Dialog>
-      {planId !== undefined && (
-        <TaskHeader planId={planId} id={id} plans={plans} />
-      )}
+      <TaskHeader planId={planId} id={id} plans={plans} />
+
       {tasks !== undefined && Object.keys(tasks).length > 0 && (
         <DragAndDrop
           data={tasks}
@@ -114,7 +114,7 @@ export const TaskList = ({}: TaskProps) => {
           onClick={getExistingTask}
           planId={planId}
           onValueChange={(data) => {
-            if (!planId) {
+            if (planId === undefined) {
               updateSequence(data);
             }
           }}
