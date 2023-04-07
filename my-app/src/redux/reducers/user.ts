@@ -9,6 +9,7 @@ type initialStateType = {
   id: string | undefined;
   color?: string;
   img: string;
+  isLoading: boolean;
 };
 
 const initialState: initialStateType = {
@@ -18,6 +19,7 @@ const initialState: initialStateType = {
   roles: [],
   id: undefined,
   img: "",
+  isLoading: false,
 };
 const userSlice = createSlice({
   name: "user",
@@ -44,9 +46,15 @@ const userSlice = createSlice({
       state.email = "";
       state.roles = [];
     },
+    setLoading: (state, action) => {
+      return produce(state, (draft) => {
+        draft.isLoading = action.payload;
+      });
+    },
   },
 });
 
-export const { discardUserData, setIsLoggedIn, setUser } = userSlice.actions;
+export const { discardUserData, setIsLoggedIn, setUser, setLoading } =
+  userSlice.actions;
 
 export default userSlice.reducer;

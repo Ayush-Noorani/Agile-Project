@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { axiosInstance } from "../../../helper/axios";
@@ -7,18 +7,21 @@ import { setColumns } from "../../../redux/reducers/project";
 import { RootState } from "../../../redux/store";
 import {
   Columntype,
+  Member,
   Priority,
   Tasks,
   TasksRecord,
 } from "../../../types/common";
 import { useProject } from "../../Projects/hooks/useProject";
+import { useCommon } from "../../../hooks/useCommon";
+import { usePlan } from "../../Plan/hooks/usePlan";
 type Task = {
   id?: string;
   description: string;
   summary: string;
   taskName: string;
-  assignedTo: string[];
-  reportTo: string[];
+  assignedTo: Member[];
+  reportTo: Member[];
   additionalFiles?: File[];
   status: "toDo" | "inProgres";
   priority: Priority;
@@ -27,7 +30,9 @@ type Task = {
 export const useTask = (projectId?: string, planId?: string) => {
   const [tasks, setTasks] = useState<TasksRecord>({});
   const [value, setValue] = useState<any>();
-  const { fetchAllProjects } = useProject();
+  const { fetchAllProjects, projectList } = useProject();
+  const { loading, setLoaderState } = useCommon();
+  const { form, plans, createPlan, getPlans } = usePlan(projectId, planId);
 
   const [newColumn, setNewColumn] = useState<Columntype>({
     label: "",
@@ -35,21 +40,29 @@ export const useTask = (projectId?: string, planId?: string) => {
   });
   const dispatch = useDispatch();
   useEffect(() => {
+    setLoaderState(true);
+    console.log("true", projectList);
     fetchAllProjects();
+    if (planId) {
+      getRetroRespectiveTasks();
+    } else {
+      getTasks(undefined, projectId);
+      getPlans({
+        status: 1,
+      });
+    }
+    console.log("false", projectList);
+    setLoaderState(false);
   }, []);
-  const projects = useSelector((state: RootState) => state.project.projects);
-  console.log(projects);
-  const currentProjectState = projects.find(
+
+  const currentProjectState = projectList.find(
     (project) => project.id === projectId
   );
   const [currentProject, setCurrentProject] = useState(currentProjectState);
   const filters = useSelector((state: RootState) => state.filters);
-  const columns: Columntype[] | [] = currentProject?.columns || [];
+  console.log(projectList, "projectList");
 
-  useEffect(() => {
-    setCurrentProject(projects.find((project) => project.id === projectId));
-  }, [projects]);
-  const [column, setColumn] = useState(columns);
+  const [column, setColumn] = useState<Columntype[]>([]);
   const [formData, setFormData] = useState<Task>({
     id: undefined,
     description: "",
@@ -61,6 +74,16 @@ export const useTask = (projectId?: string, planId?: string) => {
     status: "toDo",
     priority: "minor",
   });
+  useEffect(() => {
+    if (projectList.length > 0) {
+      setCurrentProject((_prev) => {
+        const data = projectList.find((project) => project.id === projectId);
+        setColumn(data!.columns);
+        return data;
+      });
+    }
+  }, [projectList]);
+
   const handleDeleteForAdditionalFiles = (index: number) => {
     setFormData((prev) => {
       return {
@@ -73,6 +96,7 @@ export const useTask = (projectId?: string, planId?: string) => {
   };
 
   const handleFormDataUpdate = (key: keyof Task, value: any) => {
+    console.log(key, value);
     setFormData((prev) => {
       switch (key) {
         case "additionalFiles": {
@@ -98,8 +122,8 @@ export const useTask = (projectId?: string, planId?: string) => {
   const updateColumns = () => {
     dispatch(
       setColumns({
-        projectIndex: projects.findIndex((item) => item.id === projectId),
-        columns: [...columns, newColumn],
+        projectIndex: projectList.findIndex((item) => item.id === projectId),
+        columns: [...column, newColumn],
       })
     );
     setNewColumn({
@@ -111,15 +135,15 @@ export const useTask = (projectId?: string, planId?: string) => {
   const deleteColumns = (index: number) => {
     dispatch(
       setColumns({
-        projectIndex: projects.findIndex((item) => item.id === projectId),
-        columns: columns.filter((item, i) => i !== index),
+        projectIndex: projectList.findIndex((item) => item.id === projectId),
+        columns: column.filter((item, i) => i !== index),
       })
     );
   };
   const saveColumns = () => {
-    let columnValue = columns;
+    let columnValue = column;
     if (newColumn.label && newColumn.value) {
-      columnValue = [...columns, newColumn];
+      columnValue = [...column, newColumn];
     }
     axiosInstance
       .put(`/project/column/update/${projectId}`, {
@@ -137,6 +161,7 @@ export const useTask = (projectId?: string, planId?: string) => {
       });
   };
   const getRetroRespectiveTasks = () => {
+    setLoaderState(true);
     console.log(
       `%c FETCH RETRORESPECTIVE \n`,
       `background:green; color: white;  font-weight: bold;`
@@ -147,41 +172,47 @@ export const useTask = (projectId?: string, planId?: string) => {
         console.log(res.data);
         setTasks(res.data.tasks);
         setColumn(res.data.columns);
+        setLoaderState(false);
       })
       .catch((err) => {
+        setLoaderState(false);
         console.error(err);
       });
   };
 
   const getTasks = (TaskId?: string | undefined, projectId?: string) => {
-    axiosInstance
-      .get("/task/list/" + projectId)
-      .then((res) => {
-        console.log(
-          `%c FETCH ALL TASKS \n`,
-          `background:green; color: white;  font-weight: bold;`
-        );
-        setTasks(res.data);
-        if (TaskId) {
-          const value: Task = Object.values(res.data)
-            .flatMap((value) => value)
-            .find((task: any) => task.id === TaskId) as unknown as Task;
-          setFormData({
-            id: value.id,
-            description: value.description,
-            summary: value.summary,
-            taskName: value.taskName,
-            assignedTo: value.assignedTo || [],
-            reportTo: value.reportTo || [],
-            additionalFiles: value.additionalFiles,
-            status: value.status,
-            priority: value.priority,
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    console.log(
+      `%c FETCH ALL TASKS \n`,
+      `background:green; color: white;  font-weight: bold;`
+    );
+    if (projectId) {
+      axiosInstance
+        .get("/task/list/" + projectId)
+        .then((res) => {
+          setTasks(res.data);
+          if (TaskId) {
+            const value: Task = Object.values(res.data)
+              .flatMap((value) => value)
+              .find((task: any) => task.id === TaskId) as unknown as Task;
+            setFormData({
+              id: value.id,
+              description: value.description,
+              summary: value.summary,
+              taskName: value.taskName,
+              //@ts-ignore
+              assignedTo: value.assignee || [],
+              reportTo: value.reportTo || [],
+              additionalFiles: value.additionalFiles,
+              status: value.status,
+              priority: value.priority,
+            });
+          }
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
   const getExistingTaskData = (id: string) => {
     // console.log(Object.values(tasks).flatMap((value) => value));
@@ -192,7 +223,7 @@ export const useTask = (projectId?: string, planId?: string) => {
     );
   };
 
-  const updateData = (data: FormData) => {
+  const updateData = (data: any) => {
     axiosInstance
       .put(`/task/update/${formData.id}`, data)
       .then((res) => {
@@ -208,8 +239,8 @@ export const useTask = (projectId?: string, planId?: string) => {
       });
   };
 
-  const createData = (data: FormData) => {
-    console.log("creating task");
+  const createData = (data: any, plan: string) => {
+    console.log("creating task", data);
     axiosInstance
       .post(`/task/create/${projectId}`, data)
       .then(() => {
@@ -224,13 +255,13 @@ export const useTask = (projectId?: string, planId?: string) => {
       });
   };
 
-  const submitFormData = () => {
+  const submitFormData = (plan?: string) => {
+    setLoaderState(true);
     const submitData: any = new FormData();
-    for (const key in formData) {
-      submitData.append(key, formData[key as keyof Task]);
-    }
+
     // submitData.append("data", JSON.stringify(formData));
-    formData.id ? updateData(submitData) : createData(submitData);
+    formData.id ? updateData(formData) : createData(formData, plan!);
+    setLoaderState(false);
   };
 
   const updateSequence = (tasks: any) => {
@@ -248,16 +279,13 @@ export const useTask = (projectId?: string, planId?: string) => {
           data
         );
         console.log(res);
+        getTasks(undefined, projectId);
       })
       .catch((err) => {
         console.log(err);
       });
   };
   const setFilters = (data: any) => {
-    console.log({
-      ...filters,
-      ...data,
-    });
     dispatch(
       setFilter({
         ...filters,

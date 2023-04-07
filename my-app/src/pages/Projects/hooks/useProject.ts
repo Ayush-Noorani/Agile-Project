@@ -10,6 +10,7 @@ import { setData } from "../../../redux/reducers/project";
 
 export const useProject = (id?: string) => {
   const projects = useSelector((state: RootState) => state.project.projects);
+  const [projectList, setProjectList] = useState<ProjectData[]>(projects);
   const dispatch = useDispatch();
   const [value, setValue] = useState<ProjectData>({
     id: undefined,
@@ -24,15 +25,16 @@ export const useProject = (id?: string) => {
     columns: [],
   });
 
-  const fetchMembers = () => {
-    axiosInstance.get(`/project/members/${id}`).then((res) => {
-      setValue(
-        produce((draft) => {
-          draft.members = res.data.members;
-        })
-      );
-    });
-  };
+  // const fetchMembers = () => {
+  //   axiosInstance.get(`/project/members/${id}`).then((res) => {
+  //     setValue(
+  //       produce((draft) => {
+  //         draft.members = res.data.members;
+  //       })
+  //     );
+  //   });
+  // };
+
   const unAssign = (projectId: string, userId: string) => {
     console.log(
       `%c UNASSIGN ${userId} \n`,
@@ -47,6 +49,7 @@ export const useProject = (id?: string) => {
         console.error(err.response);
       });
   };
+
   const assign = (projectId: string, userId: string) => {
     console.log(
       `%c ASSIGN ${userId} \n`,
@@ -61,16 +64,24 @@ export const useProject = (id?: string) => {
         console.error(err.response);
       });
   };
+
   const fetchAllProjects = () => {
-    axiosInstance.get("/project/list").then((res) => {
-      console.log(
-        `%c FETCH ALL PROJECTS \n`,
-        `background:green; color: white;  font-weight: bold;`,
-        res.data
-      );
-      dispatch(setData(res.data.projects));
-    });
+    axiosInstance
+      .get("/project/list")
+      .then((res) => {
+        console.log(
+          `%c FETCH ALL PROJECTS \n`,
+          `background:green; color: white;  font-weight: bold;`,
+          res.data
+        );
+        dispatch(setData(res.data.projects));
+        setProjectList(res.data.projects);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
+
   const fetchExistingData = (id: any) => {
     axiosInstance.get(`/project/get/${id}`).then((res) => {
       setValue(res.data.project);
@@ -92,6 +103,7 @@ export const useProject = (id?: string) => {
       axiosInstance.put(`/project/image/${id}`, img).then((res) => {});
     }
   };
+
   const submitData = () => {
     const request: any = { ...value };
     delete request.img;
@@ -139,10 +151,10 @@ export const useProject = (id?: string) => {
   return {
     projects,
     value,
+    projectList,
     updateState,
     submitData,
     fetchExistingData,
-    fetchMembers,
     fetchAllProjects,
     unAssign,
     assign,

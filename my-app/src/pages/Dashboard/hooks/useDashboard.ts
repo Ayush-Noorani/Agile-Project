@@ -4,17 +4,13 @@ import { useSelector } from "react-redux";
 import { axiosInstance } from "../../../helper/axios";
 import { setDashboard } from "../../../redux/reducers/project";
 import { RootState } from "../../../redux/store";
-import {
-  DashBoard,
-} from "../../../types/common";
+import { DashBoard } from "../../../types/common";
 
 export const useDashboard = () => {
   const dashboard = useSelector((state: RootState) => state.project.dashboard);
   const [projects, setProjects] = useState<DashBoard[]>(dashboard);
   const dispatch = useDispatch();
-  useEffect(() => {
-    setProjects(dashboard);
-  }, []);
+
   const getDashboardData = () => {
     axiosInstance
       .get("/user/get-dashboard")

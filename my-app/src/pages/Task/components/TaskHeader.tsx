@@ -38,9 +38,15 @@ export const ShowDateDiff = ({ endDate }: any) => {
         <Typography variant="subtitle1" sx={{ fontWeight: "bold", mr: 1 }}>
           Time left:
         </Typography>
-        <Typography variant="body2" sx={{ fcolor: "text.secondary" }}>
-          {daysLeft} days, {hoursLeft} hours, and {minsLeft} minutes
-        </Typography>
+        {daysLeft > 0 ? (
+          <Typography variant="body2" sx={{ fcolor: "text.secondary" }}>
+            {daysLeft} days, {hoursLeft} hours, and {minsLeft} minutes
+          </Typography>
+        ) : (
+          <Typography variant="body2" sx={{ fcolor: "text.secondary" }}>
+            Ended
+          </Typography>
+        )}
       </Typography>
     );
   }

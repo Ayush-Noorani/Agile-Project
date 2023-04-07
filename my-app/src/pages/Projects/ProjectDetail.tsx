@@ -8,20 +8,21 @@ import {
   Button,
   Fab,
   ListItemText,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { FormTextField, WeightLabel } from "../../components/Common/Common";
-import { DateRange } from "react-date-range";
 import { addDays } from "date-fns";
+import { DateRangePicker } from "@adobe/react-spectrum";
 import { Add, Delete } from "@mui/icons-material";
 import { ListView } from "../../components/ListView";
 import { useProject } from "./hooks/useProject";
 import { useCommon } from "../../hooks/useCommon";
 import { TypoGraphyImage } from "../../components/Common/TypoGraphyImage";
 import Compressor from "compressorjs";
-
-interface ProjectDetailProps {}
+import { defaultTheme, Provider } from "@adobe/react-spectrum";
+import { parseDate } from "@internationalized/date";
 
 type state = {
   selection: {
@@ -44,14 +45,13 @@ const form: FormType[] = [
   },
 ];
 
-export const ProjectDetail = ({}: ProjectDetailProps) => {
+export const ProjectDetail = () => {
   const { id } = useParams();
   const fileRef = useRef<any>(null);
   const autoCompplete = useRef<any>(null);
   const reader = new FileReader();
   const { members, searchUser } = useCommon();
-  const { value, updateState, fetchExistingData, fetchMembers, submitData } =
-    useProject(id);
+  const { value, updateState, fetchExistingData, submitData } = useProject(id);
   const [state, setState] = useState<any[]>([
     {
       startDate: new Date(),
@@ -63,13 +63,12 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
   useEffect(() => {
     if (id !== "create") {
       fetchExistingData(id);
-      fetchMembers();
     }
   }, []);
 
   const handleImageUpload = (e: any) => {
     new Compressor(e.target.files[0], {
-      quality: 0.7,
+      quality: 0.3,
       success: (compressedResult) => {
         console.log(compressedResult);
         updateState(compressedResult, "img");
@@ -80,118 +79,137 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
       setImage(reader.result as string);
     });
   };
+  console.log(value);
 
   return (
-    <div className="create-view" style={{ marginBottom: "50px" }}>
-      <div style={{ position: "relative", width: "50%", marginBottom: "5px" }}>
-        <img
-          alt="img"
-          src={
-            typeof value.img === "string" && value.img.length > 30
-              ? `data:image/png;base64,${value.img}`
-              : image
-              ? image
-              : "https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YmxvYnxlbnwwfHwwfHw%3D&w=1000&q=80"
-          }
-          height="200px"
-          width="100%"
-          style={{ borderRadius: "10px", zIndex: 0 }}
-          className="box-shadow"
-        />
-        <Fab
-          variant="circular"
-          color="primary"
-          size="small"
-          onClick={() => fileRef.current.click()}
-          style={{
-            zIndex: 1,
-
-            position: "absolute",
-            bottom: "10px",
-            right: "10px",
-          }}
+    <Provider
+      theme={{
+        ...defaultTheme,
+      }}
+      colorScheme="light"
+    >
+      <div className="create-view" style={{ marginBottom: "90px" }}>
+        <div
+          style={{ position: "relative", width: "50%", marginBottom: "5px" }}
         >
-          <Add />
-        </Fab>
-      </div>
-      <input type="file" onChange={handleImageUpload} ref={fileRef} />
-      <form className="row" style={{ justifyContent: "space-evenly" }}>
-        <div className="form" style={{ width: "400px" }}>
-          {form.map((item, index) => (
-            <FormTextField
-              id="filled-basic"
-              label={item.label}
-              sx={{ width: "400px" }}
-              value={value[item.name as keyof ProjectData]}
-              defaultValue={value[item.name as keyof ProjectData]}
-              onChange={(e: { target: { value: any } }) =>
-                updateState(e.target.value, item.name as keyof ProjectData)
-              }
-              variant="outlined"
-              required
-            />
-          ))}
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            className="margin"
-            onChange={(e) => {}}
-            sx={{ width: 400 }}
-            renderInput={(params) => <TextField {...params} label="Category" />}
-            options={[]}
+          <img
+            alt="img"
+            src={
+              typeof value.img === "string" && value.img.length > 30
+                ? `data:image/png;base64,${value.img}`
+                : image
+                ? image
+                : "https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YmxvYnxlbnwwfHwwfHw%3D&w=1000&q=80"
+            }
+            height="200px"
+            width="100%"
+            style={{ borderRadius: "10px", zIndex: 0 }}
+            className="box-shadow"
           />
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            className="margin"
-            ref={autoCompplete}
-            onChange={(e, newValue) => {
-              if (newValue && newValue.id) {
-                updateState([...value.members, newValue], "lead");
-                autoCompplete.current.value = "";
-              }
-            }}
-            sx={{ width: 400 }}
-            autoHighlight
-            renderInput={(params) => (
-              <TextField
-                onChange={(e) => searchUser(e.target.value)}
-                {...params}
-                label="Team Lead"
-              />
-            )}
-            options={members.map((value, key) => ({
-              ...value,
-              label: value.username,
-              value: value.id,
-              color: value.color,
-            }))}
-            getOptionLabel={(option) => option.label}
-            renderOption={(props, option) => (
-              <Box
-                component="li"
-                {...props}
-                className="row"
-                sx={{ alignItems: "center" }}
-              >
-                <TypoGraphyImage color={option.color} name={option.label} />
-                <ListItemText primary={option.label} />
-              </Box>
-            )}
-          />
-
-          <Box
-            className="margin"
+          <Fab
+            variant="circular"
+            color="primary"
+            size="small"
+            onClick={() => fileRef.current.click()}
             style={{
-              display: "flex",
-              flexDirection: "column",
-              width: "350px",
+              zIndex: 1,
+
+              position: "absolute",
+              bottom: "10px",
+              right: "10px",
             }}
           >
-            <WeightLabel weight={600}>
-              Project start - expected end date
-            </WeightLabel>
-            <DateRange
+            <Add />
+          </Fab>
+        </div>
+        <input
+          style={{
+            display: "none",
+          }}
+          type="file"
+          onChange={handleImageUpload}
+          ref={fileRef}
+        />
+        <Stack direction="row" justifyContent={"space-around"} spacing={3}>
+          <Stack spacing={3} className="form" style={{ width: "400px" }}>
+            {form.map((item, index) => (
+              <FormTextField
+                id="filled-basic"
+                label={item.label}
+                sx={{ width: "400px" }}
+                value={value[item.name as keyof ProjectData]}
+                defaultValue={value[item.name as keyof ProjectData]}
+                onChange={(e: { target: { value: any } }) =>
+                  updateState(e.target.value, item.name as keyof ProjectData)
+                }
+                variant="outlined"
+                required
+              />
+            ))}
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              className="margin"
+              onChange={(e) => {}}
+              sx={{ width: 400 }}
+              renderInput={(params) => (
+                <TextField {...params} label="Category" />
+              )}
+              options={[]}
+            />
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              className="margin"
+              ref={autoCompplete}
+              onChange={(e, newValue) => {
+                if (newValue && newValue.id) {
+                  updateState([...value.members, newValue], "lead");
+                  autoCompplete.current.value = "";
+                }
+              }}
+              sx={{ width: 400 }}
+              autoHighlight
+              renderInput={(params) => (
+                <TextField
+                  onChange={(e) => searchUser(e.target.value)}
+                  {...params}
+                  label="Team Lead"
+                />
+              )}
+              options={members.map((value, key) => ({
+                ...value,
+                label: value.username,
+                value: value.id,
+                color: value.color,
+              }))}
+              getOptionLabel={(option) => option.label}
+              renderOption={(props, option) => (
+                <Box
+                  component="li"
+                  {...props}
+                  className="row"
+                  sx={{ alignItems: "center" }}
+                >
+                  <TypoGraphyImage color={option.color} name={option.label} />
+                  <ListItemText primary={option.label} />
+                </Box>
+              )}
+            />
+
+            <Box
+              className="margin"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "350px",
+                height: "200px",
+              }}
+            >
+              <WeightLabel weight={600}>
+                Project start - expected end date
+              </WeightLabel>
+              {/* <DateRange
               minDate={new Date()}
               editableDateInputs={true}
               startDatePlaceholder="Start Date"
@@ -204,88 +222,113 @@ export const ProjectDetail = ({}: ProjectDetailProps) => {
               }}
               moveRangeOnFirstSelection={false}
               ranges={state}
-            />
-          </Box>
-        </div>
-        <div className="column member-section">
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            className="margin"
-            ref={autoCompplete}
-            onSelect={(e) => console.log(e)}
-            onChange={(e, newValue) => {
-              if (newValue && newValue.id) {
-                updateState([...value.members, newValue], "members");
-                autoCompplete.current.value = "";
-              }
-            }}
-            sx={{ width: 400 }}
-            autoHighlight
-            renderInput={(params) => (
-              <TextField
-                onChange={(e) => searchUser(e.target.value)}
-                {...params}
-                label="Members"
-              />
-            )}
-            options={members
-              .filter((item, key) => {
-                return !value.members.find((v) => v.id === item.id);
-              })
-              .map((value, key) => ({
-                ...value,
-                label: value.username,
-                value: value.id,
-              }))}
-            getOptionLabel={(option) => option.label}
-            renderOption={(props, option) => (
-              <Box
-                component="li"
-                {...props}
-                className="row"
-                sx={{ alignItems: "center" }}
-              >
-                <TypoGraphyImage color={option.color} name={option.label} />
-                <Typography sx={{ marginLeft: "10px" }}>
-                  {option.label}
-                </Typography>
-              </Box>
-            )}
-          />
+            /> */}
+              <DateRangePicker
+                defaultValue={{
+                  //@ts-ignore
+                  startDate:
+                    typeof value.startDate === "string"
+                      ? parseDate(value.startDate.split("T")[0])
+                      : value.startDate,
+                  endDate:
+                    typeof value.endDate === "string"
+                      ? parseDate(value.endDate.split("T")[0])
+                      : value.endDate,
+                }}
+                onChange={(value) => {
+                  updateState(value.start.toDate("Asia/Kolkata"), "startDate");
 
-          {(value.members as Member[]) ? (
-            <ListView
-              data={value.members}
-              action={[
-                (id: any) => (
-                  <Button
-                    onClick={() => {
-                      updateState(
-                        value.members.filter((item) => item.id !== id),
-                        "members"
-                      );
-                    }}
-                    color="error"
-                  >
-                    <Delete />
-                  </Button>
-                ),
-              ]}
+                  updateState(value.end.toDate("Asia/Kolkata"), "endDate");
+                }}
+              />
+            </Box>
+          </Stack>
+          <Stack className="column member-section">
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              className="margin"
+              ref={autoCompplete}
+              onSelect={(e) => console.log(e)}
+              onChange={(e, newValue) => {
+                if (newValue && newValue.id) {
+                  updateState([...value.members, newValue], "members");
+                  autoCompplete.current.value = "";
+                }
+              }}
+              sx={{ width: 400 }}
+              autoHighlight
+              renderInput={(params) => (
+                <TextField
+                  onChange={(e) => searchUser(e.target.value)}
+                  {...params}
+                  label="Members"
+                />
+              )}
+              options={members
+                .filter((item, key) => {
+                  return !value.members.find((v) => v.id === item.id);
+                })
+                .map((value, key) => ({
+                  ...value,
+                  label: value.username,
+                  value: value.id,
+                }))}
+              getOptionLabel={(option) => option.label}
+              renderOption={(props, option) => (
+                <Box
+                  component="li"
+                  {...props}
+                  className="row"
+                  sx={{ alignItems: "center" }}
+                >
+                  <TypoGraphyImage color={option.color} name={option.label} />
+                  <Typography sx={{ marginLeft: "10px" }}>
+                    {option.label}
+                  </Typography>
+                </Box>
+              )}
             />
-          ) : (
-            <></>
-          )}
-        </div>
-      </form>
-      <Button
-        variant="contained"
-        className="margin"
-        onClick={submitData}
-        style={{ width: "80px", alignSelf: "center" }}
-      >
-        {id !== "0" ? "Update" : "Create"}
-      </Button>
-    </div>
+
+            {(value.members as Member[]) ? (
+              <ListView
+                data={value.members}
+                action={[
+                  (id: any) => (
+                    <Button
+                      onClick={() => {
+                        updateState(
+                          value.members.filter((item) => item.id !== id),
+                          "members"
+                        );
+                      }}
+                      color="error"
+                    >
+                      <Delete />
+                    </Button>
+                  ),
+                ]}
+              />
+            ) : (
+              <></>
+            )}
+          </Stack>
+        </Stack>
+        <Button
+          variant="contained"
+          className="margin"
+          onClick={submitData}
+          style={{
+            width: "80px",
+            alignSelf: "center",
+            position: "absolute",
+            bottom: "10px",
+            right: "10px",
+          }}
+        >
+          {id !== "0" ? "Update" : "Create"}
+        </Button>
+      </div>
+    </Provider>
   );
 };

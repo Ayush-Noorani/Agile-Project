@@ -11,7 +11,6 @@ export const AdminProtected = ({ children }: AdminProtectedProps) => {
   useEffect(() => {
     fetchUserInfo();
   }, []);
-  console.log(user);
   if (user.roles.includes("admin")) {
     return <SideBar>{children}</SideBar>;
   }

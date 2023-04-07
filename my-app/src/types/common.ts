@@ -58,8 +58,8 @@ export type ProjectData = {
   description: string;
   members: Member[];
   img: string | boolean | File;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | string;
+  endDate: Date | string;
   category: string;
   lead: string;
   columns: Columntype[];

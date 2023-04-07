@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { PlanTable } from "../Plan/Components/PlanTable";
 import { useRetroSpection } from "./hooks/useRetroSpection";
 
-interface RetrospectionProps {}
 export const RetrospectionList = () => {
   const { id } = useParams();
 

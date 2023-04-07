@@ -9,6 +9,7 @@ import { useUser } from "../../hooks/useUser";
 import { useCommon } from "../../hooks/useCommon";
 import { useProjectContext } from "../../context/ProjectContext";
 import { useParams } from "react-router-dom";
+import { Rings } from "react-loader-spinner";
 interface SideBarProps {
   children: React.ReactNode | React.ReactNode[];
 }
@@ -16,6 +17,7 @@ interface SideBarProps {
 export const SideBar = ({ children }: SideBarProps) => {
   const token = localStorage.getItem("token");
   const { user } = useUser();
+  const { loading } = useCommon();
   const { selected, setValue } = useProjectContext();
   const { navigate } = useCommon();
   const { id } = useParams();
@@ -78,12 +80,38 @@ export const SideBar = ({ children }: SideBarProps) => {
         ) : (
           <></>
         )}
-
-        {children}
+        {loading && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: "9",
+            }}
+          >
+            <Rings
+              height="120"
+              width="120"
+              color="#4fa94d"
+              radius="6"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+              ariaLabel="rings-loading"
+            />
+          </Box>
+        )}
+        <Box
+          sx={{
+            width: open ? "100%" : "100%",
+            height: "100%",
+            opacity: loading ? 0.5 : 1,
+          }}
+        >
+          {children}
+        </Box>
       </div>
     </div>
   );
 };
-function fetchUserInfo() {
-  throw new Error("Function not implemented.");
-}

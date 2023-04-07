@@ -8,6 +8,7 @@ import { Plan } from "../../../types/common";
 export const usePlan = (id: any, planId?: string) => {
   const [plans, setPlans] = useState<any[]>([]);
   const { toast, defaultValue } = useToastContext();
+  const [currentPlan, setCurrentPlan] = useState<any>();
   const dispatch = useDispatch();
   const [form, setForm] = useState<Plan>({
     startDate: new Date(),
@@ -63,7 +64,7 @@ export const usePlan = (id: any, planId?: string) => {
           `background:green; color: white;  font-weight: bold;`,
           res.data
         );
-        console.log(res.data.plans);
+
         if (res.data.plans.length > 0) {
           dispatch(
             setFilter({
@@ -71,6 +72,9 @@ export const usePlan = (id: any, planId?: string) => {
             })
           );
           setPlans(res.data.plans);
+          setCurrentPlan(
+            res.data.plans.find((plan: Plan) => plan.status === "1")
+          );
         }
       })
       .catch((err) => {
@@ -95,11 +99,12 @@ export const usePlan = (id: any, planId?: string) => {
 
   return {
     plans,
+    form,
+    currentPlan,
     setPlans,
     getPlans,
     createPlan,
     updatePlanStatus,
-    form,
     setForm,
   };
 };
