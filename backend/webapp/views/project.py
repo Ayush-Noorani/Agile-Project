@@ -105,7 +105,7 @@ def save_columns(id):
         current_project['tasks'][i['value']] = []
     done_project = current_project['tasks']['done']
     current_project['tasks'].pop('done')
-    current_project['tasks']['done'] = current_project
+    current_project['tasks']['done'] = done_project
     db.projects.update_one({"_id": ObjectId(id)}, {
                            "$set": {"columns": data['columns'],
                                     'tasks': current_project['tasks']}, })
