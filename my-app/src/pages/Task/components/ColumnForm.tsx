@@ -32,6 +32,10 @@ const columnHeaders: Headers[] = [
     id: "action",
     label: "Action",
   },
+  {
+    id: "color",
+    label: "Color",
+  },
 ];
 
 export const ColumnForm = ({ id }: ColumnProps) => {
@@ -40,6 +44,7 @@ export const ColumnForm = ({ id }: ColumnProps) => {
     newColumn,
     setNewColumn,
     saveColumns,
+    setColumn,
     updateColumns,
     deleteColumns,
   } = useTask(id);
@@ -61,7 +66,25 @@ export const ColumnForm = ({ id }: ColumnProps) => {
             <TableRow>
               <TableCell>{row.label}</TableCell>
               <TableCell>{row.value}</TableCell>
-
+              <TableCell>
+                <input
+                  type="color"
+                  onChange={(e) =>
+                    setColumn((prev) =>
+                      prev.map((value, pos) => {
+                        if (pos === index) {
+                          return {
+                            ...value,
+                            color: e.target.value,
+                          };
+                        }
+                        return value;
+                      })
+                    )
+                  }
+                  value={row.color}
+                />
+              </TableCell>
               <TableCell>
                 <IconButton onClick={() => deleteColumns(index)}>
                   <DeleteIcon />

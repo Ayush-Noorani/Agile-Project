@@ -42,7 +42,18 @@ export const Column = ({ ...props }: any) => {
         dragHandleProps: any;
       }) => (
         <Container {...provided.draggableProps} ref={provided.innerRef}>
-          <Title {...provided.dragHandleProps}>{props.column.label}</Title>
+          <Title
+            {...provided.dragHandleProps}
+            style={{
+              color: "white",
+              backgroundColor: props.column.color,
+              borderRadius: "5px",
+              padding: "5px",
+              fontSize: "15px",
+            }}
+          >
+            {props.column.label}
+          </Title>
           <Droppable droppableId={props.column.value} type="task">
             {(
               provided: {

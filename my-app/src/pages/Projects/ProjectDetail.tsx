@@ -6,6 +6,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Dialog,
   Fab,
   ListItemText,
   Stack,
@@ -23,6 +24,7 @@ import { TypoGraphyImage } from "../../components/Common/TypoGraphyImage";
 import Compressor from "compressorjs";
 import { defaultTheme, Provider } from "@adobe/react-spectrum";
 import { parseDate } from "@internationalized/date";
+import { ColumnForm } from "../Task/components/ColumnForm";
 
 type state = {
   selection: {
@@ -80,6 +82,7 @@ export const ProjectDetail = () => {
     });
   };
   console.log(value);
+  const [openColumn, setOpenColumn] = useState(false);
 
   return (
     <Provider
@@ -243,6 +246,9 @@ export const ProjectDetail = () => {
               />
             </Box>
           </Stack>
+          <Dialog open={openColumn} onClose={() => setOpenColumn(false)}>
+            <ColumnForm id={id} />
+          </Dialog>
           <Stack className="column member-section">
             <Autocomplete
               disablePortal
@@ -314,20 +320,39 @@ export const ProjectDetail = () => {
             )}
           </Stack>
         </Stack>
-        <Button
-          variant="contained"
-          className="margin"
-          onClick={submitData}
+        <Stack
           style={{
-            width: "80px",
-            alignSelf: "center",
             position: "absolute",
             bottom: "10px",
             right: "10px",
           }}
+          direction="row"
+          spacing={2}
         >
-          {id !== "0" ? "Update" : "Create"}
-        </Button>
+          <Button
+            variant="contained"
+            className="margin"
+            onClick={() => setOpenColumn(true)}
+            style={{
+              width: "80px",
+              alignSelf: "center",
+            }}
+          >
+            Columns
+          </Button>
+
+          <Button
+            variant="contained"
+            className="margin"
+            onClick={submitData}
+            style={{
+              width: "80px",
+              alignSelf: "center",
+            }}
+          >
+            {id !== "0" ? "Update" : "Create"}
+          </Button>
+        </Stack>
       </div>
     </Provider>
   );

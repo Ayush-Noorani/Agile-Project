@@ -51,6 +51,7 @@ export type Columntype = {
   label: string;
   value: string;
   fixed?: boolean;
+  color?: string;
 };
 export type ProjectData = {
   id?: any;

@@ -38,6 +38,7 @@
     "@typescript-eslint/no-empty-function":"warn",
     "no-unsafe-optional-chaining":"warn",
     "@typescript-eslint/ban-ts-comment":"warn",
+    "no-useless-escape":"warn"
     
   }
 }
