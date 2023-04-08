@@ -62,11 +62,12 @@ def login():
 @app.route('/user/register', methods=['POST'])
 def register():
     data = request.get_json()
+
     check_if_already_exists = collection.find_one({
         'email': data['email']
     })
     if (check_if_already_exists):
-        return {'message': 'email already exists!'}, 403
+        return {'message': 'Email already exists!'}, 403
     data['password'] = bcrypt.generate_password_hash(data['password'])
     data['roles'] = ['user']
     is_registered = collection.insert_one(data)
@@ -145,7 +146,6 @@ def get_user_dashboard():
 
     ))
     for project in projects:
-        print("HERE")
         project['status'] = {
             "completed_tasks": len(project["tasks"]["done"]),
 
@@ -153,7 +153,6 @@ def get_user_dashboard():
         }
         project['id'] = str(project['_id'])
         project.pop("_id")
-        print(project['img'])
         if project['img'] != '' and project['img'] != None:
             project['img'] = decode_base64(project['img'])
         for task_status, value in project["tasks"].items():
@@ -231,7 +230,6 @@ def get_user_dashboard():
 
                 results = list(db.tasks.aggregate(task_pipeline))
                 for i in results:
-                    print("HERE")
                     i['assignee'] = i['assigned_user']
                     i['reportTo'] = i['reporter_user']
                     for x in i['assignee']:
@@ -246,9 +244,7 @@ def get_user_dashboard():
                             x['img'] = ''
                         i.pop('assigned_user')
                     i.pop('reporter_user')
-                    print(i)
                     if i['plan'] != 'backLog':
                         i['plan'] = str(i['plan'])
                 project["tasks"][task_status] = results
-    print(projects)
     return {"projects": list(projects)}, 200
