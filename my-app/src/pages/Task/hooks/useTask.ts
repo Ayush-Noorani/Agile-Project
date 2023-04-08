@@ -313,5 +313,6 @@ export const useTask = (projectId?: string, planId?: string) => {
     handleDeleteForAdditionalFiles,
     handleFormDataUpdate,
     getRetroRespectiveTasks,
+    setColumn,
   };
 };

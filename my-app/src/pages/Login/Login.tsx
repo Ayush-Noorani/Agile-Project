@@ -1,11 +1,30 @@
 import React, { useState } from "react";
 import { FormType } from "../../types/common";
 import { onChange } from "../../utils/Common";
-import { Alert, Box, Button, Container, TextField } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useLogin } from "../../hooks/useLogin";
 import "../../css/common.css";
+import "../../css/login.css";
+import { ReactComponent as ScrumBoard } from "../../assets/undraw_scrum_board_re_wk7v.svg";
+import { ReactComponent as PeopleCollab } from "../../assets/undraw_collaborators_re_hont.svg";
+
+import { ReactComponent as SecureLogin } from "../../assets/undraw_secure_login_pdn4.svg";
+
+import { ReactComponent as GrowthCurve } from "../../assets/undraw_growth_curve_re_t5s7.svg";
+
+import { ReactComponent as SecureFiles } from "../../assets/undraw_secure_files_re_6vdh.svg";
+
 import { useToastContext } from "../../context/ToastContext";
 import { useNavigate } from "react-router-dom";
+import { PageWrapper } from "../../components/PageWrapper";
 
 const form: FormType[] = [
   {
@@ -35,26 +54,8 @@ export const Login = () => {
   const { toast } = useToastContext();
   const navigate = useNavigate();
   return (
-    <Container
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        height: "100vh",
-        justifyContent: "center",
-      }}
-    >
-      <Box
-        className="formbg"
-        sx={{
-          height: "35%",
-          width: "50%",
-          display: "flex",
-          borderRadius: "20px",
-          flexDirection: "column",
-          justifyContent: "space-around",
-        }}
-      >
+    <PageWrapper>
+      <Stack className="form-bg form" spacing={2}>
         <h4 style={{ alignSelf: "center" }}>Login</h4>
         {form.map((item, index) => (
           <TextField
@@ -77,19 +78,29 @@ export const Login = () => {
             onSubmit(value, setLoading, setError);
           }}
           variant="contained"
+          style={{
+            backgroundColor: "#30475E",
+          }}
         >
           Submit
         </Button>
         <Box
+          color="inherit"
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
           }}
         >
-          <Button onClick={() => navigate("/register")}>Register </Button>
+          <Button
+            variant="outlined"
+            color="inherit"
+            onClick={() => navigate("/register")}
+          >
+            Register{" "}
+          </Button>
         </Box>
-      </Box>
-    </Container>
+      </Stack>
+    </PageWrapper>
   );
 };
