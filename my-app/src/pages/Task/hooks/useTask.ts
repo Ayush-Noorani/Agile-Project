@@ -22,7 +22,6 @@ type Task = {
   taskName: string;
   assignedTo: Member[];
   reportTo: Member[];
-  additionalFiles?: File[];
   status: "toDo" | "inProgres";
   priority: Priority;
 };
@@ -70,10 +69,17 @@ export const useTask = (projectId?: string, planId?: string) => {
     taskName: "",
     assignedTo: [],
     reportTo: [],
-    additionalFiles: [],
     status: "toDo",
     priority: "minor",
   });
+
+  const [validFields, setValidFields] = useState({
+    summary:true,
+    taskName:true,
+    assignedTo:true,
+    reportTo:true
+  })
+
   useEffect(() => {
     if (projectList.length > 0) {
       setCurrentProject((_prev) => {
@@ -84,41 +90,61 @@ export const useTask = (projectId?: string, planId?: string) => {
     }
   }, [projectList]);
 
-  const handleDeleteForAdditionalFiles = (index: number) => {
-    setFormData((prev) => {
-      return {
-        ...prev,
-        additionalFiles:
-          prev.additionalFiles &&
-          prev.additionalFiles.filter((file, i) => i != index),
-      };
-    });
-  };
+  // const handleDeleteForAdditionalFiles = (index: number) => {
+  //   setFormData((prev) => {
+  //     return {
+  //       ...prev,
+  //       additionalFiles:
+  //         prev.additionalFiles &&
+  //         prev.additionalFiles.filter((file, i) => i != index),
+  //     };
+  //   });
+  // };
 
   const handleFormDataUpdate = (key: keyof Task, value: any) => {
     console.log(key, value);
     setFormData((prev) => {
-      switch (key) {
-        case "additionalFiles": {
-          let files: File[] = [];
-          if (value) {
-            files = Array.from(value);
-          }
-          return {
-            ...prev,
-            additionalFiles:
-              prev.additionalFiles && prev.additionalFiles.concat(files),
-          };
-        }
+      // switch (key) {
+      //   case "additionalFiles": {
+      //     let files: File[] = [];
+      //     if (value) {
+      //       files = Array.from(value);
+      //     }
+      //     return {
+      //       ...prev,
+      //       additionalFiles:
+      //         prev.additionalFiles && prev.additionalFiles.concat(files),
+      //     };
+      //   }
 
-        default:
-          return {
-            ...prev,
-            [key]: value,
-          };
-      }
+      //   default:
+      //     return {
+      //       ...prev,
+      //       [key]: value,
+      //     };
+      // }
+
+      return {
+        ...prev,
+        [key]: value,
+      };
     });
+
+   
   };
+
+  const validateFormData = ()=>{
+    setValidFields((prev)=>{
+      return {...prev,
+    taskName: !formData.taskName ? false : true,
+    summary: !formData.summary ? false : true,
+    assignedTo: formData.assignedTo.length === 0 ? false : true,
+    reportTo: formData.reportTo.length === 0 ? false : true,
+
+    }})
+      
+  }
+
   const updateColumns = () => {
     dispatch(
       setColumns({
@@ -202,7 +228,7 @@ export const useTask = (projectId?: string, planId?: string) => {
               //@ts-ignore
               assignedTo: value.assignee || [],
               reportTo: value.reportTo || [],
-              additionalFiles: value.additionalFiles,
+              // additionalFiles: value.additionalFiles,
               status: value.status,
               priority: value.priority,
             });
@@ -301,6 +327,8 @@ export const useTask = (projectId?: string, planId?: string) => {
     newColumn,
     filters,
     currentProject,
+    validFields,
+    setValidFields,
     setFilters,
     setNewColumn,
     deleteColumns,
@@ -310,9 +338,10 @@ export const useTask = (projectId?: string, planId?: string) => {
     updateSequence,
     getExistingTaskData,
     submitFormData,
-    handleDeleteForAdditionalFiles,
+    // handleDeleteForAdditionalFiles,
     handleFormDataUpdate,
     getRetroRespectiveTasks,
     setColumn,
+    validateFormData
   };
 };

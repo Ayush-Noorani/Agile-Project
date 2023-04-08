@@ -55,7 +55,7 @@ export const Login = () => {
   const navigate = useNavigate();
   return (
     <PageWrapper>
-      <Stack className="form-bg form" spacing={2}>
+      <Stack className="form-bg form" spacing={2} pb={2}>
         <h4 style={{ alignSelf: "center" }}>Login</h4>
         {form.map((item, index) => (
           <TextField
