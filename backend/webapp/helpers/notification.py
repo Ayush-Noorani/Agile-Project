@@ -45,7 +45,6 @@ def get_notfication(id):
         {
             "$match": {
                 "user_id": ObjectId(id),
-                "read": False
             }
         },
         {

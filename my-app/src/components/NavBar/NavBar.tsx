@@ -13,7 +13,15 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Button from "@mui/material/Button";
 import { useCommon } from "../../hooks/useCommon";
-import { MenuItem, Menu, Divider, Tabs, Tab, InputLabel } from "@mui/material";
+import {
+  MenuItem,
+  Menu,
+  Divider,
+  Tabs,
+  Tab,
+  InputLabel,
+  Stack,
+} from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 import { socket } from "../../helper/axios";
 import { TypoGraphyImage } from "../Common/TypoGraphyImage";
@@ -23,6 +31,7 @@ import { useUser } from "../../hooks/useUser";
 import { useProjectContext } from "../../context/ProjectContext";
 import { colors } from "../../utils/Common";
 import { useToastContext } from "../../context/ToastContext";
+import { useNotification } from "../../hooks/useNotification";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -129,54 +138,52 @@ interface NavBarProps {
 const NavBar = ({ show, setShow }: NavBarProps) => {
   const [open, setOpen] = useState<boolean>(show);
   const [eTarget, setETarget] = useState<any>(null);
-  const [notification, setNotification] = useState<any>([]);
+  // const [notification, setNotification] = useState<any>([]);
   const [typeSelected, setTypeSelected] = useState<string>("all");
+  const { notification, readNotification } = useNotification();
   const { navigate } = useCommon();
   const { user } = useUser();
   const { selected, setValue } = useProjectContext();
   const { toast, defaultValue } = useToastContext();
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (socket.connected) {
-        socket.emit("notification-list", localStorage.getItem("token"));
-      }
-    }, 15000);
-    socket.on("notification", (data: any) => {
-      setNotification(data);
-    });
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (socket.connected) {
+  //       socket.emit("notification-list", localStorage.getItem("token"));
+  //     }
+  //   }, 15000);
+  //   socket.on("notification", (data: any) => {
+  //     setNotification(data);
+  //   });
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
 
   const notifications = notification
     .filter((value: any) => {
       return typeSelected === "all" || typeSelected.includes(value.type);
     })
     .map((value: any, index: number) => (
-      <Box
+      <MenuItem
         sx={{
-          margin: "2px",
-          padding: "2px",
-          width: "200px",
-          backgroundColor: colors.secondary,
+          display: "flex",
+          flexDirection: "row",
+          backgroundColor: colors.tertiary,
+          borderRadius: "10px",
+          padding: "10px",
+          width: "400px",
+          margin: "10px",
         }}
-        key={index.toString()}
+        className="box-shadow"
+        onClick={() => {
+          navigate(
+            value.type == "1" || value.type == "2"
+              ? "/project/" + value.reference.id
+              : "/tasks/" + value.reference.id
+          );
+        }}
       >
-        <MenuItem
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            width: "200px",
-          }}
-          onClick={() => {
-            navigate(
-              value.type == "1" || value.type == "2"
-                ? "/project/" + value.reference.id
-                : "/tasks/" + value.reference.id
-            );
-          }}
-        >
+        <Stack direction="row" spacing={2}>
           <TypoGraphyImage name={value.reference.name} />
 
           <Box
@@ -202,9 +209,8 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
               {value.created_at}
             </InputLabel>
           </Box>
-        </MenuItem>
-        <Divider />
-      </Box>
+        </Stack>
+      </MenuItem>
     ));
 
   const handleChange = (_e: any, value: any) => {
@@ -313,7 +319,13 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
                 setOpen((prev) => (e.target !== target ? true : false));
               }}
             >
-              <Badge badgeContent={notification.length} color="error">
+              <Badge
+                badgeContent={
+                  notification.filter((value: any) => value.read == !true)
+                    .length
+                }
+                color="error"
+              >
                 <NotificationsIcon
                   style={{
                     color: colors.tertiary,
@@ -324,27 +336,32 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
             <Menu
               open={open}
               anchorEl={eTarget}
-              sx={{ minWidth: "100%" }}
               onClose={() => {
                 setOpen(false);
                 setETarget(null);
+                readNotification();
+              }}
+              style={{
+                backgroundColor: "transparent",
               }}
             >
-              <>
-                <Box>
-                  <Tabs
-                    value={typeSelected}
-                    textColor="primary"
-                    indicatorColor="primary"
-                    onChange={handleChange}
-                  >
-                    <Tab value="all" label="All" />
-                    <Tab value="34" label="Tasks" />
-                    <Tab value="12" label="Projects" />
-                  </Tabs>
-                </Box>
-                {notifications}
-              </>
+              <Box>
+                <Tabs
+                  value={typeSelected}
+                  textColor="inherit"
+                  indicatorColor="primary"
+                  onChange={handleChange}
+                  sx={{
+                    backgroundColor: colors.secondary,
+                    color: colors.tertiary,
+                  }}
+                >
+                  <Tab value="all" label="All" />
+                  <Tab value="34" label="Tasks" />
+                  <Tab value="12" label="Projects" />
+                </Tabs>
+              </Box>
+              {notifications}
             </Menu>
             <IconButton
               style={{

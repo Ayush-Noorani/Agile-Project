@@ -29,7 +29,7 @@ def get_notification_list():
 @jwt_required()
 def notification_read():
     id = get_jwt_identity()
-    db.notification.update_many({"user_id": ObjectId(id)}, {'$set': {
+    db.notifications.update_many({"user_id": ObjectId(id)}, {'$set': {
         'read': True
     }})
     return {'message': 'success'}, 200
