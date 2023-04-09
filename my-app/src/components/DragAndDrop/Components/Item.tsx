@@ -10,11 +10,12 @@ const Container = styled.div`
   padding: 8px;
   height: 15vh;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
   width: 90%;
   margin-bottom: 8px;
   height: fit-content;
   background-color: ${(props: { isDragging: any }) =>
-    props.isDragging ? "#EDEDED" : "white"};
+    props.isDragging ? "#EDEDED" : "whitesmoke"};
 `;
 
 export const Item = ({ ...props }: any) => (

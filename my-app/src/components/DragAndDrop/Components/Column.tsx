@@ -2,10 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { Item } from "./Item";
+import { checkColorContrast, colors } from "../../../utils/Common";
 
 const Container = styled.div`
   margin: 8px;
-  border: 1px solid lightgrey;
+  border: 2px dotted ${colors.secondary};
   border-radius: 10px;
   width: 18rem;
   height: fit-content;
@@ -41,12 +42,18 @@ export const Column = ({ ...props }: any) => {
         innerRef: any;
         dragHandleProps: any;
       }) => (
-        <Container {...provided.draggableProps} ref={provided.innerRef}>
+        <Container
+          {...provided.draggableProps}
+          ref={provided.innerRef}
+          style={{
+            backgroundColor: props.column.color,
+            color: checkColorContrast(props.column.color),
+          }}
+        >
           <Title
             {...provided.dragHandleProps}
             style={{
               color: "white",
-              backgroundColor: props.column.color,
               borderRadius: "5px",
               padding: "5px",
               fontSize: "15px",

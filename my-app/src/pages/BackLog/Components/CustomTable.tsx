@@ -5,6 +5,7 @@ import {
   InputLabel,
   Typography,
   MenuItem,
+  Stack,
 } from "@mui/material";
 import { Fragment, useState } from "react";
 import { TableComponent } from "./TableComponent";
@@ -59,14 +60,15 @@ export const CustomTable = ({
         aria-controls="content"
         id="header"
       >
-        <Box
+        <Stack
           sx={{
             display: "flex",
             width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
           }}
+          direction="row"
+          justifyContent="space-between"
+          paddingLeft="10px"
+          paddingRight="15px"
         >
           <Box
             sx={{
@@ -96,7 +98,7 @@ export const CustomTable = ({
             }}
           >
             {value.planName !== "Back Log" && (
-              <Fragment>
+              <Stack direction={"row"} marginRight={"30px"} spacing={1}>
                 <Button
                   startIcon={<Check />}
                   onClick={(e) => {
@@ -105,6 +107,11 @@ export const CustomTable = ({
                     updatePlanStatus(value, 3);
                   }}
                   variant="outlined"
+                  style={{
+                    whiteSpace: "nowrap",
+
+                    width: "200px",
+                  }}
                   disabled={value.status === "3" || value.status !== "1"}
                 >
                   {value.status !== "3" ? "Mark as completed" : "Completed"}
@@ -142,10 +149,10 @@ export const CustomTable = ({
                     ? "Start"
                     : "ENDED"}
                 </Button>
-              </Fragment>
+              </Stack>
             )}
           </Box>
-        </Box>
+        </Stack>
       </AccordionSummary>
 
       <TableComponent

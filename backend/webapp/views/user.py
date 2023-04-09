@@ -66,6 +66,7 @@ def register():
     check_if_already_exists = collection.find_one({
         'email': data['email']
     })
+    data['active'] = False
     if (check_if_already_exists):
         return {'message': 'Email already exists!'}, 403
     data['password'] = bcrypt.generate_password_hash(data['password'])

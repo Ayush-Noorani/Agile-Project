@@ -55,3 +55,38 @@
     flex-direction: row;
 }
 
+
+.tertiary{
+    background-color: #DDDDDD;
+}
+
+.secondary{
+    background-color: #30475E;
+}
+
+.primary{
+    background-color: #F05454;
+
+}
+
+.dark{
+    background-color: #222831;
+}
+
+.item{
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+}
+.item:hover{
+    opacity: 0.7;
+    cursor: pointer;
+    scale: 1.05;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+    transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+}

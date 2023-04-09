@@ -13,7 +13,9 @@ import {
 import React from "react";
 import { useDashboard } from "../hooks/useDashboard";
 import { Tasks } from "../../../types/common";
-
+import "../../../css/common.css";
+import { colors } from "../../../utils/Common";
+import { TaskPriorityIcon } from "../../../components/Common/TaskPriorityIcon";
 const TaskList = () => {
   const { projects, dashboard } = useDashboard();
 
@@ -21,6 +23,7 @@ const TaskList = () => {
     <Paper
       component={Box}
       elevation={6}
+      className="dark"
       sx={{
         borderRadius: "20px",
         paddingY: "23px",
@@ -28,6 +31,7 @@ const TaskList = () => {
         width: "100%",
         marginTop: "10px",
         height: "52%",
+        backgroundColor: colors.tertiary,
       }}
     >
       <Typography variant="h5" gutterBottom align="center">
@@ -43,7 +47,7 @@ const TaskList = () => {
             <TableRow>
               <TableCell>Task</TableCell>
               <TableCell>Status</TableCell>
-              <TableCell>Created By</TableCell>
+              <TableCell>Priority</TableCell>
             </TableRow>
           </TableHead>
           <TableBody
@@ -62,14 +66,15 @@ const TaskList = () => {
                     key={index.toString()}
                     sx={{ "td, th": { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row">
-                      {row.taskName}
-                    </TableCell>
+                    <TableCell scope="row">{row.taskName}</TableCell>
                     <TableCell>
                       {row.status && <Chip label={row.status} />}
                     </TableCell>
                     <TableCell>
-                      {/* <TaskPriorityIcon priority={row?.priority} /> */}
+                      <TaskPriorityIcon
+                        hideText={true}
+                        priority={row?.priority}
+                      />
                     </TableCell>
                   </TableRow>
                 );

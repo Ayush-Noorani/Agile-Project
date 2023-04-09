@@ -21,6 +21,8 @@ import { Home, Work, ListAlt } from "@mui/icons-material";
 import { SideBarItemProps } from "../../types/common";
 import { useUser } from "../../hooks/useUser";
 import { useProjectContext } from "../../context/ProjectContext";
+import { colors } from "../../utils/Common";
+import { useToastContext } from "../../context/ToastContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -132,6 +134,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
   const { navigate } = useCommon();
   const { user } = useUser();
   const { selected, setValue } = useProjectContext();
+  const { toast, defaultValue } = useToastContext();
   useEffect(() => {
     const interval = setInterval(() => {
       if (socket.connected) {
@@ -156,6 +159,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
           margin: "2px",
           padding: "2px",
           width: "200px",
+          backgroundColor: colors.secondary,
         }}
         key={index.toString()}
       >
@@ -208,9 +212,19 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
   };
 
   return (
-    <Box sx={{ width: "100vw" }}>
-      <AppBar position="static">
-        <Toolbar sx={{ justifyContent: "space-between", bgcolor: "white" }}>
+    <Box
+      sx={{ width: "100vw", backgroundColor: colors.secondary }}
+      className="secondary"
+    >
+      <AppBar
+        position="static"
+        style={{
+          backgroundColor: colors.dark,
+        }}
+        className="secondary"
+        elevation={5}
+      >
+        <Toolbar sx={{ justifyContent: "space-between", color: "white" }}>
           <Box
             sx={{
               display: "flex",
@@ -220,11 +234,19 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
             <IconButton
               size="large"
               edge="start"
-              onClick={() => selected && setShow(!show)}
+              onClick={() =>
+                selected
+                  ? setShow(!show)
+                  : toast("Click on a project!", defaultValue)
+              }
               aria-label="open drawer"
               sx={{ mr: 2 }}
             >
-              <MenuIcon />
+              <MenuIcon
+                sx={{
+                  color: colors.primary,
+                }}
+              />
             </IconButton>
             <Typography
               variant="h6"
@@ -232,7 +254,11 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
               color="black"
               component="div"
               mr="10px"
-              sx={{ display: { sm: "block" } }}
+              sx={{
+                display: { sm: "block" },
+                color: colors.tertiary,
+                fontWeight: "bold",
+              }}
             >
               SprintBoard
             </Typography>
@@ -244,7 +270,8 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
                   onClick={() => {
                     navigate(link.path);
                   }}
-                  sx={{ color: "black" }}
+                  className="item"
+                  sx={{ color: colors.tertiary }}
                 >
                   {link.label}
                 </Button>
@@ -257,7 +284,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
                       selected && setValue(undefined);
                       navigate(link.path);
                     }}
-                    sx={{ color: "black" }}
+                    sx={{ color: colors.tertiary }}
                   >
                     {link.label}
                   </Button>
@@ -267,7 +294,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Search>
+            {/* <Search>
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
@@ -275,7 +302,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
               />
-            </Search>
+            </Search> */}
             <IconButton
               size="medium"
               onClick={(e: any) => {
@@ -287,7 +314,11 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
               }}
             >
               <Badge badgeContent={notification.length} color="error">
-                <NotificationsIcon />
+                <NotificationsIcon
+                  style={{
+                    color: colors.tertiary,
+                  }}
+                />
               </Badge>
             </IconButton>
             <Menu
@@ -315,7 +346,12 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
                 {notifications}
               </>
             </Menu>
-            <IconButton onClick={() => navigate("/user/update-profile")}>
+            <IconButton
+              style={{
+                color: colors.tertiary,
+              }}
+              onClick={() => navigate("/user/update-profile")}
+            >
               <AccountCircle />
             </IconButton>
           </Box>
