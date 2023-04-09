@@ -68,6 +68,11 @@
     background-color: #F05454;
 
 }
+.sidebanner{
+    animation: float 3s ease-in-out infinite;
+    animation-delay: 0s;
+    width: 250px;
+  }
 
 .dark{
     background-color: #222831;

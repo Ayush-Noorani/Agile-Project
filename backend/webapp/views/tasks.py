@@ -185,7 +185,6 @@ def get_task_list(id):
             if i['plan'] != 'backLog':
                 i['plan'] = str(i['plan'])
         tasks_dict[task_status] = results
-    print(tasks_dict, 'tasks_dict')
     return tasks_dict, 200
 
 # save columns
