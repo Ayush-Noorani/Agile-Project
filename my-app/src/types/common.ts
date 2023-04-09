@@ -22,6 +22,7 @@ export type User = {
   email: string;
   username?: string;
   roles: string[];
+  active?: boolean;
 };
 export interface SideBarItemProps {
   path: string;

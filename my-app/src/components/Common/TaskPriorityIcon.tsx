@@ -2,7 +2,13 @@ import { PriorityHigh, Warning, Info } from "@mui/icons-material";
 import { Box } from "@mui/material";
 import { Priority } from "../../types/common";
 
-export const TaskPriorityIcon = ({ priority }: { priority: Priority }) => {
+export const TaskPriorityIcon = ({
+  priority,
+  hideText,
+}: {
+  priority: Priority;
+  hideText?: boolean;
+}) => {
   const getTag = () => {
     if (priority === "critical") {
       return <PriorityHigh style={{ color: "red" }} />;
@@ -27,7 +33,7 @@ export const TaskPriorityIcon = ({ priority }: { priority: Priority }) => {
       }}
     >
       {getTag()}
-      {priority}
+      {!hideText && priority}
     </Box>
   );
 };

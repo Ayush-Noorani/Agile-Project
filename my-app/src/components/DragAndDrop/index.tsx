@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { Columntype } from "../../types/common";
 import { Columnlist } from "./Components/ColumnList";
+import { colors } from "../../utils/Common";
 
 interface DragAndDropProps {
   data: any;
@@ -108,7 +109,11 @@ export const DragAndDrop = ({
   }, [columnOrder, data]);
   return (
     <div
-      style={{ backgroundColor: "#f8fafc", overflow: "auto", height: "100%" }}
+      style={{
+        backgroundColor: colors.tertiary,
+        overflow: "auto",
+        height: "100%",
+      }}
     >
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable

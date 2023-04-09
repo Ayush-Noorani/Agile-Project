@@ -4,11 +4,13 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  TextField,
   Typography,
 } from "@mui/material";
 import React from "react";
 import { TypoGraphyImage } from "../../../components/Common/TypoGraphyImage";
 import { useTask } from "../hooks/useTask";
+import { colors } from "../../../utils/Common";
 
 export const ShowDateDiff = ({ endDate }: any) => {
   console.log(endDate);
@@ -32,7 +34,8 @@ export const ShowDateDiff = ({ endDate }: any) => {
           alignItems: "center",
           p: 1,
           borderRadius: 1,
-          bgcolor: "background.default",
+          bgcolor: colors.primary,
+          color: "white",
         }}
       >
         <Typography variant="subtitle1" sx={{ fontWeight: "bold", mr: 1 }}>
@@ -122,22 +125,11 @@ export const TaskHeader = ({
                 width: "70%",
               }}
             >
-              <InputLabel id="planName-label">Current Plan</InputLabel>
-              <Select
-                labelId="planName-label"
-                id="planName"
-                name="planName"
-                label="Plan Name"
-                disabled={true}
-                value={filters.plan}
-                defaultChecked={filters.plan}
-                defaultValue={filters.plan}
-                onChange={(e) => setPlanFilter(e.target.value)}
-              >
-                {plans.map((plan) => (
-                  <MenuItem value={plan.id}>{plan.planName}</MenuItem>
-                ))}
-              </Select>
+              <TextField
+                label="Current Plan"
+                value={plans[0].planName}
+                disabled
+              />
             </FormControl>
           </Box>
           {!planId && (

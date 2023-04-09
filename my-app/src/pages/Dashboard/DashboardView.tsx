@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import React, { useEffect } from "react";
 import { useUser } from "../../hooks/useUser";
@@ -14,45 +14,40 @@ const DashboardView = () => {
     getDashboardData();
   }, []);
   return (
-    <>
-      <Box
-        sx={{
-          paddingX: "20px",
-          width: "100%",
-          paddingY: "20px",
-        }}
-      >
-        <Typography variant="h4" mb={3}>
-          Welcome, {user.userName}
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
+    <Box
+      sx={{
+        paddingX: "20px",
+        width: "100%",
+        paddingY: "20px",
+      }}
+      className="tertiary"
+    >
+      <Typography variant="h4" mb={3}>
+        Welcome, {user.userName}
+      </Typography>
+      <Grid container spacing={2}>
+        <Stack
+          direction="column"
+          alignItems="center"
+          width={"36%"}
+          marginRight={"20px"}
+          height="100%"
         >
-          <Stack
-            direction="column"
-            alignItems="center"
-            width={"36%"}
-            marginRight={"20px"}
-          >
-            <TaskPerfromance
-              remaining={dashboard.reduce(
-                (acc, curr) => acc + curr.status!.remaining_tasks,
-                0
-              )}
-              complete={dashboard.reduce(
-                (acc, curr) => acc + curr.status!.completed_tasks,
-                0
-              )}
-            />
-            <TaskList />
-          </Stack>
-          <ProjectList />
-        </Box>
-      </Box>
-    </>
+          <TaskPerfromance
+            remaining={dashboard.reduce(
+              (acc, curr) => acc + curr.status!.remaining_tasks,
+              0
+            )}
+            complete={dashboard.reduce(
+              (acc, curr) => acc + curr.status!.completed_tasks,
+              0
+            )}
+          />
+          <TaskList />
+        </Stack>
+        <ProjectList />
+      </Grid>
+    </Box>
   );
 };
 

@@ -10,6 +10,7 @@ import { useCommon } from "../../hooks/useCommon";
 import { useProjectContext } from "../../context/ProjectContext";
 import { useParams } from "react-router-dom";
 import { Rings } from "react-loader-spinner";
+import { colors } from "../../utils/Common";
 interface SideBarProps {
   children: React.ReactNode | React.ReactNode[];
 }
@@ -54,13 +55,18 @@ export const SideBar = ({ children }: SideBarProps) => {
           display: "flex",
           flex: 1,
           flexDirection: "row",
-          marginTop: "0.5%",
           height: "100%",
           width: "100%",
         }}
       >
         {open ? (
-          <Box className="sidebar">
+          <Box
+            className="sidebar dark"
+            sx={{
+              backgroundColor: "#313842",
+              zIndex: 99,
+            }}
+          >
             {items.map((value) =>
               user.roles.includes(value.role) ||
               user.roles.includes("admin") ? (
@@ -89,6 +95,7 @@ export const SideBar = ({ children }: SideBarProps) => {
               transform: "translate(-50%, -50%)",
               zIndex: "9",
             }}
+            className="tertiary"
           >
             <Rings
               height="120"
@@ -107,6 +114,7 @@ export const SideBar = ({ children }: SideBarProps) => {
             width: open ? "100%" : "100%",
             height: "100%",
             opacity: loading ? 0.5 : 1,
+            backgroundColor: colors.tertiary,
           }}
         >
           {children}

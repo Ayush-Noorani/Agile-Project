@@ -60,6 +60,9 @@ export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
                     onClick={() => onClick(row, "3")}
                     variant="outlined"
                     disabled={row.status === "3" || row.status !== "1"}
+                    style={{
+                      whiteSpace: "initial",
+                    }}
                   >
                     {row.status !== "3" ? "Mark as completed" : "Completed"}
                   </Button>
