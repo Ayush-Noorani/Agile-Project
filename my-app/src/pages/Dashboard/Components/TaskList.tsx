@@ -28,9 +28,8 @@ const TaskList = () => {
         borderRadius: "20px",
         paddingY: "23px",
         paddingX: "10px",
-        width: "100%",
         marginTop: "10px",
-        height: "52%",
+        width: "96%",
         backgroundColor: colors.tertiary,
       }}
     >
@@ -39,7 +38,7 @@ const TaskList = () => {
       </Typography>
       <TableContainer
         sx={{
-          height: "90%",
+          minHeight: "430px",
         }}
       >
         <Table>

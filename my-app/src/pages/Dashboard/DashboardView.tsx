@@ -17,21 +17,20 @@ const DashboardView = () => {
     <Box
       sx={{
         paddingX: "20px",
-        width: "100%",
         paddingY: "20px",
+        justifyContent: "space-between",
       }}
       className="tertiary"
     >
       <Typography variant="h4" mb={3}>
         Welcome, {user.userName}
       </Typography>
-      <Grid container spacing={2}>
+      <Box sx={{ display: "flex" }}>
         <Stack
           direction="column"
           alignItems="center"
-          width={"36%"}
           marginRight={"20px"}
-          height="100%"
+          width={"30%"}
         >
           <TaskPerfromance
             remaining={dashboard.reduce(
@@ -46,7 +45,7 @@ const DashboardView = () => {
           <TaskList />
         </Stack>
         <ProjectList />
-      </Grid>
+      </Box>
     </Box>
   );
 };
