@@ -99,7 +99,7 @@ def save_columns(id):
     current_project = db.projects.find_one(
         {"_id": ObjectId(id)}, {'columns': 1, 'tasks': 1})
     missing_elements = [x for x in data['columns']
-                        if x not in current_project['columns']]
+                        if x['value'] not in current_project['columns'].keys()]
 
     for i in missing_elements:
         current_project['tasks'][i['value']] = []
