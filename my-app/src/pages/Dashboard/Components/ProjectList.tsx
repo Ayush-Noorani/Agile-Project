@@ -33,7 +33,7 @@ const ProjectList = () => {
         height: "70vh",
         overflow: "auto",
         backgroundColor: colors.primary,
-        width: "55%",
+        width: "70%",
       }}
     >
       <Box>
