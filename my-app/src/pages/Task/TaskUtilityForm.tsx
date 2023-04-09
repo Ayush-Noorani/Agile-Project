@@ -24,6 +24,9 @@ import { TaskPriorityIcon } from "../../components/Common/TaskPriorityIcon";
 import { usePlan } from "../Plan/hooks/usePlan";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
+import { colors } from "../../utils/Common";
+import { ReactComponent as CreateTask } from "../../assets/create.svg";
+import { ReactComponent as DesignComponents } from "../../assets/design_components_9vy6.svg";
 
 const animatedComponents = makeAnimated();
 
@@ -101,9 +104,28 @@ const TaskUtilityForm = ({
 
   return (
     <Stack mx="10px" p="5px" spacing={2}>
+      <CreateTask
+        style={{
+          width: "100px",
+          height: "100px",
+          position: "absolute",
+          left: "45%",
+        }}
+        className="sidebanner"
+      />
+      <DesignComponents
+        style={{
+          width: "100px",
+          height: "100px",
+          position: "absolute",
+          right: "10%",
+        }}
+        className="sidebanner"
+      />
       <Container
         sx={{
           display: "flex",
+          zIndex: 1,
         }}
       >
         <Stack mx="10px" p="5px" spacing={2} width="550px">
@@ -115,7 +137,14 @@ const TaskUtilityForm = ({
             error={!validFields.taskName}
             helperText={validFields.taskName ? "" : "Please Enter a Task Name"}
             value={formData.taskName}
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: {
+                color: colors.secondary,
+                fontWeight: "bold",
+              },
+            }}
+            inputProps={{}}
             sx={{ width: "350px" }}
             onChange={(e) => {
               handleFormDataUpdate("taskName", e.target.value);
@@ -129,7 +158,13 @@ const TaskUtilityForm = ({
             variant="outlined"
             label="Summary"
             size="small"
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: {
+                color: colors.secondary,
+                fontWeight: "bold",
+              },
+            }}
             value={formData.summary}
             error={!validFields.summary}
             helperText={validFields.summary ? "" : "Please Enter a summary"}
@@ -143,45 +178,38 @@ const TaskUtilityForm = ({
             }}
           />
 
-          <TextField
-            id="standard-basic"
-            label="Status"
-            variant="outlined"
-            size="small"
-            InputLabelProps={{ shrink: true }}
-            select
-            sx={{ width: "350px" }}
-            value={formData.status}
-            placeholder="Select a Status"
-            onChange={(e) => {
-              handleFormDataUpdate("status", e.target.value);
-            }}
-          >
-            <MenuItem value="toDo">To Do</MenuItem>
-            <MenuItem value="inProgress">In Progress</MenuItem>
-          </TextField>
-          <Paper
-            sx={{ backgroundColor: "rgba(0, 0, 0, 0.06)", height: "220px" }}
-            elevation={0}
-          >
-            <ReactQuill
-              style={{ height: "81%", borderRadius: "20px" }}
-              theme="snow"
-              value={formData.description}
-              placeholder="Description"
-              modules={{
-                toolbar: [
-                  [{ header: [1, 2, false] }],
-                  ["bold", "italic", "underline"],
-                  ["image", "code-block"],
-                ],
+          <Stack spacing={2}>
+            <FormLabel
+              style={{
+                margin: "5px",
+                color: colors.secondary,
+                fontWeight: "bold",
               }}
-              onChange={(e: any) => {
-                handleFormDataUpdate("description", e);
-              }}
-            />
-          </Paper>
-
+            >
+              Description
+            </FormLabel>
+            <Paper
+              sx={{ backgroundColor: "rgba(0, 0, 0, 0.06)", height: "220px" }}
+              elevation={0}
+            >
+              <ReactQuill
+                style={{ height: "81%", borderRadius: "20px" }}
+                theme="snow"
+                value={formData.description}
+                placeholder="Description"
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, false] }],
+                    ["bold", "italic", "underline"],
+                    ["image", "code-block"],
+                  ],
+                }}
+                onChange={(e: any) => {
+                  handleFormDataUpdate("description", e);
+                }}
+              />
+            </Paper>
+          </Stack>
           {/* <Paper sx={{ backgroundColor: "rgba(0, 0, 0, 0.06)" }} elevation={0}>
         <Typography
           variant="subtitle1"
@@ -236,7 +264,13 @@ const TaskUtilityForm = ({
             label="Priority"
             variant="outlined"
             size="small"
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: {
+                color: colors.secondary,
+                fontWeight: "bold",
+              },
+            }}
             select
             sx={{ width: "150px" }}
             value={formData.priority}
@@ -268,6 +302,8 @@ const TaskUtilityForm = ({
             <FormLabel
               style={{
                 margin: "5px",
+                color: colors.secondary,
+                fontWeight: "bold",
               }}
             >
               Assigned To
@@ -314,6 +350,8 @@ const TaskUtilityForm = ({
             <FormLabel
               style={{
                 margin: "5px",
+                color: colors.secondary,
+                fontWeight: "bold",
               }}
             >
               Report To
@@ -353,19 +391,19 @@ const TaskUtilityForm = ({
           </FormControl>
         </Stack>
       </Container>
-      <Stack direction="row" spacing={2}>
+      <Stack direction="row" justifyContent="flex-end">
         <Button
           variant="contained"
-          disableElevation
           sx={{
             width: "100px",
-            backgroundColor: "#3c37fd",
+            backgroundColor: colors.secondary,
           }}
           onClick={() => {
             // console.log(formData);
             validateFormData();
             setSubmitStatus(true);
           }}
+          disableElevation
         >
           Submit
         </Button>

@@ -19,6 +19,7 @@ import { TaskUtilityForm } from "./TaskUtilityForm";
 import { ColumnForm } from "./components/ColumnForm";
 import { TaskHeader } from "./components/TaskHeader";
 import { usePlan } from "../Plan/hooks/usePlan";
+import { colors } from "../../utils/Common";
 
 export const TaskList = () => {
   const { id, planId } = useParams();
@@ -71,7 +72,17 @@ export const TaskList = () => {
         height: "100%",
       }}
     >
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
+      <Dialog
+        open={open}
+        PaperProps={{
+          style: {
+            backgroundColor: colors.tertiary,
+            borderRadius: "10px",
+          },
+        }}
+        onClose={() => setOpen(false)}
+        maxWidth="lg"
+      >
         <DialogTitle>
           <Stack
             direction="row"
@@ -82,6 +93,7 @@ export const TaskList = () => {
             <Typography fontSize={20} fontWeight={"bold"}>
               {selectedTaskId ? "Update task" : "Create task"}
             </Typography>
+
             <IconButton onClick={() => setOpen(false)}>
               <CloseOutlined color="error" />
             </IconButton>
