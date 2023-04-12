@@ -143,8 +143,10 @@ def create_project():
         data['img'] = img.stream.read()  # type: ignore
     elif len(data['img'] > 0):
         data['img'] = ''
+
+    data['tasks']={}
     for i in default_columns:
-        data['tasks'][i]['value'] = []
+        data['tasks'][i['value']] = []
     data['columns'] = default_columns
     if data['lead'] != "":
         data['lead'] = ObjectId(data['lead'])

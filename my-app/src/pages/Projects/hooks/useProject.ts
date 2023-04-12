@@ -83,7 +83,7 @@ export const useProject = (id?: string) => {
   };
 
   const fetchExistingData = (id: any) => {
-    axiosInstance.get(`/project/get/${id}`).then((res) => {
+    if(id) axiosInstance.get(`/project/get/${id}`).then((res) => {
       setValue(res.data.project);
       console.log(
         `%c FETCH PROJECT \n`,

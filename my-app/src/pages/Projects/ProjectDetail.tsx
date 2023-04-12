@@ -84,6 +84,8 @@ export const ProjectDetail = () => {
   console.log(value);
   const [openColumn, setOpenColumn] = useState(false);
 
+  console.log("pid", id);
+
   return (
     <Provider
       theme={{
@@ -350,7 +352,7 @@ export const ProjectDetail = () => {
               alignSelf: "center",
             }}
           >
-            {id !== "0" ? "Update" : "Create"}
+            {id ? "Update" : "Create"}
           </Button>
         </Stack>
       </div>
