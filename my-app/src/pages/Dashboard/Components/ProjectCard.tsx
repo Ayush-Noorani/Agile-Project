@@ -9,7 +9,7 @@ export const ProjectCard = ({ data }: { data: DashBoard | ProjectData }) => {
   const { navigate } = useCommon();
   console.log(data.img);
   return (
-    <Grid item xs={5}>
+    <Grid item xs={5} mr={2}>
       <Card
         className="growDashboardProject"
         onClick={(e: any) => {
@@ -18,6 +18,7 @@ export const ProjectCard = ({ data }: { data: DashBoard | ProjectData }) => {
         }}
         elevation={8}
         sx={{
+          height: "170px",
           display: "flex",
           backgroundColor: "#1A2027",
           color: "white",
