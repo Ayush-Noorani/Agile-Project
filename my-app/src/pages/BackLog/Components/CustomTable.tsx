@@ -14,7 +14,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Button } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
-import { formatDateTime } from "../../../utils/Common";
+import { colors, formatDateTime } from "../../../utils/Common";
 import { Check } from "@mui/icons-material";
 import { useBackLog } from "../hooks/useBackLog";
 import { useParams } from "react-router-dom";
@@ -51,8 +51,11 @@ export const CustomTable = ({
 
   return (
     <Accordion
-      className="box"
+      className="box tertiary"
       expanded={expanded}
+      sx={{
+        backgroundColor: colors.tertiary,
+      }}
       onChange={() => setExpanded(!expanded)}
     >
       <AccordionSummary
@@ -69,6 +72,7 @@ export const CustomTable = ({
           justifyContent="space-between"
           paddingLeft="10px"
           paddingRight="15px"
+          className=""
         >
           <Box
             sx={{
@@ -95,6 +99,7 @@ export const CustomTable = ({
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
+              backgroundColor: colors.tertiary,
             }}
           >
             {value.planName !== "Back Log" && (

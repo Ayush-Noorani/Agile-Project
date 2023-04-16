@@ -39,8 +39,6 @@ export const useTask = (projectId?: string, planId?: string) => {
   });
   const dispatch = useDispatch();
   useEffect(() => {
-    setLoaderState(true);
-    console.log("true", projectList);
     fetchAllProjects();
     if (planId) {
       getRetroRespectiveTasks();
@@ -51,7 +49,6 @@ export const useTask = (projectId?: string, planId?: string) => {
       });
     }
     console.log("false", projectList);
-    setLoaderState(false);
   }, []);
 
   const currentProjectState = projectList.find(
@@ -74,11 +71,11 @@ export const useTask = (projectId?: string, planId?: string) => {
   });
 
   const [validFields, setValidFields] = useState({
-    summary:true,
-    taskName:true,
-    assignedTo:true,
-    reportTo:true
-  })
+    summary: true,
+    taskName: true,
+    assignedTo: true,
+    reportTo: true,
+  });
 
   useEffect(() => {
     if (projectList.length > 0) {
@@ -129,21 +126,19 @@ export const useTask = (projectId?: string, planId?: string) => {
         [key]: value,
       };
     });
-
-   
   };
 
-  const validateFormData = ()=>{
-    setValidFields((prev)=>{
-      return {...prev,
-    taskName: !formData.taskName ? false : true,
-    summary: !formData.summary ? false : true,
-    assignedTo: formData.assignedTo.length === 0 ? false : true,
-    reportTo: formData.reportTo.length === 0 ? false : true,
-
-    }})
-      
-  }
+  const validateFormData = () => {
+    setValidFields((prev) => {
+      return {
+        ...prev,
+        taskName: !formData.taskName ? false : true,
+        summary: !formData.summary ? false : true,
+        assignedTo: formData.assignedTo.length === 0 ? false : true,
+        reportTo: formData.reportTo.length === 0 ? false : true,
+      };
+    });
+  };
 
   const updateColumns = () => {
     dispatch(
@@ -211,6 +206,7 @@ export const useTask = (projectId?: string, planId?: string) => {
       `%c FETCH ALL TASKS \n`,
       `background:green; color: white;  font-weight: bold;`
     );
+    setLoaderState(true);
     if (projectId) {
       axiosInstance
         .get("/task/list/" + projectId)
@@ -233,9 +229,13 @@ export const useTask = (projectId?: string, planId?: string) => {
               priority: value.priority,
             });
           }
+          setLoaderState(false);
+
           console.log(res.data);
         })
         .catch((err) => {
+          setLoaderState(false);
+
           console.log(err);
         });
     }
@@ -283,7 +283,7 @@ export const useTask = (projectId?: string, planId?: string) => {
 
   const submitFormData = (plan?: string) => {
     setLoaderState(true);
-    const submitData: any = new FormData();
+    //const submitData: any = new FormData();
 
     // submitData.append("data", JSON.stringify(formData));
     formData.id ? updateData(formData) : createData(formData, plan!);
@@ -342,6 +342,6 @@ export const useTask = (projectId?: string, planId?: string) => {
     handleFormDataUpdate,
     getRetroRespectiveTasks,
     setColumn,
-    validateFormData
+    validateFormData,
   };
 };

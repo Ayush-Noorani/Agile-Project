@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { MenuComponent } from "../../../components/MenuComponent";
 import { TaskPriorityIcon } from "../../../components/Common/TaskPriorityIcon";
+import { colors } from "../../../utils/Common";
 
 interface TableProps {
   tasks: Tasks[];
@@ -52,8 +53,13 @@ export const TableComponent = ({
     setPage(0);
   };
   return (
-    <TableContainer component={Paper}>
-      <Table>
+    <TableContainer
+      component={Paper}
+      sx={{
+        backgroundColor: colors.tertiary,
+      }}
+    >
+      <Table className="tertiary">
         <TableHead>
           <TableRow>
             <TableCell>ID</TableCell>

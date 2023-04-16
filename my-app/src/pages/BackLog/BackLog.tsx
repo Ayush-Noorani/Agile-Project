@@ -14,11 +14,15 @@ import { Create } from "@mui/icons-material";
 import { CustomTable } from "./Components/CustomTable";
 import { PlanUtility } from "../Plan/PlanUtility";
 import { useParams } from "react-router-dom";
+import { TaskUtilityForm } from "../Task/TaskUtilityForm";
+import { colors } from "../../utils/Common";
 export const BackLog = () => {
   const { id } = useParams();
   const { tasks, plans, moveToPlan } = useBackLog(id!);
 
   const [open, setOpen] = useState(false);
+  const [openPlan, setOpenPlan] = useState(false);
+
   const [selectedTask, setSelectedTask] = useState<Tasks | null>(null); // state for the task currently selected in the menu
   const actions: {
     icon: JSX.Element;
@@ -32,6 +36,13 @@ export const BackLog = () => {
         setOpen(true);
       },
     },
+    {
+      icon: <Create />,
+      name: "Create Plan",
+      onClick: () => {
+        setOpenPlan(true);
+      },
+    },
   ];
 
   const handleMoveToPlan = (plan: string) => {
@@ -42,13 +53,27 @@ export const BackLog = () => {
   };
 
   return (
-    <TableContainer component={Paper}>
-      <PlanUtility open={open} setOpen={setOpen} />
+    <TableContainer
+      component={Paper}
+      sx={{
+        backgroundColor: colors.tertiary,
+      }}
+      className="tertiary"
+    >
+      <PlanUtility open={openPlan} setOpen={setOpenPlan} />
+      <TaskUtilityForm
+        open={open}
+        setOpen={setOpen}
+        closeModal={() => {
+          setOpen(false);
+        }}
+      />
 
       <Box
         style={{
           overflow: "auto",
         }}
+        className="tertiary"
       >
         {plans.map((value) => (
           <CustomTable

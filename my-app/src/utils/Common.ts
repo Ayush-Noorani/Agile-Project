@@ -48,6 +48,9 @@ const calculateLuminance = (rgbColor: any) => {
 };
 export const checkColorContrast = (color: string) => {
   // Convert the color to an RGB value
+  if (!color) {
+    return color;
+  }
   const rgbColor = hexToRgb(color);
 
   // Calculate the relative luminance of the color

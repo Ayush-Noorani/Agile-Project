@@ -222,7 +222,7 @@ def create_task(projectId):
 
     plan = db.plans.find_one({"project": ObjectId(projectId), 'status': '1'})
     print(plan)
-    parsedData['plan'] = plan['_id']
+    parsedData['plan'] = plan['_id'] if plan else 'backLog'
     parsedData["reportTo"] = [ObjectId(user['id'])
                               for user in parsedData["reportTo"]]
     parsedData["assignedTo"] = [ObjectId(user['id'])

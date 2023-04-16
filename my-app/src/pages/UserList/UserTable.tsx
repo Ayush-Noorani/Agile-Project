@@ -23,6 +23,7 @@ import { getcomparator, flipSortOrder } from "./utils/userListUtils";
 import { useAdminMethods } from "./hooks/useAdminMethods";
 import { roles } from "./utils/options";
 import { colors } from "../../utils/Common";
+import { useTable } from "../../hooks/useTable";
 
 const columnHeaders: Headers[] = [
   {
@@ -46,21 +47,25 @@ const columnHeaders: Headers[] = [
 export const UserTable = () => {
   const { data, updateUserRole, activateUser, deleteUser, deactivateUser } =
     useAdminMethods();
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [currentPage, setCurrentPage] = React.useState(0);
+
   const [sortBy, setSortBy] = React.useState<keyof User>("id");
   const [sortOrder, setSortOrder] = React.useState<SortOrder>("asc");
   const [search, setSearch] = React.useState("");
+  const {
+    rowsPerPage,
+    currentPage,
+    handleChangeRowsPerPage,
+    handleChangePage,
+  } = useTable();
+  // const handleChangeRowsPerPage = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  // };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-  };
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setCurrentPage(newPage);
-  };
+  // const handleChangePage = (event: unknown, newPage: number) => {
+  //   setCurrentPage(newPage);
+  // };
 
   const handleSort = (id: keyof User) => {
     if (id === sortBy) setSortOrder(flipSortOrder(sortOrder));
