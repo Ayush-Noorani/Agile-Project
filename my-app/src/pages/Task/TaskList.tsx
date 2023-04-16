@@ -72,47 +72,16 @@ export const TaskList = () => {
         height: "100%",
       }}
     >
-      <Dialog
-        open={open}
-        PaperProps={{
-          style: {
-            backgroundColor: colors.tertiary,
-            borderRadius: "10px",
-          },
+      <TaskUtilityForm
+        closeModal={() => {
+          setOpen(false);
+          getTasks();
         }}
-        onClose={() => setOpen(false)}
-        maxWidth="lg"
-      >
-        <DialogTitle>
-          <Stack
-            direction="row"
-            spacing={2}
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Typography fontSize={20} fontWeight={"bold"}>
-              {selectedTaskId ? "Update task" : "Create task"}
-            </Typography>
+        taskId={selectedTaskId}
+        setOpen={setOpen}
+        open={open}
+      />
 
-            <IconButton onClick={() => setOpen(false)}>
-              <CloseOutlined color="error" />
-            </IconButton>
-          </Stack>
-        </DialogTitle>
-        <DialogContent>
-          <TaskUtilityForm
-            closeModal={() => {
-              setOpen(false);
-              getTasks();
-            }}
-            taskId={selectedTaskId}
-          />
-        </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={() => setOpen(false)}>Close</Button>
-          <Button onClick={() => {}}>Submit</Button>
-        </DialogActions> */}
-      </Dialog>
       <Dialog open={openColumn} onClose={() => setOpenColumn(false)}>
         <ColumnForm id={id} />
       </Dialog>

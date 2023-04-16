@@ -6,6 +6,7 @@ import {
   TableCell,
   TableBody,
   Button,
+  TablePagination,
 } from "@mui/material";
 import React from "react";
 import { formatDateTime } from "../../../utils/Common";
@@ -14,6 +15,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { Check } from "@mui/icons-material";
 import { useCommon } from "../../../hooks/useCommon";
 import { Plan } from "../../../types/common";
+import { useTable } from "../../../hooks/useTable";
 
 interface PlanTableProps {
   plans: Plan[];
@@ -22,8 +24,19 @@ interface PlanTableProps {
 }
 export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
   const { navigate } = useCommon();
+  const {
+    rowsPerPage,
+    currentPage,
+    handleChangeRowsPerPage,
+    handleChangePage,
+  } = useTable();
+  const emptyRows =
+    currentPage > 0
+      ? Math.max(0, (1 + currentPage) * rowsPerPage - plans.length)
+      : 0;
+
   return (
-    <TableContainer>
+    <TableContainer className="tertiary">
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -37,83 +50,110 @@ export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {plans.map((row) => {
-            const [startFormatDate, startTime] = formatDateTime(
-              new Date(row.startDate)
-            );
-            const [endFormatDate, endTime] = formatDateTime(
-              new Date(row.endDate)
-            );
-            return (
-              <TableRow key={row.planName}>
-                <TableCell component="th" scope="row">
-                  {row.planName}
-                </TableCell>
-                <TableCell>{startFormatDate}</TableCell>
-                <TableCell>{startTime}</TableCell>
-                <TableCell>{endFormatDate}</TableCell>
-                <TableCell>{endTime}</TableCell>
-                <TableCell align="center">{row.projectName}</TableCell>
-                <TableCell align="center">
-                  <Button
-                    startIcon={<Check />}
-                    onClick={() => onClick(row, "3")}
-                    variant="outlined"
-                    disabled={row.status === "3" || row.status !== "1"}
-                    style={{
-                      whiteSpace: "initial",
-                    }}
-                  >
-                    {row.status !== "3" ? "Mark as completed" : "Completed"}
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      marginLeft: "5px",
-                    }}
-                    color={
-                      row.status === "1"
-                        ? "error"
+          {plans
+            .slice(
+              currentPage * rowsPerPage,
+              currentPage * rowsPerPage + rowsPerPage
+            )
+            .map((row) => {
+              const [startFormatDate, startTime] = formatDateTime(
+                new Date(row.startDate)
+              );
+              const [endFormatDate, endTime] = formatDateTime(
+                new Date(row.endDate)
+              );
+              return (
+                <TableRow key={row.planName}>
+                  <TableCell component="th" scope="row">
+                    {row.planName}
+                  </TableCell>
+                  <TableCell>{startFormatDate}</TableCell>
+                  <TableCell>{startTime}</TableCell>
+                  <TableCell>{endFormatDate}</TableCell>
+                  <TableCell>{endTime}</TableCell>
+                  <TableCell align="center">{row.projectName}</TableCell>
+                  <TableCell align="center">
+                    <Button
+                      startIcon={<Check />}
+                      onClick={() => onClick(row, "3")}
+                      variant="outlined"
+                      disabled={row.status === "3" || row.status !== "1"}
+                      style={{
+                        whiteSpace: "initial",
+                      }}
+                    >
+                      {row.status !== "3" ? "Mark as completed" : "Completed"}
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        marginLeft: "5px",
+                      }}
+                      color={
+                        row.status === "1"
+                          ? "error"
+                          : row.status === "2" || row.status === "0"
+                          ? "success"
+                          : "secondary"
+                      }
+                      disabled={row.status === "3"}
+                      startIcon={
+                        row.status === "1" ? (
+                          <StopIcon />
+                        ) : row.status === "2" || row.status === "0" ? (
+                          <PlayArrowIcon />
+                        ) : (
+                          <></>
+                        )
+                      }
+                      onClick={() =>
+                        onClick(row, row.status === "1" ? "2" : "1")
+                      }
+                    >
+                      {row.status === "1"
+                        ? "Stop"
                         : row.status === "2" || row.status === "0"
-                        ? "success"
-                        : "secondary"
-                    }
-                    disabled={row.status === "3"}
-                    startIcon={
-                      row.status === "1" ? (
-                        <StopIcon />
-                      ) : row.status === "2" || row.status === "0" ? (
-                        <PlayArrowIcon />
-                      ) : (
-                        <></>
-                      )
-                    }
-                    onClick={() => onClick(row, row.status === "1" ? "2" : "1")}
-                  >
-                    {row.status === "1"
-                      ? "Stop"
-                      : row.status === "2" || row.status === "0"
-                      ? "Start"
-                      : "ENDED"}
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      marginLeft: "5px",
-                    }}
-                    disabled={row.status === "0"}
-                    onClick={() => {
-                      navigate("/project/tasks/" + row.project + "/" + row.id);
-                    }}
-                  >
-                    View Plan
-                  </Button>
-                </TableCell>
-              </TableRow>
-            );
-          })}
+                        ? "Start"
+                        : "ENDED"}
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        marginLeft: "5px",
+                      }}
+                      disabled={row.status === "0"}
+                      onClick={() => {
+                        navigate(
+                          "/project/tasks/" + row.project + "/" + row.id
+                        );
+                      }}
+                    >
+                      View Plan
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          {emptyRows > 0 && (
+            <TableRow
+              style={{
+                height: 72 * emptyRows,
+              }}
+            >
+              <TableCell colSpan={5} />
+            </TableRow>
+          )}
         </TableBody>
       </Table>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={plans.length}
+        rowsPerPage={rowsPerPage}
+        page={currentPage}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </TableContainer>
   );
 };

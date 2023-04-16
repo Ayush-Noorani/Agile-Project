@@ -42,8 +42,7 @@ export const ProjectsList = () => {
         {(showMyProjects
           ? projects.filter(
               (value) =>
-                value.members.findIndex((item) => item.id === user.id) !==
-                undefined
+                value.members.findIndex((item) => item.id === user.id) !== -1
             )
           : projects
         )?.map((item: ProjectData, index: any) => (

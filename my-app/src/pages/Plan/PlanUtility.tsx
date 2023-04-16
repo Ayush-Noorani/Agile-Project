@@ -32,6 +32,7 @@ export const PlanUtility = ({ setOpen, open }: PlanUtilityProps) => {
 
   useEffect(() => {
     fetchAllProjects();
+    onChange(id, "project", setForm);
   }, []);
   const [dateRange, setDateRange] = useState<
     {
@@ -95,21 +96,7 @@ export const PlanUtility = ({ setOpen, open }: PlanUtilityProps) => {
           value={form.planName}
           onChange={(e) => onChange(e.target.value, "planName", setForm)}
         />
-        <FormControl fullWidth>
-          <InputLabel id="projectname-label">Select a Project</InputLabel>
-          <Select
-            labelId="projectname-label"
-            id="projectname"
-            name="projectname"
-            label="Project Name"
-            value={project}
-            onChange={(e) => onChange(e.target.value, "project", setForm)}
-          >
-            {projects.map((project) => (
-              <MenuItem value={project.id}>{project.name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+
         <DateRangePicker ranges={dateRange} onChange={handleDateChange} />
       </DialogContent>
       <DialogActions>

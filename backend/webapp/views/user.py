@@ -139,6 +139,7 @@ def get_user_dashboard():
                     'tasks': 1,
                     'name': 1,
                     'startDate': 1,
+                    'columns': 1,
                     'endDate': 1,
                     'img': 1
                 }

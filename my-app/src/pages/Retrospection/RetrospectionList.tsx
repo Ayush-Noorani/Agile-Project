@@ -10,9 +10,9 @@ export const RetrospectionList = () => {
 
   return (
     <Box
-      className="box"
+      className="box tertiary"
       sx={{
-        width: "100%",
+        width: "96%",
       }}
     >
       <InputLabel>Plans</InputLabel>

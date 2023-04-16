@@ -63,6 +63,7 @@ export const ProjectDetail = () => {
   ]);
   const [image, setImage] = useState<string>("");
   useEffect(() => {
+    searchUser("");
     if (id !== "create") {
       fetchExistingData(id);
     }
@@ -81,7 +82,6 @@ export const ProjectDetail = () => {
       setImage(reader.result as string);
     });
   };
-  console.log(value);
   const [openColumn, setOpenColumn] = useState(false);
 
   console.log("pid", id);
@@ -93,7 +93,7 @@ export const ProjectDetail = () => {
       }}
       colorScheme="light"
     >
-      <div className="create-view" style={{ marginBottom: "90px" }}>
+      <div className="create-view tertiary " style={{ marginBottom: "90px" }}>
         <div
           style={{ position: "relative", width: "50%", marginBottom: "5px" }}
         >

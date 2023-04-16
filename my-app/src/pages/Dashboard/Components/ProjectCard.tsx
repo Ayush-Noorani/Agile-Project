@@ -7,7 +7,6 @@ import { DashBoard, ProjectData } from "../../../types/common";
 export const ProjectCard = ({ data }: { data: DashBoard | ProjectData }) => {
   const { setValue } = useProjectContext();
   const { navigate } = useCommon();
-  console.log(data.img);
   return (
     <Grid item xs={5} mr={2}>
       <Card

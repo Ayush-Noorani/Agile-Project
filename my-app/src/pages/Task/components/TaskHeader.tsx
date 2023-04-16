@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useMemo } from "react";
 import { TypoGraphyImage } from "../../../components/Common/TypoGraphyImage";
 import { useTask } from "../hooks/useTask";
 import { colors } from "../../../utils/Common";
@@ -82,6 +82,13 @@ export const TaskHeader = ({
       plan,
     });
   };
+  const currentPlan = useMemo(
+    () =>
+      plans.length > 0 && plans[0].status == "1"
+        ? plans[0].name
+        : "No Active Plan",
+    [plans]
+  );
 
   return (
     <Box
@@ -125,11 +132,7 @@ export const TaskHeader = ({
                 width: "70%",
               }}
             >
-              <TextField
-                label="Current Plan"
-                value={plans[0].planName}
-                disabled
-              />
+              <TextField label="Current Plan" value={currentPlan} disabled />
             </FormControl>
           </Box>
           {!planId && (

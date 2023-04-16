@@ -38,11 +38,11 @@ export const PlanList = () => {
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Box className="box">
-        <InputLabel>Plans</InputLabel>
+    <Box className="box tertiary">
+      <InputLabel>Plans</InputLabel>
+      <TableContainer component={Paper} className="tertiary">
         <PlanTable plans={plans} onClick={handleChangePlanStatus} />
-      </Box>
+      </TableContainer>
       <PlanUtility open={open} setOpen={setOpen} />
 
       <SpeedDial
@@ -59,6 +59,6 @@ export const PlanList = () => {
           />
         ))}
       </SpeedDial>
-    </TableContainer>
+    </Box>
   );
 };
