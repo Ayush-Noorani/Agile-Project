@@ -18,19 +18,25 @@ export const useRegister = () => {
   ) => {
     setError("");
     setLoader(true);
+
+    const randomColour = generateRandomColor();
     axiosInstance
       .post("/user/register", {
         ...value,
-        color: generateRandomColor(),
+        color: randomColour
       })
       .then((res) => {
         dispatch(
           setUser({
             username: value.username,
             email: value.email,
+            roles:['user'],
+            img:"",
+            color: randomColour,
+            id: res.data.insertedID
           })
         );
-        dispatch(setUser(value));
+        // dispatch(setUser(value));
         localStorage.setItem("token", res.data.token);
         navigate("/my-dashboard");
       })

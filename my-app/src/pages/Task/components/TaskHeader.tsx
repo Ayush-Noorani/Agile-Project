@@ -94,9 +94,6 @@ export const TaskHeader = ({
       : "No Active Plan";
   }, [plans]);
 
-  console.log("current plan", currentPlan);
-  console.log("plans", plans);
-
   return (
     <Box
       sx={{

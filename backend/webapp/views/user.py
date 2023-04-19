@@ -73,7 +73,7 @@ def register():
     data['roles'] = ['user']
     is_registered = collection.insert_one(data)
     if (is_registered):
-        return {"data": "Registered", "token": generateToken(str(is_registered.inserted_id))}, 200
+        return {"data": "Registered", "token": generateToken(str(is_registered.inserted_id)), "insertedID":str(is_registered.inserted_id)}, 200
     else:
         return {"message": "Invalid Details"}, 400
 
