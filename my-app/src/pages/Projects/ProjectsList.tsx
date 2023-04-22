@@ -50,13 +50,17 @@ export const ProjectsList = () => {
             <ProjectCard data={item} />
           </Fragment>
         ))}
-        <Fab
-          color="primary"
-          onClick={() => navigate("/project/create")}
-          sx={{ position: "absolute", bottom: 16, right: 16 }}
-        >
-          <Add />
-        </Fab>
+        {(user.roles.includes("admin") ||
+          user.roles.includes("lead") ||
+          user.roles.includes("manager")) && (
+          <Fab
+            color="primary"
+            onClick={() => navigate("/project/create")}
+            sx={{ position: "absolute", bottom: 16, right: 16 }}
+          >
+            <Add />
+          </Fab>
+        )}
       </div>
     </Box>
   );

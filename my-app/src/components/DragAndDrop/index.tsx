@@ -77,8 +77,14 @@ export const DragAndDrop = ({
   };
 
   const renderColumns = useMemo(() => {
-    console.log("render");
-    return columns.map((column: Columntype, index: any) => {
+    const done = columns.filter(
+      (column: Columntype) => column.value === "done"
+    );
+    const columnOrder = columns.filter(
+      (column: Columntype) => column.value !== "done"
+    );
+    columnOrder.push(done[0]);
+    return columnOrder.map((column: Columntype, index: any) => {
       let columnData: any = [];
 
       if (filters?.id && filters?.id.length > 0) {

@@ -25,6 +25,8 @@ import Compressor from "compressorjs";
 import { defaultTheme, Provider } from "@adobe/react-spectrum";
 import { parseDate } from "@internationalized/date";
 import { ColumnForm } from "../Task/components/ColumnForm";
+import { colors } from "../../utils/Common";
+import { useUser } from "../../hooks/useUser";
 
 type state = {
   selection: {
@@ -53,6 +55,8 @@ export const ProjectDetail = () => {
   const autoCompplete = useRef<any>(null);
   const reader = new FileReader();
   const { members, searchUser } = useCommon();
+  const { user } = useUser();
+
   const { value, updateState, fetchExistingData, submitData } = useProject(id);
   const [state, setState] = useState<any[]>([
     {
@@ -93,7 +97,10 @@ export const ProjectDetail = () => {
       }}
       colorScheme="light"
     >
-      <div className="create-view tertiary " style={{ marginBottom: "90px" }}>
+      <div
+        className="create-view tertiary "
+        style={{ marginBottom: "90px", overflow: "auto" }}
+      >
         <div
           style={{ position: "relative", width: "50%", marginBottom: "5px" }}
         >
@@ -322,39 +329,44 @@ export const ProjectDetail = () => {
             )}
           </Stack>
         </Stack>
-        <Stack
-          style={{
-            position: "absolute",
-            bottom: "10px",
-            right: "10px",
-          }}
-          direction="row"
-          spacing={2}
-        >
-          <Button
-            variant="contained"
-            className="margin"
-            onClick={() => setOpenColumn(true)}
-            style={{
-              width: "80px",
-              alignSelf: "center",
-            }}
-          >
-            Columns
-          </Button>
 
-          <Button
-            variant="contained"
-            className="margin"
-            onClick={submitData}
+        {(user.roles.includes("admin") ||
+          user.roles.includes("lead") ||
+          user.roles.includes("manager")) && (
+          <Stack
             style={{
-              width: "80px",
-              alignSelf: "center",
+              position: "absolute",
+              bottom: "10px",
+              right: "10px",
             }}
+            direction="row"
+            spacing={2}
           >
-            {id ? "Update" : "Create"}
-          </Button>
-        </Stack>
+            <Button
+              variant="contained"
+              className="margin"
+              onClick={() => setOpenColumn(true)}
+              style={{
+                width: "80px",
+                alignSelf: "center",
+              }}
+            >
+              Columns
+            </Button>
+
+            <Button
+              variant="contained"
+              className="margin"
+              onClick={submitData}
+              style={{
+                width: "80px",
+                alignSelf: "center",
+              }}
+            >
+              {id ? "Update" : "Create"}
+            </Button>
+          </Stack>
+        )}
       </div>
     </Provider>
   );

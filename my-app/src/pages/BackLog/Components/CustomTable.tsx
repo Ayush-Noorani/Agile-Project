@@ -6,10 +6,12 @@ import {
   Typography,
   MenuItem,
   Stack,
+  Badge,
+  IconButton,
 } from "@mui/material";
-import { Fragment, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { TableComponent } from "./TableComponent";
-import { Tasks } from "../../../types/common";
+import { Plan, Tasks } from "../../../types/common";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Button } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -20,13 +22,13 @@ import { useBackLog } from "../hooks/useBackLog";
 import { useParams } from "react-router-dom";
 
 interface CustomTableProps {
-  value: any;
+  value: Plan;
   setSelectedTask: (task: any) => void;
   handleMoveToPlan: (plan: string) => void;
   tasks: Tasks[];
   menuOptions?: any[];
   filter?: string;
-  plans: any[];
+  plans: Plan[];
 }
 export const CustomTable = ({
   value,
@@ -48,7 +50,12 @@ export const CustomTable = ({
   const [endFormatDate, endTime] = value?.endDate
     ? formatDateTime(endDate)
     : [0, 0];
-
+  const newTasks = useMemo(
+    () =>
+      tasks.filter((task) => task.new === true && task.plan === value.id)
+        .length,
+    [tasks]
+  );
   return (
     <Accordion
       className="box tertiary"
@@ -84,7 +91,20 @@ export const CustomTable = ({
                 fontWeight: "bold",
               }}
             >
-              {value.planName}
+              {value.planName}{" "}
+              {newTasks > 0 && (
+                <IconButton
+                  color="secondary"
+                  style={{
+                    borderRadius: "50%",
+                    fontSize: "medium",
+                    backgroundColor: colors.primary,
+                  }}
+                  aria-label="notifications"
+                >
+                  {newTasks}
+                </IconButton>
+              )}
             </InputLabel>
             {value.startDate && value.endDate && (
               <Typography variant="body1">
@@ -181,7 +201,7 @@ export const CustomTable = ({
               ))
             : [<MenuItem>No plans found</MenuItem>]
         }
-        filter={value.id}
+        filter={value.id!}
         tasks={tasks}
       />
     </Accordion>

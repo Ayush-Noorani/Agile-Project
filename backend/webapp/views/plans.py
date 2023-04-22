@@ -119,6 +119,7 @@ def delete_plan():
 @jwt_required()
 def set_plan_status(value):
     data = request.get_json()
+    has_un_completed_tasks = False
 
     if not data['id']:
         return {'message': 'id is required'}, 400
@@ -163,12 +164,23 @@ def set_plan_status(value):
         if value == '3':
             project = db.projects.find_one(
                 {'_id': ObjectId(check_plan['project'])}, {'tasks': 1, 'columns': 1})
+            un_completed_tasks = [
+                i for k, v in project['tasks'].items() if k != 'done' for i in v]
+            if (len(un_completed_tasks) > 0):
+
+                db.tasks.update_many({'_id': {'$in': un_completed_tasks}}, {
+                    '$set': {
+                        'plan': 'backLog', 'new': True,
+                        'updated_at': str(datetime.now())}
+                })
+                has_un_completed_tasks = True
+
             db.plans.update_one({'_id': ObjectId(data['id'])}, {
                 '$set': {'status': value, 'tasks': project['tasks'],
                          'columns': project['columns']}})
             for k, v in project['tasks'].items():
                 project['tasks'][k] = []
-            print(project['tasks'])
+
             db.projects.update_one({'_id': ObjectId(check_plan['project'])}, {
                 '$set': {'tasks': project['tasks']}
             })
@@ -176,7 +188,7 @@ def set_plan_status(value):
         else:
             collection.update_one({'_id': ObjectId(data['id'])}, {
                 '$set': {'status': value}})
-        return {'message': 'plan status updated'}, 200
+        return {'message':  f"Plan marked as completed {', Uncompleted tasks added to backlog' if has_un_completed_tasks else ''}"}, 200
     return {'message': 'plan already marked as completed cannot change status now.'}, 200
 
 

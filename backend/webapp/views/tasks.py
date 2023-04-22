@@ -1,3 +1,4 @@
+from datetime import datetime
 from webapp.helpers.common import decode_base64
 from webapp import app
 from flask import request
@@ -89,7 +90,7 @@ def get_task_list(id):
         {"_id": ObjectId(id)})
 
     tasks_dict = {}
-
+    tasks = [i for k, v in project["tasks"].items() for i in v]
     for task_status in project["tasks"].keys():
         task_pipeline = [
             {"$match": {
@@ -117,6 +118,7 @@ def get_task_list(id):
                 "updated_at": 1,
                 'plan': 1,
                 "project": 1,
+                'new': 1,
 
                 "priority": 1,
                 'section': 1,
@@ -149,6 +151,8 @@ def get_task_list(id):
                 "updated_at": 1,
                 "due_date": 1,
                 "section": 1,
+                'new': 1,
+
                 "priority": 1,
                 "assigned_user.username": 1,
                 "assigned_user.color": 1,
@@ -185,6 +189,7 @@ def get_task_list(id):
             if i['plan'] != 'backLog':
                 i['plan'] = str(i['plan'])
         tasks_dict[task_status] = results
+    db.tasks.update_many({'_id': {'$in': tasks}}, {'$set': {'new': False}})
     return tasks_dict, 200
 
 # save columns
@@ -200,6 +205,8 @@ def create_task_backlog(projectId):
         parsedData[key] = data[key]
     parsedData.pop("id")
     parsedData['plan'] = 'backLog'
+    parsedData['created_at'] = str(datetime.now())
+    parsedData['updated_at'] = str(datetime.now())
     parsedData["reportTo"] = [ObjectId(user['id'])
                               for user in parsedData["reportTo"]]
     parsedData["assignedTo"] = [ObjectId(user['id'])
@@ -221,13 +228,15 @@ def create_task(projectId):
         parsedData[key] = data[key]
 
     plan = db.plans.find_one({"project": ObjectId(projectId), 'status': '1'})
-    print(plan)
     parsedData['plan'] = plan['_id'] if plan else 'backLog'
     parsedData["reportTo"] = [ObjectId(user['id'])
                               for user in parsedData["reportTo"]]
     parsedData["assignedTo"] = [ObjectId(user['id'])
                                 for user in parsedData["assignedTo"]]
     taskID = db.tasks.insert_one(parsedData).inserted_id
+    data['new'] = True
+    data['created_at'] = str(datetime.now())
+    data['updated_at'] = str(datetime.now())
     db.projects.update_one({"_id": ObjectId(projectId)}, {
                            "$push": {"tasks."+data["status"]: taskID}})
     ids = parsedData['reportTo']+parsedData['assignedTo']
@@ -274,6 +283,7 @@ def update_task(id):
                         for user in data["reportTo"]]
     data["assignedTo"] = [ObjectId(user['id'])
                           for user in data["assignedTo"]]
+    data['updated_at'] = str(datetime.now())
     db.tasks.update_one({"_id": ObjectId(id)}, {"$set": data})
     ids = data['reportTo']+data['assignedTo']
 
@@ -334,7 +344,7 @@ def list_tasks():
             "updated_at": 1,
             'plan': 1,
             "project": 1,
-
+            'new': 1,
             "priority": 1,
             'section': 1,
             "due_date": 1,
@@ -359,6 +369,7 @@ def list_tasks():
             "taskName": 1,
             "description": 1,
             "project": 1,
+            'new': 1,
 
             "status": 1,
             "created_at": 1,
@@ -378,6 +389,7 @@ def list_tasks():
         }}
     ]
     results = list(db.tasks.aggregate(task_pipeline))
+    id = [ObjectId(i['id']) for i in results]
     for i in results:
         i['assignee'] = i['assigned_user']
         i['reportTo'] = i['reporter_user']
@@ -395,6 +407,7 @@ def list_tasks():
         i.pop('reporter_user')
         if i['plan'] != 'backLog':
             i['plan'] = str(i['plan'])
+    db.tasks.update_many({'_id': {'$in': id}}, {'$set': {'new': False}})
     return {'data': results}, 200
 
 
@@ -405,5 +418,7 @@ def tasks_move():
     if (data['plan'] != 'backLog'):
         data['plan'] = ObjectId(data['plan'])
     collection.update_one({'_id': ObjectId(data['taskId'])}, {
-        '$set': {'plan': data['plan']}})
+        '$set': {'plan': data['plan'],
+                 'updated_at': str(datetime.now()),
+                 'new': False}})
     return {'status': 'success'}, 200
