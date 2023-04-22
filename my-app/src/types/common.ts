@@ -81,7 +81,13 @@ export type ProjectType = {
   totalTasks: number;
 };
 
-export type Role = "admin" | "user" | "lead" | "member" | "developer";
+export type Role =
+  | "admin"
+  | "user"
+  | "lead"
+  | "member"
+  | "developer"
+  | "manager";
 
 export const columnTitle: Record<string, string> = {
   toDo: "To do",
@@ -103,6 +109,9 @@ export type Tasks = {
   priority: Priority;
   section?: string;
   plan?: string;
+  new?: boolean;
+  created_at?: string;
+  updated_at?: string;
 };
 
 export type Notification = {

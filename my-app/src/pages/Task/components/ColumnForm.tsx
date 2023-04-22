@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Alert,
   Box,
   Button,
   IconButton,
+  Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -12,7 +14,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useTask } from "../hooks/useTask";
-import { onChange } from "../../../utils/Common";
+import { colors, onChange } from "../../../utils/Common";
 import { Columntype, Headers } from "../../../types/common";
 import DeleteIcon from "@mui/icons-material/Delete";
 interface ColumnProps {
@@ -48,10 +50,16 @@ export const ColumnForm = ({ id }: ColumnProps) => {
     updateColumns,
     deleteColumns,
   } = useTask(id);
-
-  return (
-    <Box sx={{ height: "400px" }}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+  const table = useMemo(
+    () => (
+      <Table
+        component={Paper}
+        sx={{
+          minWidth: 650,
+          backgroundColor: colors.tertiary,
+        }}
+        aria-label="simple table"
+      >
         <TableHead>
           <TableRow>
             {columnHeaders.map((header, index) => (
@@ -94,16 +102,21 @@ export const ColumnForm = ({ id }: ColumnProps) => {
           ))}
         </TableBody>
       </Table>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "space-around",
-          height: "60%",
-        }}
-        m="s"
-      >
+    ),
+    [columns]
+  );
+  return (
+    <Stack
+      spacing={2}
+      sx={{
+        height: "100%",
+        overflow: "hidden",
+        padding: "20px",
+        backgroundColor: colors.tertiary,
+      }}
+    >
+      {table}
+      <Stack m="s" spacing={2} alignItems="center">
         {newColumn?.fixed && <Alert>Can only edit label and not value</Alert>}
 
         <TextField
@@ -132,20 +145,27 @@ export const ColumnForm = ({ id }: ColumnProps) => {
         <Box sx={{ display: "flex", flexDirection: "row" }}>
           <Button
             variant="contained"
-            sx={{ width: "100px", marginRight: "10px" }}
+            sx={{
+              width: "100px",
+              marginRight: "10px",
+              backgroundColor: colors.secondary,
+            }}
             onClick={updateColumns}
           >
             Add
           </Button>
           <Button
             variant="contained"
-            sx={{ width: "100px" }}
+            sx={{
+              width: "100px",
+              backgroundColor: colors.secondary,
+            }}
             onClick={saveColumns}
           >
             Submit
           </Button>
         </Box>
-      </Box>
-    </Box>
+      </Stack>
+    </Stack>
   );
 };

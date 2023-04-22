@@ -102,6 +102,7 @@ export const BackLog = () => {
         ))}
       </Box>
       <CustomTable
+        //@ts-ignore
         value={{
           planName: "Back Log",
           id: "backLog",

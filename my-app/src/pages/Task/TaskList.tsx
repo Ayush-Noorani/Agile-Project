@@ -11,7 +11,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { CloseOutlined, Create, Info } from "@mui/icons-material";
+import {
+  CloseOutlined,
+  Create,
+  Info,
+  ViewColumnSharp,
+} from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import { useTask } from "./hooks/useTask";
 import { useParams } from "react-router-dom";
@@ -20,6 +25,7 @@ import { ColumnForm } from "./components/ColumnForm";
 import { TaskHeader } from "./components/TaskHeader";
 import { usePlan } from "../Plan/hooks/usePlan";
 import { colors } from "../../utils/Common";
+import { useUser } from "../../hooks/useUser";
 
 export const TaskList = () => {
   const { id, planId } = useParams();
@@ -30,6 +36,7 @@ export const TaskList = () => {
   //     status: "1",
   //   });
   // }, []);
+  const { user } = useUser();
   const [openColumn, setOpenColumn] = useState(false);
   const actions: {
     icon: JSX.Element;
@@ -44,9 +51,16 @@ export const TaskList = () => {
         setSelectedTaskId(undefined);
       },
     },
-    { icon: <Info />, name: "Project Details", onClick: () => setOpen(true) },
-
-    { icon: <Info />, name: "Add Column", onClick: () => setOpenColumn(true) },
+    //@ts-ignore
+    user.roles.includes("admin") ||
+    user.roles.includes("lead") ||
+    user.roles.includes("manager")
+      ? {
+          icon: <ViewColumnSharp />,
+          name: "Add Column",
+          onClick: () => setOpenColumn(true),
+        }
+      : undefined,
   ];
 
   const columnOrder = localStorage.getItem("columnOrder");
@@ -82,7 +96,7 @@ export const TaskList = () => {
         open={open}
       />
 
-      <Dialog open={openColumn} onClose={() => setOpenColumn(false)}>
+      <Dialog open={openColumn} sx={{}} onClose={() => setOpenColumn(false)}>
         <ColumnForm id={id} />
       </Dialog>
       <TaskHeader planId={planId} id={id} plans={plans} />
@@ -108,14 +122,16 @@ export const TaskList = () => {
           sx={{ position: "absolute", bottom: 16, right: 16 }}
           icon={<SpeedDialIcon />}
         >
-          {actions.map((action) => (
-            <SpeedDialAction
-              key={action.name}
-              icon={action.icon}
-              onClick={() => action.onClick && action.onClick()}
-              tooltipTitle={action.name}
-            />
-          ))}
+          {actions
+            .filter((value) => value !== undefined)
+            .map((action) => (
+              <SpeedDialAction
+                key={action.name}
+                icon={action.icon}
+                onClick={() => action.onClick && action.onClick()}
+                tooltipTitle={action.name}
+              />
+            ))}
         </SpeedDial>
       )}
     </Box>

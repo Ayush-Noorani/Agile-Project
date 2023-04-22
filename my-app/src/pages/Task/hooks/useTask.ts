@@ -147,6 +147,7 @@ export const useTask = (projectId?: string, planId?: string) => {
         columns: [...column, newColumn],
       })
     );
+    setColumn([...column, newColumn]);
     setNewColumn({
       label: "",
       value: "",

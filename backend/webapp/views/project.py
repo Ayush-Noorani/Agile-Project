@@ -13,6 +13,7 @@ from werkzeug.datastructures import FileStorage
 import json
 from flask import send_file
 import codecs
+from webapp.helpers.common import convert_data_to_str
 
 collection = db.projects
 
@@ -99,16 +100,19 @@ def save_columns(id):
     current_project = db.projects.find_one(
         {"_id": ObjectId(id)}, {'columns': 1, 'tasks': 1})
     missing_elements = [x for x in data['columns']
-                        if x['value'] not in current_project['columns'].keys()]
+                        if x['value'] not in current_project['tasks'].keys()]
 
     for i in missing_elements:
         current_project['tasks'][i['value']] = []
     done_project = current_project['tasks']['done']
-    current_project['tasks'].pop('done')
-    current_project['tasks']['done'] = done_project
+    tasks = {}
+    for i in current_project['tasks'].keys():
+        if i != 'done':
+            tasks[i] = current_project['tasks'][i]
+    tasks['done'] = done_project
     db.projects.update_one({"_id": ObjectId(id)}, {
                            "$set": {"columns": data['columns'],
-                                    'tasks': current_project['tasks']}, })
+                                    'tasks': tasks}, })
     return {"status": "success"}
 
 
@@ -144,12 +148,13 @@ def create_project():
     elif len(data['img'] > 0):
         data['img'] = ''
 
-    data['tasks']={}
+    data['tasks'] = {}
     for i in default_columns:
         data['tasks'][i['value']] = []
     data['columns'] = default_columns
+    print(data['lead'])
     if data['lead'] != "":
-        data['lead'] = ObjectId(data['lead'])
+        data['lead'] = ObjectId(data['lead'][0]['id'])
     id = db.projects.insert_one(data).inserted_id
 
     create_notification(
@@ -199,14 +204,8 @@ def get_project_members(id):
                       'members.roles': 1, 'members.img': 1, 'members.color': 1}}
     ]
     members = list(db.projects.aggregate(pipeline))
-    result = []
-    for member in members:
-        member = member['members']
-        member["id"] = str(member["_id"])
-        member.pop("_id")
-        member['img'] = decode_base64(member['img'])
+    result = convert_data_to_str(members)
 
-        result.append(member)
     return {"members": result}
 
 
@@ -262,17 +261,9 @@ def get_project(id):
             }
         }
     ]
-    project = list(db.projects.aggregate(pipeline))[0]
-    project["id"] = id
-    project.pop("_id")
-    if project['img'] != '' and project['img'] != None:
-        base64_data = codecs.encode(project['img'], 'base64')
+    project = convert_data_to_str(
+        list(db.projects.aggregate(pipeline))[0])
 
-        project['img'] = base64_data.decode("utf-8")
-    for member in project['members']:
-        member["id"] = str(member["_id"])
-        member.pop("_id")
-    project['created_by'] = str(project['created_by'])
     return {"project": project}
 
 

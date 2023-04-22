@@ -83,14 +83,10 @@ export const TaskHeader = ({
     });
   };
 
-  console.log(
-    "finding",
-    plans.find((plan) => plan.status === "1")
-  );
   const currentPlan = useMemo(() => {
     const planIndex = plans.findIndex((plan) => plan.status === "1");
-    return plans.length > 0 && planIndex
-      ? plans[planIndex].planName
+    return plans.length > 0 && plans[planIndex]
+      ? plans[planIndex]?.planName
       : "No Active Plan";
   }, [plans]);
 

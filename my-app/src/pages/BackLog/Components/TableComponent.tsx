@@ -67,9 +67,10 @@ export const TableComponent = ({
             <TableCell>Assignee</TableCell>
             <TableCell>Report To</TableCell>
             <TableCell>Priority</TableCell>
-            <TableCell>Section</TableCell>
             <TableCell>Plan</TableCell>
-            <TableCell>Actions</TableCell>{" "}
+            <TableCell>Created at</TableCell>
+            <TableCell>Updated at</TableCell>
+            <TableCell>Actions</TableCell>
             {/* added a new column for the actions menu */}
           </TableRow>
         </TableHead>
@@ -97,7 +98,6 @@ export const TableComponent = ({
                     {task.priority}
                   </label>
                 </TableCell>
-                <TableCell>{task.section ?? "-"}</TableCell>
                 <TableCell>
                   {task.plan == "backLog"
                     ? "Back Log"
@@ -105,6 +105,8 @@ export const TableComponent = ({
                     ? task.plan
                     : "-"}
                 </TableCell>
+                <TableCell>{task.created_at}</TableCell>
+                <TableCell>{task.updated_at}</TableCell>
                 <TableCell>
                   {/* added a new button to open the menu */}
                   <Button onClick={(event) => handleMenuOpen(event, task)}>
