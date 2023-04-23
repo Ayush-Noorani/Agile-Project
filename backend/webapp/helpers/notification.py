@@ -103,13 +103,20 @@ def get_notfication(id):
                     'name': notification['project'][0]['name'],
                     'id': str(notification['project'][0]['_id']),
                     'img': notification['project'][0]['img'],
+                    'link': '/project/tasks'+str(notification['project'][0]['_id'])
 
                 }
                 message += f"  in project {notification['project'][0]['name']}\n"
             elif notification['type'] == 3 or notification['type'] == 4:
+                print(
+                    {"$flatten": {"tasks": [notification['task'][0]['_id']]}})
+                plan = db.plan.find(
+                    {"$flatten": {"tasks": [notification['task'][0]['plan']]}})
+
                 message_obj['reference'] = {
                     'name': notification['task'][0]['taskName'],
                     'id': str(notification['task'][0]['_id']),
+                    'link': '/project/tasks'+str(plan['project'])
 
                 }
 
