@@ -29,6 +29,7 @@ export interface SideBarItemProps {
   icon: React.ReactNode;
   role: Role;
   require?: string[];
+  disabled?: boolean;
   label: string;
   handleRedirect?: (path: string, require: string[]) => void;
 }

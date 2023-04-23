@@ -12,7 +12,6 @@ export const ProjectCard = ({ data }: { data: DashBoard | ProjectData }) => {
       <Card
         className="growDashboardProject"
         onClick={(e: any) => {
-          setValue(data);
           navigate("/project/tasks/" + data.id);
         }}
         elevation={8}
