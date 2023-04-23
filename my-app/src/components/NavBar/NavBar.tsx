@@ -32,6 +32,7 @@ import { useProjectContext } from "../../context/ProjectContext";
 import { colors } from "../../utils/Common";
 import { useToastContext } from "../../context/ToastContext";
 import { useNotification } from "../../hooks/useNotification";
+import { useParams } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -142,6 +143,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
   const [typeSelected, setTypeSelected] = useState<string>("all");
   const { notification, readNotification } = useNotification();
   const { navigate } = useCommon();
+  const { id } = useParams();
   const { user } = useUser();
   const { selected, setValue } = useProjectContext();
   const { toast, defaultValue } = useToastContext();
@@ -176,11 +178,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
         }}
         className="box-shadow"
         onClick={() => {
-          navigate(
-            value.type == "1" || value.type == "2"
-              ? "/project/" + value.reference.id
-              : "/tasks/" + value.reference.id
-          );
+          navigate(value.link);
         }}
       >
         <Stack direction="row" spacing={2}>
@@ -241,9 +239,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
               size="large"
               edge="start"
               onClick={() =>
-                selected
-                  ? setShow(!show)
-                  : toast("Click on a project!", defaultValue)
+                id ? setShow(!show) : toast("Click on a project!", defaultValue)
               }
               aria-label="open drawer"
               sx={{ mr: 2 }}
