@@ -98,7 +98,7 @@ export const DragAndDrop = ({
               filters.id.includes(member.username)
             )
         );
-      } else {
+      } else if (column?.value) {
         columnData = data[column.value] || [];
       }
 
