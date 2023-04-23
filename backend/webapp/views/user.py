@@ -71,6 +71,7 @@ def register():
         return {'message': 'Email already exists!'}, 403
     data['password'] = bcrypt.generate_password_hash(data['password'])
     data['roles'] = ['user']
+
     is_registered = collection.insert_one(data)
     if (is_registered):
         return {"data": "Registered", "token": generateToken(str(is_registered.inserted_id)), "insertedID": str(is_registered.inserted_id)}, 200
