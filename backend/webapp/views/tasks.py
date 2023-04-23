@@ -212,8 +212,9 @@ def create_task_backlog(projectId):
     parsedData["assignedTo"] = [ObjectId(user['id'])
                                 for user in parsedData["assignedTo"]]
     taskID = db.tasks.insert_one(parsedData).inserted_id
-    db.projects.update_one({"_id": ObjectId(projectId)}, {
-                           "$push": {"tasks."+data["status"]: taskID}})
+
+    # db.projects.update_one({"_id": ObjectId(projectId)}, {
+    #                        "$push": {"tasks."+data["status"]: taskID}})
 
     return {}, 200
 
@@ -233,12 +234,14 @@ def create_task(projectId):
                               for user in parsedData["reportTo"]]
     parsedData["assignedTo"] = [ObjectId(user['id'])
                                 for user in parsedData["assignedTo"]]
+    parsedData['new'] = True
+    parsedData['created_at'] = str(datetime.now())
+    parsedData['updated_at'] = str(datetime.now())
     taskID = db.tasks.insert_one(parsedData).inserted_id
-    data['new'] = True
-    data['created_at'] = str(datetime.now())
-    data['updated_at'] = str(datetime.now())
-    db.projects.update_one({"_id": ObjectId(projectId)}, {
-                           "$push": {"tasks."+data["status"]: taskID}})
+    if (plan):
+        db.projects.update_one({"_id": ObjectId(projectId)}, {
+            "$push": {"tasks."+data["status"]: taskID}})
+
     ids = parsedData['reportTo']+parsedData['assignedTo']
 
     create_notification(ids, 'assigned you a task in project ',
