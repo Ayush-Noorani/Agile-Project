@@ -20,6 +20,7 @@ import { useParams } from "react-router-dom";
 import { useProject } from "../Projects/hooks/useProject";
 import { useCommon } from "../../hooks/useCommon";
 import { TypoGraphyImage } from "../../components/Common/TypoGraphyImage";
+import { colors } from "../../utils/Common";
 
 interface User {
   id: number;
@@ -98,7 +99,12 @@ export const Members = () => {
           </Box>
         )}
       />
-      <TableContainer component={Paper}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          backgroundColor: colors.tertiary,
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
@@ -116,7 +122,10 @@ export const Members = () => {
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleRemoveUser(user)}>
+                  <IconButton
+                    color={"error"}
+                    onClick={() => handleRemoveUser(user)}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>

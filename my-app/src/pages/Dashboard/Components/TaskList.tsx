@@ -16,10 +16,11 @@ import { Tasks } from "../../../types/common";
 import "../../../css/common.css";
 import { colors } from "../../../utils/Common";
 import { TaskPriorityIcon } from "../../../components/Common/TaskPriorityIcon";
-const TaskList = () => {
-  const { projects, dashboard } = useDashboard();
 
-  const dashboardProjects = useMemo(() => {
+const TaskList = () => {
+  const { dashboard } = useDashboard();
+
+  const taskList = useMemo(() => {
     return (
       dashboard
         .map((project) => Object.entries(project.tasks))
@@ -34,7 +35,6 @@ const TaskList = () => {
         .flatMap((value) => value) || []
     );
   }, [dashboard]);
-  console.log(dashboardProjects);
 
   return (
     <Paper
@@ -48,16 +48,14 @@ const TaskList = () => {
         marginTop: "10px",
         width: "96%",
         backgroundColor: colors.tertiary,
+        height: "43vh",
+        overflow: "auto",
       }}
     >
       <Typography variant="h5" gutterBottom align="center">
         Your Tasks
       </Typography>
-      <TableContainer
-        sx={{
-          minHeight: "430px",
-        }}
-      >
+      <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
@@ -69,9 +67,10 @@ const TaskList = () => {
           <TableBody
             sx={{
               overflow: "auto",
+              height: "fit-content",
             }}
           >
-            {dashboardProjects.map((row: Tasks, index) => {
+            {taskList.map((row: Tasks, index) => {
               return (
                 <TableRow
                   key={index.toString()}

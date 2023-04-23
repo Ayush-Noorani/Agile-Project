@@ -163,6 +163,7 @@ export const useTask = (projectId?: string, planId?: string) => {
     );
   };
   const saveColumns = () => {
+    setLoaderState(true);
     let columnValue = column;
     if (newColumn.label && newColumn.value) {
       columnValue = [...column, newColumn];
@@ -177,9 +178,11 @@ export const useTask = (projectId?: string, planId?: string) => {
           `background:green; color: white;  font-weight: bold;`
         );
         console.log(res);
+        setLoaderState(false);
       })
       .catch((err) => {
         console.log(err);
+        setLoaderState(false);
       });
   };
   const getRetroRespectiveTasks = () => {
@@ -250,8 +253,8 @@ export const useTask = (projectId?: string, planId?: string) => {
     );
   };
 
-  const updateData = (data: any) => {
-    axiosInstance
+  const updateData = async (data: any) => {
+    await axiosInstance
       .put(`/task/update/${formData.id}`, data)
       .then((res) => {
         console.log(
@@ -264,11 +267,11 @@ export const useTask = (projectId?: string, planId?: string) => {
       .catch((err) => {
         console.log(err);
       });
+    setLoaderState(false);
   };
 
-  const createData = (data: any, plan: string) => {
-    console.log("creating task", data);
-    axiosInstance
+  const createData = async (data: any, plan: string) => {
+    await axiosInstance
       .post(`/task/create/${projectId}`, data)
       .then(() => {
         console.log(
@@ -280,6 +283,7 @@ export const useTask = (projectId?: string, planId?: string) => {
       .catch((err) => {
         console.log(err);
       });
+    setLoaderState(false);
   };
 
   const submitFormData = (plan?: string) => {
@@ -288,12 +292,13 @@ export const useTask = (projectId?: string, planId?: string) => {
 
     // submitData.append("data", JSON.stringify(formData));
     formData.id ? updateData(formData) : createData(formData, plan!);
-    setLoaderState(false);
   };
 
   const updateSequence = (tasks: any) => {
     const data: any = {};
     setTasks(tasks);
+    setLoaderState(true);
+
     Object.keys(tasks).forEach((key) => {
       data[key] = tasks[key].map((task: Tasks) => task.id);
     });
@@ -307,9 +312,11 @@ export const useTask = (projectId?: string, planId?: string) => {
         );
         console.log(res);
         getTasks(undefined, projectId);
+        setLoaderState(false);
       })
       .catch((err) => {
         console.log(err);
+        setLoaderState(false);
       });
   };
   const setFilters = (data: any) => {

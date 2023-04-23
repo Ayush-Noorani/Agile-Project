@@ -31,12 +31,12 @@ const columnHeaders: Headers[] = [
     label: "Value",
   },
   {
-    id: "action",
-    label: "Action",
-  },
-  {
     id: "color",
     label: "Color",
+  },
+  {
+    id: "action",
+    label: "Action",
   },
 ];
 

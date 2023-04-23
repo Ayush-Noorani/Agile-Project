@@ -18,15 +18,15 @@
 }
 
 .picture_container {
-  height: 300px;
+  height: 200px;
   width: 85%;
-  border-radius: 120px 0 0 0;
+  border-radius: 120px 10px 10px 10px;
   position: absolute;
   background: rgb(239, 236, 244);
   background: linear-gradient(
     83deg,
-    rgba(239, 236, 244, 1) 0%,
-    rgba(239, 236, 244, 1) 100%
+    #222831 0%,
+    #30475E 100%
   );
 }
 

@@ -22,11 +22,11 @@ export const useBackLog = (id: string) => {
   const { defaultValue, toast } = useToastContext();
   const [plans, setPlans] = useState<any[]>([]);
   useEffect(() => {
-    getALlTasks();
+    getAllTasks();
     getPlans();
   }, []);
 
-  const getALlTasks = () => {
+  const getAllTasks = () => {
     axiosInstance
       .get("/task/all")
       .then((res) => {
@@ -83,7 +83,7 @@ export const useBackLog = (id: string) => {
           `background:green; color: white;  font-weight: bold;`,
           res.data
         );
-        getALlTasks();
+        getAllTasks();
       })
       .catch((err) => {
         console.error(err);
@@ -135,6 +135,6 @@ export const useBackLog = (id: string) => {
     getPlans,
     setTasks,
     updatePlanStatus,
-    getALlTasks,
+    getAllTasks,
   };
 };

@@ -7,11 +7,14 @@ import { RootState } from "../../../redux/store";
 import produce from "immer";
 import { useDispatch } from "react-redux";
 import { setData } from "../../../redux/reducers/project";
+import { useCommon } from "../../../hooks/useCommon";
 
 export const useProject = (id?: string) => {
   const projects = useSelector((state: RootState) => state.project.projects);
   const [projectList, setProjectList] = useState<ProjectData[]>(projects);
   const dispatch = useDispatch();
+  const { setLoaderState } = useCommon();
+
   const [value, setValue] = useState<ProjectData>({
     id: undefined,
     name: "",
@@ -50,12 +53,14 @@ export const useProject = (id?: string) => {
       });
   };
 
-  const assign = (projectId: string, userId: string) => {
+  const assign = async (projectId: string, userId: string) => {
     console.log(
       `%c ASSIGN ${userId} \n`,
       `background:green; color: white;  font-weight: bold;`
     );
-    axiosInstance
+    setLoaderState(true);
+
+    await axiosInstance
       .post("/project/assign/" + projectId, {
         user_id: userId,
       })
@@ -63,6 +68,7 @@ export const useProject = (id?: string) => {
       .catch((err) => {
         console.error(err.response);
       });
+    setLoaderState(false);
   };
 
   const fetchAllProjects = () => {
@@ -83,14 +89,15 @@ export const useProject = (id?: string) => {
   };
 
   const fetchExistingData = (id: any) => {
-    if(id) axiosInstance.get(`/project/get/${id}`).then((res) => {
-      setValue(res.data.project);
-      console.log(
-        `%c FETCH PROJECT \n`,
-        `background:green; color: white;  font-weight: bold;`,
-        res.data
-      );
-    });
+    if (id)
+      axiosInstance.get(`/project/get/${id}`).then((res) => {
+        setValue(res.data.project);
+        console.log(
+          `%c FETCH PROJECT \n`,
+          `background:green; color: white;  font-weight: bold;`,
+          res.data
+        );
+      });
   };
 
   const updateState = (data: any, key: keyof ProjectData) =>
@@ -104,9 +111,10 @@ export const useProject = (id?: string) => {
     }
   };
 
-  const submitData = () => {
+  const submitData = async () => {
     const request: any = { ...value };
     delete request.img;
+    setLoaderState(true);
     const data = new FormData();
     if (value.img && typeof value.img == "object") {
       request["img"] = true;
@@ -116,7 +124,7 @@ export const useProject = (id?: string) => {
       request.members = request.members.map((value: Member) => value.id);
       data.append("data", JSON.stringify(request));
 
-      axiosInstance
+      await axiosInstance
         .put(`/project/${id}`, data)
         .then((res) => {
           console.log(
@@ -131,7 +139,7 @@ export const useProject = (id?: string) => {
         });
     } else {
       delete request.columns;
-      data.append("data", JSON.stringify(request));
+      await data.append("data", JSON.stringify(request));
 
       axiosInstance
         .post("/project/create", data)
@@ -147,6 +155,7 @@ export const useProject = (id?: string) => {
           console.log(err);
         });
     }
+    setLoaderState(false);
   };
   return {
     projects,

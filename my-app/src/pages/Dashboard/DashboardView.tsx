@@ -6,7 +6,6 @@ import { ProjectList } from "./Components/ProjectList";
 import { TaskList } from "./Components/TaskList";
 import { TaskPerfromance } from "./Components/TaskPerformance";
 import { useDashboard } from "./hooks/useDashboard";
-
 const DashboardView = () => {
   const { user } = useUser();
   const { getDashboardData, projects, dashboard } = useDashboard();
@@ -22,9 +21,16 @@ const DashboardView = () => {
       }}
       className="tertiary"
     >
-      <Typography variant="h4" mb={3}>
-        Welcome, {user.userName}
-      </Typography>
+      <Stack direction="row" spacing={2} alignItems="center">
+        <Typography variant="h4" mb={3}>
+          Welcome, {user.userName}
+        </Typography>
+        <img
+          width="100px"
+          src={require("../../assets/code.gif")}
+          alt="My GIF"
+        />
+      </Stack>
       <Box sx={{ display: "flex" }}>
         <Stack
           direction="column"

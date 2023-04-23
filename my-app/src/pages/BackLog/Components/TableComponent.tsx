@@ -95,7 +95,6 @@ export const TableComponent = ({
                     {task.priority && (
                       <TaskPriorityIcon priority={task.priority} />
                     )}
-                    {task.priority}
                   </label>
                 </TableCell>
                 <TableCell>
@@ -105,8 +104,12 @@ export const TableComponent = ({
                     ? task.plan
                     : "-"}
                 </TableCell>
-                <TableCell>{task.created_at}</TableCell>
-                <TableCell>{task.updated_at}</TableCell>
+                <TableCell>
+                  {task.created_at && task.created_at.split(".")[0]}
+                </TableCell>
+                <TableCell>
+                  {task.updated_at && task.updated_at.split(".")[0]}
+                </TableCell>
                 <TableCell>
                   {/* added a new button to open the menu */}
                   <Button onClick={(event) => handleMenuOpen(event, task)}>
