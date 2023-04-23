@@ -59,7 +59,7 @@ export const SideBar = ({ children }: SideBarProps) => {
           width: "100%",
         }}
       >
-        {open ? (
+        {id && open ? (
           <Box
             className="sidebar dark"
             sx={{
@@ -73,6 +73,7 @@ export const SideBar = ({ children }: SideBarProps) => {
                 <Item
                   icon={value.icon}
                   label={value.label}
+                  disabled={value.disabled}
                   handleRedirect={handleRedirect}
                   path={value.path}
                   role={"admin"}
@@ -115,6 +116,7 @@ export const SideBar = ({ children }: SideBarProps) => {
             height: "100%",
             opacity: loading ? 0.5 : 1,
             backgroundColor: colors.tertiary,
+            overflow: "auto",
           }}
         >
           {children}

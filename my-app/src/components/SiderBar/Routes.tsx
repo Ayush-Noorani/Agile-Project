@@ -66,4 +66,22 @@ export const items: SideBarItemProps[] = [
     require: ["projectId"],
     path: "/settings/",
   },
+  {
+    label: "View Slack",
+    icon: <img src={require("../../assets/slack.png")} width="30px" />,
+    role: "user",
+    disabled: true,
+    require: ["projectId"],
+    path: "/project/",
+  },
+  {
+    label: "View Teams",
+    icon: (
+      <img src={require("../../assets/microsoft-teams.png")} width="30px" />
+    ),
+    role: "user",
+    disabled: true,
+    require: ["projectId"],
+    path: "/project/",
+  },
 ];
