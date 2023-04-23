@@ -2,15 +2,18 @@ import { Box, Button, Avatar, Alert, TextField, Fab } from "@mui/material";
 import React, { useRef, useState } from "react";
 import { useUpdateProfile } from "./hooks/useUpdateProfile";
 import "../../css/profile.css";
-import { onChange } from "../../utils/Common";
+import { colors, onChange } from "../../utils/Common";
 import { Role } from "../../types/common";
 import { Add } from "@mui/icons-material";
+import { TypoGraphyImage } from "../../components/Common/TypoGraphyImage";
+import { useUser } from "../../hooks/useUser";
 
 interface formFields {
   username: string;
   password: string;
   email: string;
   roles: Role[];
+  name: string;
 }
 
 export const Profile = () => {
@@ -18,12 +21,14 @@ export const Profile = () => {
   const fileRef = useRef<any>(null);
   const [image, setImage] = useState<string>("");
   const reader = new FileReader();
+  const { user } = useUser();
 
   const [formFields, setFormFields] = useState<formFields>({
-    username: userData.userName,
+    username: user.userName,
     password: "",
-    email: userData.email,
-    roles: userData.roles,
+    email: user.email,
+    roles: user.roles,
+    name: user.name,
   });
   const handleImageUpload = (e: any) => {
     reader.readAsDataURL(e.target.files[0] as File);
@@ -40,7 +45,17 @@ export const Profile = () => {
 
   const [error, setError] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
-  console.log(userData);
+  const resetState = () => {
+    setError("");
+    setLoading(false);
+    setFormFields({
+      username: user.userName,
+      password: "",
+      email: user.email,
+      roles: user.roles,
+      name: user.name,
+    });
+  };
   return (
     <Box
       sx={{
@@ -52,14 +67,14 @@ export const Profile = () => {
         margin: "5px 0",
       }}
     >
-      <Box className="picture_container"></Box>
+      <Box className="picture_container primary"></Box>
       <Box
         className="flex_row"
         sx={{
           alignItems: "center",
           justifyContent: "space-between",
           position: "relative",
-          marginTop: "18%",
+          marginTop: "9.5%",
 
           padding: "0 60px",
         }}
@@ -73,16 +88,15 @@ export const Profile = () => {
           }}
         >
           <div style={{ position: "relative" }}>
-            <Avatar
-              alt="profile image"
-              src={
-                typeof userData.img === "string" && userData.img.length > 30
-                  ? `data:image/png;base64,${userData.img}`
-                  : image
-                  ? image
-                  : "https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YmxvYnxlbnwwfHwwfHw%3D&w=1000&q=80"
-              }
-              sx={{ width: 200, height: 200 }}
+            <TypoGraphyImage
+              onClick={() => {}}
+              name={user.name}
+              color={user.color}
+              sx={{
+                width: "100px",
+                height: "100px",
+              }}
+              url={user.img}
             />
             <Fab
               variant="circular"
@@ -101,8 +115,8 @@ export const Profile = () => {
             </Fab>
           </div>
           <Box className="flex_column">
-            <h2 style={{ margin: "0" }}>{userData.userName}</h2>
-            <p style={{ margin: "0" }}>{userData.email}</p>
+            <h2 style={{ margin: "0", color: "white" }}>{userData.userName}</h2>
+            <h3 style={{ margin: "0" }}>{userData.email}</h3>
           </Box>
         </Box>
         <input
@@ -113,11 +127,22 @@ export const Profile = () => {
         />
 
         <Box className="flex_row" gap={"10px"} style={{ overflow: "auto" }}>
-          <Button variant="contained">Cancel</Button>
           <Button
-            variant="outlined"
+            sx={{
+              backgroundColor: colors.primary,
+            }}
+            variant="contained"
+            onClick={resetState}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
             onClick={() => {
               onSubmit(formFields, setLoading, setError);
+            }}
+            sx={{
+              backgroundColor: colors.dark,
             }}
             disabled={loading}
           >
@@ -143,7 +168,20 @@ export const Profile = () => {
         </Box>
         <Box className="profile_form_fields">
           <TextField
+            label={"Name"}
+            onChange={(e) => onChange(e.target.value, "name", setFormFields)}
+            style={{
+              width: "70%",
+            }}
+            id="outlined-basic"
+            value={formFields.name}
+            variant="outlined"
+          />
+        </Box>
+        <Box className="profile_form_fields">
+          <TextField
             label={"Password"}
+            type="password"
             onChange={(e) =>
               onChange(e.target.value, "password", setFormFields)
             }

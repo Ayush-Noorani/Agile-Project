@@ -8,6 +8,7 @@ import {
   Stack,
   Badge,
   IconButton,
+  Paper,
 } from "@mui/material";
 import { Fragment, useMemo, useState } from "react";
 import { TableComponent } from "./TableComponent";
@@ -73,7 +74,7 @@ export const CustomTable = ({
         <Stack
           sx={{
             display: "flex",
-            width: "100%",
+            width: "95%",
           }}
           direction="row"
           justifyContent="space-between"
@@ -91,7 +92,7 @@ export const CustomTable = ({
                 fontWeight: "bold",
               }}
             >
-              {value.planName}{" "}
+              {value.planName}
               {newTasks > 0 && (
                 <IconButton
                   color="secondary"
@@ -107,7 +108,7 @@ export const CustomTable = ({
               )}
             </InputLabel>
             {value.startDate && value.endDate && (
-              <Typography variant="body1">
+              <Typography variant="body1" whiteSpace="nowrap">
                 {`${startFormatDate}, ${startTime} - ${endFormatDate}, ${endTime}`}
               </Typography>
             )}
@@ -123,7 +124,7 @@ export const CustomTable = ({
             }}
           >
             {value.planName !== "Back Log" && (
-              <Stack direction={"row"} marginRight={"30px"} spacing={1}>
+              <Stack direction={"row"} spacing={1}>
                 <Button
                   startIcon={<Check />}
                   onClick={(e) => {
@@ -179,31 +180,44 @@ export const CustomTable = ({
           </Box>
         </Stack>
       </AccordionSummary>
-
-      <TableComponent
-        setSelectedTask={setSelectedTask}
-        menuOptions={
-          plans.length > 0
-            ? [
-                ...plans.filter((item) => item.id !== value.id),
-                ...(value.id !== "backLog"
-                  ? [
-                      {
-                        id: "backLog",
-                        planName: "Back Log",
-                      },
-                    ]
-                  : []),
-              ].map((value: any) => (
-                <MenuItem onClick={() => handleMoveToPlan(value.id)}>
-                  {value.planName}
-                </MenuItem>
-              ))
-            : [<MenuItem>No plans found</MenuItem>]
-        }
-        filter={value.id!}
-        tasks={tasks}
-      />
+      <Paper
+        component={Box}
+        className="dark"
+        sx={{
+          paddingY: "23px",
+          paddingX: "10px",
+          marginTop: "10px",
+          width: "96%",
+          backgroundColor: colors.tertiary,
+          height: "fit-content",
+          overflow: "auto",
+        }}
+      >
+        <TableComponent
+          setSelectedTask={setSelectedTask}
+          menuOptions={
+            plans.length > 0
+              ? [
+                  ...plans.filter((item) => item.id !== value.id),
+                  ...(value.id !== "backLog"
+                    ? [
+                        {
+                          id: "backLog",
+                          planName: "Back Log",
+                        },
+                      ]
+                    : []),
+                ].map((value: any) => (
+                  <MenuItem onClick={() => handleMoveToPlan(value.id)}>
+                    {value.planName}
+                  </MenuItem>
+                ))
+              : [<MenuItem>No plans found</MenuItem>]
+          }
+          filter={value.id!}
+          tasks={tasks}
+        />
+      </Paper>
     </Accordion>
   );
 };

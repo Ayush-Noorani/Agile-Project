@@ -1,5 +1,5 @@
 import { PriorityHigh, Warning, Info } from "@mui/icons-material";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { Priority } from "../../types/common";
 
 export const TaskPriorityIcon = ({
@@ -23,17 +23,9 @@ export const TaskPriorityIcon = ({
     }
   };
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "50%",
-      }}
-    >
+    <Stack direction="row" spacing={1} alignItems="center">
       {getTag()}
-      {!hideText && priority}
-    </Box>
+      {!hideText && <h4>{priority.toLocaleUpperCase()}</h4>}
+    </Stack>
   );
 };

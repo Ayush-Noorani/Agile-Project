@@ -39,7 +39,13 @@ export const PlanList = () => {
 
   return (
     <Box className="box tertiary">
-      <InputLabel>Plans</InputLabel>
+      <InputLabel
+        sx={{
+          fontWeight: "bold",
+        }}
+      >
+        Plans
+      </InputLabel>
       <TableContainer component={Paper} className="tertiary">
         <PlanTable plans={plans} onClick={handleChangePlanStatus} />
       </TableContainer>

@@ -18,7 +18,7 @@ import { TaskUtilityForm } from "../Task/TaskUtilityForm";
 import { colors } from "../../utils/Common";
 export const BackLog = () => {
   const { id } = useParams();
-  const { tasks, plans, moveToPlan } = useBackLog(id!);
+  const { tasks, plans, moveToPlan, getAllTasks, getPlans } = useBackLog(id!);
 
   const [open, setOpen] = useState(false);
   const [openPlan, setOpenPlan] = useState(false);
@@ -57,6 +57,8 @@ export const BackLog = () => {
       component={Paper}
       sx={{
         backgroundColor: colors.tertiary,
+        overflow: "auto",
+        height: "100%",
       }}
       className="tertiary"
     >
@@ -66,15 +68,12 @@ export const BackLog = () => {
         setOpen={setOpen}
         closeModal={() => {
           setOpen(false);
+          getAllTasks();
+          getPlans();
         }}
       />
 
-      <Box
-        style={{
-          overflow: "auto",
-        }}
-        className="tertiary"
-      >
+      <Box style={{}} className="tertiary">
         {plans.map((value) => (
           <CustomTable
             handleMoveToPlan={handleMoveToPlan}

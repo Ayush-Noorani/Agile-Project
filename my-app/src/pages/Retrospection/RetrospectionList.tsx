@@ -15,7 +15,13 @@ export const RetrospectionList = () => {
         width: "96%",
       }}
     >
-      <InputLabel>Plans</InputLabel>
+      <InputLabel
+        sx={{
+          fontWeight: "bold",
+        }}
+      >
+        Retrospective Plans
+      </InputLabel>
       <PlanTable plans={plans} onClick={() => {}} />
     </Box>
   );
