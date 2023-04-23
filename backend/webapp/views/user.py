@@ -31,7 +31,7 @@ def root():
 def user_info():
     id = get_jwt_identity()
     data = collection.find_one({'_id': ObjectId(id)}, {
-        'email': 1, 'username': 1, 'roles': 1, '_id': 1, 'color': 1})
+        'email': 1, 'username': 1, 'roles': 1, '_id': 1, 'color': 1, 'name': 1})
     data['id'] = str(data['_id'])
     data.pop("_id")
 
@@ -73,7 +73,7 @@ def register():
     data['roles'] = ['user']
     is_registered = collection.insert_one(data)
     if (is_registered):
-        return {"data": "Registered", "token": generateToken(str(is_registered.inserted_id)), "insertedID":str(is_registered.inserted_id)}, 200
+        return {"data": "Registered", "token": generateToken(str(is_registered.inserted_id)), "insertedID": str(is_registered.inserted_id)}, 200
     else:
         return {"message": "Invalid Details"}, 400
 
