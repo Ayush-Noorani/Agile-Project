@@ -148,6 +148,12 @@ def set_plan_status(value):
             tasks = db.tasks.find({
                 'plan': ObjectId(data['id'])
             }, {'_id': 1})
+            for i in tasks:
+
+                create_notification(i['assigned'], 'assigned you a task in project ',
+                                    3, ObjectId(i['created_by']) if i['created_by'] != '' else '', ObjectId(i['_id']))
+                create_notification(i['assigned'], 'created a task in project and marked you as reporter ',
+                                    3, ObjectId(i['created_by']) if i['created_by'] != '' else '', ObjectId(i['_id']))
             projects = db.projects.find_one({
                 "_id": check_startDate['project']
             })

@@ -207,6 +207,7 @@ def create_task_backlog(projectId):
     parsedData['plan'] = 'backLog'
     parsedData['created_at'] = str(datetime.now())
     parsedData['updated_at'] = str(datetime.now())
+    parsedData['created_by'] = ObjectId(user_id)
     parsedData["reportTo"] = [ObjectId(user['id'])
                               for user in parsedData["reportTo"]]
     parsedData["assignedTo"] = [ObjectId(user['id'])
@@ -237,15 +238,18 @@ def create_task(projectId):
     parsedData['new'] = True
     parsedData['created_at'] = str(datetime.now())
     parsedData['updated_at'] = str(datetime.now())
+    parsedData['created_by'] = ObjectId(user_id)
+
     taskID = db.tasks.insert_one(parsedData).inserted_id
     if (plan):
         db.projects.update_one({"_id": ObjectId(projectId)}, {
             "$push": {"tasks."+data["status"]: taskID}})
 
-    ids = parsedData['reportTo']+parsedData['assignedTo']
-
-    create_notification(ids, 'assigned you a task in project ',
-                        3, ObjectId(user_id), ObjectId(taskID))
+    if plan:
+        create_notification(parsedData['assignedTo'], 'assigned you a task in project ',
+                            3, ObjectId(user_id), ObjectId(taskID))
+        create_notification(parsedData['reportTo'], 'created a task in project and marked you as reporter ',
+                            3, ObjectId(user_id), ObjectId(taskID))
     return {}, 200
 # route for update
 
@@ -289,9 +293,11 @@ def update_task(id):
     data['updated_at'] = str(datetime.now())
     db.tasks.update_one({"_id": ObjectId(id)}, {"$set": data})
     ids = data['reportTo']+data['assignedTo']
+    task = db.tasks.find_one({"_id": ObjectId(id)})
+    if task['plan'] != 'backLog':
+        create_notification(ids, 'has updated task information in project ',
+                            3, ObjectId(user_id), ObjectId(id))
 
-    create_notification(ids, 'has updated task information in project ',
-                        3, ObjectId(user_id), ObjectId(id))
     return {"status": "success"}
 
 # assign task to user
