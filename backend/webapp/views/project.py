@@ -141,12 +141,25 @@ def create_project():
     #     data['img'] = True
     # else:
     #     data['img'] = False
+    data["created_by"] = ObjectId(get_jwt_identity())
+    # add if here
+    # if 'img' in project.keys():
+    #     img = request.files['img']
+    data["members"] = [ObjectId(member["id"]) for member in data["members"]]
+    # if (img):
+    #     data['img'] = True
+    # else:
+    #     data['img'] = False
 
     default_columns = [
         {"label": "To Do", "value": "toDo"},
         {"label": "In Progress", "value": "inProgress"},
         {"label": "Done", "value": "done"},
     ]
+    # if isinstance(img, FileStorage):
+    #     data['img'] = img.stream.read()  # type: ignore
+    # elif len(data['img'] > 0):
+    #     data['img'] = ''
     # if isinstance(img, FileStorage):
     #     data['img'] = img.stream.read()  # type: ignore
     # elif len(data['img'] > 0):
