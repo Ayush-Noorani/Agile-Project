@@ -21,6 +21,7 @@ collection = db.plans
 @app.route("/plans/list", methods=["GET"])
 @jwt_required()
 def list_plans():
+    print(request.args.to_dict())
     data = get_all_plans(request.args.to_dict())
     return {"plans": data}, 200
 
@@ -39,6 +40,7 @@ def handle_plan_list(data):
 
 def get_all_plans(data):
     id = data["id"]
+    print(data)
     status = data["status"] if "status" in data.keys() else ""
     pipeline = [
         {

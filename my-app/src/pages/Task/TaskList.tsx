@@ -20,47 +20,17 @@ export const TaskList = () => {
   const { id, planId } = useParams();
   const [open, setOpen] = useState(false);
   const { plans } = usePlan(id, planId);
-  // useEffect(() => {
-  //   getPlans({
-  //     status: "1",
-  //   });
-  // }, []);
+
   const { user } = useUser();
   const [openColumn, setOpenColumn] = useState(false);
-  const actions: {
-    icon: JSX.Element;
-    name: string;
-    onClick?: Function;
-  }[] = [
-    {
-      icon: <Create />,
-      name: "Create Task",
-      onClick: () => {
-        setOpen(true);
-        setSelectedTaskId(undefined);
-      },
-    },
-    //@ts-ignore
-    user.roles.includes("admin") ||
-    user.roles.includes("lead") ||
-    user.roles.includes("manager")
-      ? {
-          icon: <ViewColumnSharp />,
-          name: "Add Column",
-          onClick: () => setOpenColumn(true),
-        }
-      : undefined,
-  ];
 
   const columnOrder = localStorage.getItem("columnOrder");
-  const { tasks, updateSequence, column, filters, getTasks } = useTask(
-    id,
-    planId
-  );
+  const { tasks, updateSequence, column, filters, getTasks, currentProject } =
+    useTask(id, planId);
   const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>(
     undefined
   );
-
+  const isProjectLead = currentProject?.lead === user?.id;
   const getExistingTask = (id: string) => {
     setSelectedTaskId(id);
     setOpen(true);
@@ -85,6 +55,31 @@ export const TaskList = () => {
       ),
     [tasks, column, filters]
   );
+  const actions: {
+    icon: JSX.Element;
+    name: string;
+    onClick?: Function;
+  }[] = [
+    {
+      icon: <Create />,
+      name: "Create Task",
+      onClick: () => {
+        setOpen(true);
+        setSelectedTaskId(undefined);
+      },
+    },
+    //@ts-ignore
+    user.roles.includes("admin") ||
+    isProjectLead ||
+    user.roles.includes("manager")
+      ? {
+          icon: <ViewColumnSharp />,
+          name: "Add Column",
+          onClick: () => setOpenColumn(true),
+        }
+      : undefined,
+  ];
+
   return (
     <Box
       style={{

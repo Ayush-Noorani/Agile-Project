@@ -23,9 +23,14 @@ import { useParams } from "react-router-dom";
 interface PlanUtilityProps {
   setOpen: (open: boolean) => void;
   open: boolean;
+  closeModal: () => void;
 }
 
-export const PlanUtility = ({ setOpen, open }: PlanUtilityProps) => {
+export const PlanUtility = ({
+  setOpen,
+  open,
+  closeModal,
+}: PlanUtilityProps) => {
   const { id } = useParams();
   const { form, setForm, createPlan } = usePlan(id);
   const { projects, fetchAllProjects } = useProject();
@@ -76,6 +81,7 @@ export const PlanUtility = ({ setOpen, open }: PlanUtilityProps) => {
 
   const handleDialogSubmit = () => {
     createPlan();
+    closeModal();
     setOpen(false);
   };
   console.log(projects);
@@ -92,7 +98,7 @@ export const PlanUtility = ({ setOpen, open }: PlanUtilityProps) => {
         }}
       >
         <TextField
-          label="Project Name"
+          label="Plan Name"
           value={form.planName}
           onChange={(e) => onChange(e.target.value, "planName", setForm)}
         />

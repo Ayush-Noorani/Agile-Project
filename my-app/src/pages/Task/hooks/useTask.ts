@@ -84,7 +84,7 @@ export const useTask = (projectId?: string, planId?: string) => {
     if (projects.length > 0) {
       setCurrentProject((_prev) => {
         const data = projects.find((project) => project.id === projectId);
-        setColumn(data!.columns);
+        setColumn(data?.columns ? data.columns : []);
         return data;
       });
     }

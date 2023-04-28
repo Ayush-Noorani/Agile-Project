@@ -5,6 +5,7 @@ import { axiosInstance } from "../../../helper/axios";
 import { setFilter } from "../../../redux/reducers/filters";
 import { Plan } from "../../../types/common";
 import { useSockets } from "../../../hooks/useSockets";
+import { useCommon } from "../../../hooks/useCommon";
 
 export const usePlan = (id: any, planId?: string) => {
   const [plans, setPlans] = useState<any[]>([]);
@@ -12,6 +13,7 @@ export const usePlan = (id: any, planId?: string) => {
   const [currentPlan, setCurrentPlan] = useState<any>();
   const { data } = useSockets("/plan-list", { id: id, status: "active" });
   const dispatch = useDispatch();
+  const { setLoaderState } = useCommon();
   const [form, setForm] = useState<Plan>({
     startDate: new Date(),
     endDate: new Date(),
@@ -52,11 +54,18 @@ export const usePlan = (id: any, planId?: string) => {
       });
   };
   const getPlans = (data?: any) => {
+    setLoaderState(true);
     let urlParams = "?";
     if (data) {
       Object.entries(data).map(([key, value], index) => {
         urlParams += `${key}=${value}&`;
       });
+    }
+    console.log(id, "plan");
+    if (!id) {
+      setLoaderState(false);
+
+      return;
     }
     axiosInstance
       .get("/plans/list" + urlParams + "id=" + id)
@@ -77,10 +86,12 @@ export const usePlan = (id: any, planId?: string) => {
           setCurrentPlan(
             res.data.plans.find((plan: Plan) => plan.status === "1")
           );
+          setLoaderState(false);
         }
       })
       .catch((err) => {
         console.error(err);
+        setLoaderState(false);
       });
   };
   const createPlan = () => {
@@ -100,7 +111,7 @@ export const usePlan = (id: any, planId?: string) => {
   };
 
   return {
-    plans: data,
+    plans: plans,
     form,
     currentPlan,
     setPlans,
