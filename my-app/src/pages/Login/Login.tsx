@@ -25,6 +25,7 @@ import { ReactComponent as SecureFiles } from "../../assets/undraw_secure_files_
 import { useToastContext } from "../../context/ToastContext";
 import { useNavigate } from "react-router-dom";
 import { PageWrapper } from "../../components/PageWrapper";
+import { useCommon } from "../../hooks/useCommon";
 
 const form: FormType[] = [
   {
@@ -44,6 +45,7 @@ type Form = {
   password: string;
 };
 export const Login = () => {
+  const token = localStorage.getItem("token");
   const [value, setValue] = useState<Form>({
     name: "",
     password: "",
@@ -53,6 +55,9 @@ export const Login = () => {
   const { onSubmit } = useLogin();
   const { toast } = useToastContext();
   const navigate = useNavigate();
+  if (token) {
+    navigate("/my-dashboard");
+  }
   return (
     <PageWrapper>
       <Stack className="form-bg form" spacing={2} pb={2}>

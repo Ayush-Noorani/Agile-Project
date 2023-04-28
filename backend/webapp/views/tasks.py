@@ -1,3 +1,4 @@
+# type:ignore
 from datetime import datetime
 from webapp.helpers.common import decode_base64
 from webapp import app, socketio

@@ -7,6 +7,7 @@ import { useRegister } from "../../hooks/useRegister";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import "../../css/login.css";
 import { PageWrapper } from "../../components/PageWrapper";
+import { useNavigate } from "react-router-dom";
 const form: FormType[] = [
   {
     label: "Email",
@@ -40,6 +41,8 @@ type Form = {
   confirmPassword: string;
 };
 export const Register = () => {
+  const token = localStorage.getItem("token");
+
   const [value, setValue] = useState<Form>({
     email: "",
     password: "",
@@ -61,6 +64,11 @@ export const Register = () => {
       return "";
     }
   }, [value.password]);
+
+  const navigate = useNavigate();
+  if (token) {
+    navigate("/my-dashboard");
+  }
   return (
     <PageWrapper>
       <Stack
