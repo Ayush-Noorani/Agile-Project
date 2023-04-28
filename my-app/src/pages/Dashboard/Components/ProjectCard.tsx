@@ -17,7 +17,7 @@ export const ProjectCard = ({ data }: { data: DashBoard | ProjectData }) => {
       data.members.findIndex((value) => value.id === user?.id) !== -1) ||
     data.created_by === user?.id;
   return (
-    <Grid item xs={5} m={1}>
+    <Grid item xs={5} mr={2} mb={3}>
       <Card
         className="growDashboardProject"
         onClick={(e: any) => {

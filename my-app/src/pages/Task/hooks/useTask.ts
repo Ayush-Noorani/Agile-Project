@@ -53,6 +53,7 @@ export const useTask = (projectId?: string, planId?: string) => {
     }
   }, []);
 
+ 
   const currentProjectState = useMemo(
     () => projects.find((project) => project.id === projectId),
     [projectList, projects]
@@ -105,6 +106,19 @@ export const useTask = (projectId?: string, planId?: string) => {
       };
     });
   };
+
+  const clearFormData=()=>{
+    setFormData({
+      id: undefined,
+      description: "",
+      summary: "",
+      taskName: "",
+      assignedTo: [],
+      reportTo: [],
+      status: "toDo",
+      priority: "minor",
+    });
+  }
 
   const validateFormData = () => {
     setValidFields((prev) => {
@@ -330,5 +344,6 @@ export const useTask = (projectId?: string, planId?: string) => {
     getRetroRespectiveTasks,
     setColumn,
     validateFormData,
+    clearFormData
   };
 };

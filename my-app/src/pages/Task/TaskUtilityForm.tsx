@@ -90,6 +90,7 @@ const TaskUtilityForm = ({
     validFields,
     setValidFields,
     formData,
+    clearFormData,
   } = useTask(ProjectId);
 
   useEffect(() => {
@@ -102,8 +103,8 @@ const TaskUtilityForm = ({
     });
   }, []);
 
+  console.log("utility form data", formData);
   const [submitStatus, setSubmitStatus] = useState(false);
-
   useEffect(() => {
     if (Object.values(validFields).every((v) => v === true) && submitStatus) {
       if (!currentPlan?.id && !initialWarn) {
@@ -141,10 +142,15 @@ const TaskUtilityForm = ({
           justifyContent="space-between"
         >
           <Typography fontSize={20} fontWeight={"bold"}>
-            {selectedTaskId ? "Update task" : "Create task"}
+            {taskId ? "Update task" : "Create task"}
           </Typography>
 
-          <IconButton onClick={() => setOpen(false)}>
+          <IconButton
+            onClick={() => {
+              clearFormData();
+              setOpen(false);
+            }}
+          >
             <CloseOutlined color="error" />
           </IconButton>
         </Stack>
