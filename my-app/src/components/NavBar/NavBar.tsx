@@ -161,7 +161,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
   //   };
   // }, []);
 
-  const notifications = notification
+  const notifications = (notification || [])
     .filter((value: any) => {
       return typeSelected === "all" || typeSelected.includes(value.type);
     })
@@ -317,8 +317,9 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
             >
               <Badge
                 badgeContent={
-                  notification.filter((value: any) => value.read == !true)
-                    .length
+                  (notification || []).filter(
+                    (value: any) => value.read == !true
+                  ).length
                 }
                 color="error"
               >

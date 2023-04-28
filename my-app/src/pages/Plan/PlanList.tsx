@@ -19,9 +19,6 @@ export const PlanList = () => {
   const { getPlans, createPlan, plans, updatePlanStatus } = usePlan(id);
   const { user } = useUser();
 
-  console.log("ye ek user hai", user.roles);
-  console.log(plans);
-
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Tasks | null>(null); // state for the task currently selected in the menu
   const actions: {
@@ -54,7 +51,13 @@ export const PlanList = () => {
       <TableContainer component={Paper} className="tertiary">
         <PlanTable plans={plans} onClick={handleChangePlanStatus} />
       </TableContainer>
-      <PlanUtility open={open} setOpen={setOpen} />
+      <PlanUtility
+        closeModal={() => {
+          getPlans();
+        }}
+        open={open}
+        setOpen={setOpen}
+      />
 
       {(user.roles.includes("admin") ||
         user.roles.includes("lead") ||

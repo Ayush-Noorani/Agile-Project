@@ -23,6 +23,7 @@ collection = db.notifications
 def get_notification_list():
     id = get_jwt_identity()
     data = get_notfication(id)
+    print(data)
     return {"notifications": data}, 200
 
 

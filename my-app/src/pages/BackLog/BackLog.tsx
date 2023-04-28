@@ -10,17 +10,25 @@ import {
 } from "@mui/material";
 import { TableContainer, Paper } from "@mui/material";
 import { Tasks } from "../../types/common";
-import { Create } from "@mui/icons-material";
+import {
+  Create,
+  CreateNewFolder,
+  CreateRounded,
+  CreateSharp,
+} from "@mui/icons-material";
 import { CustomTable } from "./Components/CustomTable";
 import { PlanUtility } from "../Plan/PlanUtility";
 import { useParams } from "react-router-dom";
 import { TaskUtilityForm } from "../Task/TaskUtilityForm";
 import { colors } from "../../utils/Common";
 import { useUser } from "../../hooks/useUser";
+import { useTask } from "../Task/hooks/useTask";
 export const BackLog = () => {
   const { id } = useParams();
+  const { currentProject } = useTask(id);
   const { tasks, plans, moveToPlan, getAllTasks, getPlans } = useBackLog(id!);
   const { user } = useUser();
+  const isProjectLead = currentProject?.lead === user?.id;
 
   const [open, setOpen] = useState(false);
   const [openPlan, setOpenPlan] = useState(false);
@@ -31,6 +39,13 @@ export const BackLog = () => {
     name: string;
     onClick?: Function;
   }[] = [
+    {
+      icon: <CreateNewFolder />,
+      name: "Create Task",
+      onClick: () => {
+        setOpen(true);
+      },
+    },
     {
       icon: <Create />,
       name: "Create Plan",
@@ -57,7 +72,14 @@ export const BackLog = () => {
       }}
       className="tertiary"
     >
-      <PlanUtility open={openPlan} setOpen={setOpenPlan} />
+      <PlanUtility
+        closeModal={() => {
+          getAllTasks();
+          getPlans();
+        }}
+        open={openPlan}
+        setOpen={setOpenPlan}
+      />
       <TaskUtilityForm
         open={open}
         setOpen={setOpen}
@@ -108,24 +130,24 @@ export const BackLog = () => {
         menuOptions={[]}
       />
 
-      {/* {user.roles.includes("admin") ||
-        user.roles.includes("lead") ||
-        (user.roles.includes("manager") && (
-          <SpeedDial
-            ariaLabel="SpeedDial basic example"
-            sx={{ position: "absolute", bottom: 16, right: 16 }}
-            icon={<SpeedDialIcon />}
-          >
-            {actions.map((action) => (
-              <SpeedDialAction
-                key={action.name}
-                icon={action.icon}
-                onClick={() => action.onClick && action.onClick()}
-                tooltipTitle={action.name}
-              />
-            ))}
-          </SpeedDial>
-        ))} */}
+      {(user.roles.includes("admin") ||
+        isProjectLead ||
+        user.roles.includes("manager")) && (
+        <SpeedDial
+          ariaLabel="SpeedDial basic example"
+          sx={{ position: "absolute", bottom: 16, right: 16 }}
+          icon={<SpeedDialIcon />}
+        >
+          {actions.map((action) => (
+            <SpeedDialAction
+              key={action.name}
+              icon={action.icon}
+              onClick={() => action.onClick && action.onClick()}
+              tooltipTitle={action.name}
+            />
+          ))}
+        </SpeedDial>
+      )}
     </TableContainer>
   );
 };

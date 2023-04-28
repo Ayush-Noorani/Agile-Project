@@ -14,6 +14,7 @@ import requests
 import json
 from flask import send_file
 from datetime import datetime
+
 collection = db.notifications
 
 # type
@@ -31,16 +32,15 @@ def create_notification(user_ids, message, type, creator_id, reference):
         "read": False,
         "reference": reference,
         "created_at": datetime.now(),
-        "created_by": creator_id
+        "created_by": creator_id,
     }
     for user_id in user_ids:
-        notification['user_id'] = user_id
+        notification["user_id"] = user_id
 
         collection.insert_one(notification)
 
 
 def get_notfication(id):
-
     query = [
         {
             "$match": {
@@ -52,7 +52,7 @@ def get_notfication(id):
                 "from": "user_details",
                 "localField": "created_by",
                 "foreignField": "_id",
-                "as": "created_by_user"
+                "as": "created_by_user",
             }
         },
         {
@@ -60,7 +60,7 @@ def get_notfication(id):
                 "from": "projects",
                 "localField": "reference",
                 "foreignField": "_id",
-                "as": "project"
+                "as": "project",
             }
         },
         {
@@ -68,14 +68,10 @@ def get_notfication(id):
                 "from": "tasks",
                 "localField": "reference",
                 "foreignField": "_id",
-                "as": "task"
+                "as": "task",
             }
         },
-        {
-            "$sort": {
-                "created_at": -1
-            }
-        }
+        {"$sort": {"created_at": -1}},
     ]
 
     notifications = collection.aggregate(query)
@@ -86,43 +82,39 @@ def get_notfication(id):
         for notification in notifications:
             message = f"{notification['message']} (by {notification['created_by_user'][0]['name']})\n"
             message_obj = {
-                'type': notification['type'],
-                'read': notification['read'],
-                'created_at': str(notification['created_at']),
-                'created_by': {
-                    'name': notification['created_by_user'][0]['name'],
-                    'id': str(notification['created_by_user'][0]['_id']),
-                    'username': notification['created_by_user'][0]['username'],
-                    'color': notification['created_by_user'][0]['color'],
-
+                "type": notification["type"],
+                "read": notification["read"],
+                "created_at": str(notification["created_at"]),
+                "created_by": {
+                    "name": notification["created_by_user"][0]["name"],
+                    "id": str(notification["created_by_user"][0]["_id"]),
+                    "username": notification["created_by_user"][0]["username"],
+                    "color": notification["created_by_user"][0]["color"],
                 },
-
             }
-            if notification['type'] == 1 or notification['type'] == 2:
-                message_obj['reference'] = {
-                    'name': notification['project'][0]['name'],
-                    'id': str(notification['project'][0]['_id']),
-                    'img': notification['project'][0]['img'],
-                    'link': '/project/tasks'+str(notification['project'][0]['_id'])
-
+            if notification["type"] == 1 or notification["type"] == 2:
+                message_obj["reference"] = {
+                    "name": notification["project"][0]["name"],
+                    "id": str(notification["project"][0]["_id"]),
+                    "img": notification["project"][0]["img"],
+                    # "link": "/project/tasks" + str(notification["project"][0]["_id"]),
                 }
                 message += f"  in project {notification['project'][0]['name']}\n"
-            elif notification['type'] == 3 or notification['type'] == 4:
-                print(
-                    {"$flatten": {"tasks": [notification['task'][0]['_id']]}})
+            elif notification["type"] == 3 or notification["type"] == 4:
+                print({"$flatten": {"tasks": [notification["task"][0]["_id"]]}})
                 plan = db.plan.find(
-                    {"$flatten": {"tasks": [notification['task'][0]['plan']]}})
+                    {"$flatten": {"tasks": [notification["task"][0]["plan"]]}}
+                )
 
-                message_obj['reference'] = {
-                    'name': notification['task'][0]['taskName'],
-                    'id': str(notification['task'][0]['_id']),
-                    'link': '/project/tasks'+str(plan['project'])
-
+                message_obj["reference"] = {
+                    "name": notification["task"][0]["taskName"],
+                    "id": str(notification["task"][0]["_id"]),
+                    # 'link': '/project/tasks'+str(plan['project'])
                 }
 
                 message += f"  in task {notification['task'][0]['taskName']} \n"
             message += "\n"
-            message_obj['message'] = message
+            message_obj["message"] = message
             messagelist.append(message_obj)
 
     return messagelist

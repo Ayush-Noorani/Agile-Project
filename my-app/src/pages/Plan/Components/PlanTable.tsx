@@ -16,6 +16,8 @@ import { Check } from "@mui/icons-material";
 import { useCommon } from "../../../hooks/useCommon";
 import { Plan } from "../../../types/common";
 import { useTable } from "../../../hooks/useTable";
+import { useUser } from "../../../hooks/useUser";
+import { useTask } from "../../Task/hooks/useTask";
 
 interface PlanTableProps {
   plans: Plan[];
@@ -24,6 +26,9 @@ interface PlanTableProps {
 }
 export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
   const { navigate } = useCommon();
+  const { currentProject } = useTask();
+  const { user } = useUser();
+  const isProjectLead = currentProject?.lead === user?.id;
   const {
     rowsPerPage,
     currentPage,
@@ -77,7 +82,14 @@ export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
                       startIcon={<Check />}
                       onClick={() => onClick(row, "3")}
                       variant="outlined"
-                      disabled={row.status === "3" || row.status !== "1"}
+                      disabled={
+                        row.status === "3" ||
+                        row.status !== "1" ||
+                        !user?.roles.includes("admin") ||
+                        !user.roles.includes("manager") ||
+                        !user.roles.includes("lead") ||
+                        !isProjectLead
+                      }
                       style={{
                         whiteSpace: "initial",
                       }}
@@ -96,7 +108,12 @@ export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
                           ? "success"
                           : "secondary"
                       }
-                      disabled={row.status === "3"}
+                      disabled={
+                        row.status === "3" ||
+                        !user?.roles.includes("admin") ||
+                        !user.roles.includes("manager") ||
+                        !isProjectLead
+                      }
                       startIcon={
                         row.status === "1" ? (
                           <StopIcon />

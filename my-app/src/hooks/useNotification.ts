@@ -8,25 +8,20 @@ export const useNotification = () => {
 
   const getNotification = () => {
     axiosInstance
-      .get("/notification/list")
+      .get("/notifications/list")
       .then((res) => {
         setNotification(res.data.notification);
       })
       .catch((err) => console.error(err));
   };
   useEffect(() => {
-    const interval = setInterval(() => {
-      getNotification();
-    }, 15000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [getNotification]);
+    getNotification();
+  }, []);
   const readNotification = () => {
     axiosInstance.get("/notification/read").catch((err) => console.error(err));
   };
 
+  console.log(data, notification, "notifivc");
   return {
     notification: data.length > 0 ? data : notification,
     readNotification,
