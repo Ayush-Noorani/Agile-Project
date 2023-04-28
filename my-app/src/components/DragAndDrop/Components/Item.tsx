@@ -76,7 +76,6 @@ export const Item = ({ ...props }: any) => (
             </Box>
           )}
         </div>
-        {console.log("HERE")}
       </Container>
     )}
   </Draggable>

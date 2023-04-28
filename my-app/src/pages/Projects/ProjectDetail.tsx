@@ -25,16 +25,7 @@ import Compressor from "compressorjs";
 import { defaultTheme, Provider } from "@adobe/react-spectrum";
 import { parseDate } from "@internationalized/date";
 import { ColumnForm } from "../Task/components/ColumnForm";
-import { colors } from "../../utils/Common";
 import { useUser } from "../../hooks/useUser";
-
-type state = {
-  selection: {
-    startDate: Date;
-    endDate: Date;
-    key: string;
-  };
-};
 
 const form: FormType[] = [
   {
@@ -107,11 +98,7 @@ export const ProjectDetail = () => {
           <img
             alt="img"
             src={
-              typeof value.img === "string" && value.img.length > 30
-                ? `data:image/png;base64,${value.img}`
-                : image
-                ? image
-                : "https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YmxvYnxlbnwwfHwwfHw%3D&w=1000&q=80"
+              "https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YmxvYnxlbnwwfHwwfHw%3D&w=1000&q=80"
             }
             height="200px"
             width="100%"
@@ -256,7 +243,7 @@ export const ProjectDetail = () => {
             </Box>
           </Stack>
           <Dialog open={openColumn} onClose={() => setOpenColumn(false)}>
-            <ColumnForm id={id} />
+            <ColumnForm id={id} onClose={() => setOpenColumn(false)} />
           </Dialog>
           <Stack className="column member-section">
             <Autocomplete

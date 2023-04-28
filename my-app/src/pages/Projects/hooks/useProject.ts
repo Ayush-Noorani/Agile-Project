@@ -1,7 +1,7 @@
 import { axiosInstance } from "../../../helper/axios";
 import { ProjectData, Member } from "../../../types/common";
 import { onChange } from "./../../../utils/Common";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import produce from "immer";
@@ -27,16 +27,6 @@ export const useProject = (id?: string) => {
     lead: "",
     columns: [],
   });
-
-  // const fetchMembers = () => {
-  //   axiosInstance.get(`/project/members/${id}`).then((res) => {
-  //     setValue(
-  //       produce((draft) => {
-  //         draft.members = res.data.members;
-  //       })
-  //     );
-  //   });
-  // };
 
   const unAssign = (projectId: string, userId: string) => {
     console.log(
@@ -80,8 +70,8 @@ export const useProject = (id?: string) => {
           `background:green; color: white;  font-weight: bold;`,
           res.data
         );
-        dispatch(setData(res.data.projects));
         setProjectList(res.data.projects);
+        dispatch(setData(res.data.projects));
       })
       .catch((err) => {
         console.error(err);
@@ -157,6 +147,9 @@ export const useProject = (id?: string) => {
     }
     setLoaderState(false);
   };
+  useEffect(() => {
+    setProjectList(projects);
+  }, [projects]);
   return {
     projects,
     value,

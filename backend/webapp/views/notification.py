@@ -14,6 +14,7 @@ import requests
 import json
 from flask import send_file
 from webapp.helpers.notification import get_notfication
+
 collection = db.notifications
 
 
@@ -22,24 +23,22 @@ collection = db.notifications
 def get_notification_list():
     id = get_jwt_identity()
     data = get_notfication(id)
-    return {'notifications': data}, 200
+    return {"notifications": data}, 200
 
 
-@app.route('/notification/read')
+@app.route("/notification/read")
 @jwt_required()
 def notification_read():
     id = get_jwt_identity()
-    db.notifications.update_many({"user_id": ObjectId(id)}, {'$set': {
-        'read': True
-    }})
-    return {'message': 'success'}, 200
+    db.notifications.update_many({"user_id": ObjectId(id)}, {"$set": {"read": True}})
+    return {"message": "success"}, 200
 
 
-@socketio.on('notification-list')
-def handle_notification(token):
+@socketio.on("notification-list")
+def handle_notification(data):
+    token = data["token"]
     if token:
-        decoded = jwt.decode(
-            token, app.config["SECRET_KEY"], algorithms=["HS256"])
+        decoded = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
         user_id = decoded["sub"]
         data = get_notfication(user_id)
-        emit('notification', data, broadcast=True)
+        emit("notification", data, broadcast=True)

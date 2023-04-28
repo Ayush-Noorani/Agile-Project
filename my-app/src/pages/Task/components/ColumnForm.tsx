@@ -19,6 +19,7 @@ import { Columntype, Headers } from "../../../types/common";
 import DeleteIcon from "@mui/icons-material/Delete";
 interface ColumnProps {
   id?: string;
+  onClose?: Function;
 }
 
 const columnHeaders: Headers[] = [
@@ -40,7 +41,7 @@ const columnHeaders: Headers[] = [
   },
 ];
 
-export const ColumnForm = ({ id }: ColumnProps) => {
+export const ColumnForm = ({ id, onClose }: ColumnProps) => {
   const {
     column: columns,
     newColumn,
@@ -150,7 +151,12 @@ export const ColumnForm = ({ id }: ColumnProps) => {
               marginRight: "10px",
               backgroundColor: colors.secondary,
             }}
-            onClick={updateColumns}
+            onClick={() => {
+              updateColumns();
+              if (onClose) {
+                onClose();
+              }
+            }}
           >
             Add
           </Button>
@@ -160,7 +166,13 @@ export const ColumnForm = ({ id }: ColumnProps) => {
               width: "100px",
               backgroundColor: colors.secondary,
             }}
-            onClick={saveColumns}
+            onClick={() => {
+              saveColumns();
+              if (onClose) {
+                console.log("close");
+                onClose();
+              }
+            }}
           >
             Submit
           </Button>

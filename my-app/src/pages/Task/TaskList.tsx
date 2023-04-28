@@ -1,31 +1,20 @@
-import { DragAndDrop } from "../../components/DragAndDrop";
 import {
   Box,
   Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
-  Stack,
-  Typography,
 } from "@mui/material";
-import {
-  CloseOutlined,
-  Create,
-  Info,
-  ViewColumnSharp,
-} from "@mui/icons-material";
-import { useState, useEffect } from "react";
+import { Create, ViewColumnSharp } from "@mui/icons-material";
+import { useState, useMemo } from "react";
 import { useTask } from "./hooks/useTask";
 import { useParams } from "react-router-dom";
 import { TaskUtilityForm } from "./TaskUtilityForm";
 import { ColumnForm } from "./components/ColumnForm";
 import { TaskHeader } from "./components/TaskHeader";
 import { usePlan } from "../Plan/hooks/usePlan";
-import { colors } from "../../utils/Common";
 import { useUser } from "../../hooks/useUser";
+import { DragAndDrop } from "../../components/DragAndDrop";
 
 export const TaskList = () => {
   const { id, planId } = useParams();
@@ -76,7 +65,26 @@ export const TaskList = () => {
     setSelectedTaskId(id);
     setOpen(true);
   };
-  console.log(column, "column", tasks, Object.keys(tasks).length > 0);
+  const taskView = useMemo(
+    () =>
+      tasks !== undefined &&
+      Object.keys(tasks).length > 0 && (
+        <DragAndDrop
+          data={tasks}
+          columns={column}
+          filters={filters}
+          onClick={getExistingTask}
+          planId={planId}
+          onValueChange={(data) => {
+            if (planId === undefined) {
+              updateSequence(data);
+            }
+          }}
+          order={columnOrder ? JSON.parse(columnOrder) : undefined}
+        />
+      ),
+    [tasks, column, filters]
+  );
   return (
     <Box
       style={{
@@ -97,25 +105,11 @@ export const TaskList = () => {
       />
 
       <Dialog open={openColumn} sx={{}} onClose={() => setOpenColumn(false)}>
-        <ColumnForm id={id} />
+        <ColumnForm id={id} onClose={() => setOpenColumn(false)} />
       </Dialog>
       <TaskHeader planId={planId} id={id} plans={plans} />
 
-      {tasks !== undefined && Object.keys(tasks).length > 0 && (
-        <DragAndDrop
-          data={tasks}
-          columns={column}
-          filters={filters}
-          onClick={getExistingTask}
-          planId={planId}
-          onValueChange={(data) => {
-            if (planId === undefined) {
-              updateSequence(data);
-            }
-          }}
-          order={columnOrder ? JSON.parse(columnOrder) : undefined}
-        />
-      )}
+      {taskView}
       {planId === undefined && (
         <SpeedDial
           ariaLabel="SpeedDial basic example"

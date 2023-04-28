@@ -1,29 +1,34 @@
 import { useState, useEffect } from "react";
 import { axiosInstance, socket } from "../helper/axios";
+import { useSockets } from "./useSockets";
 
 export const useNotification = () => {
   const [notification, setNotification] = useState<any>([]);
+  const { data } = useSockets("notification-list");
 
+  const getNotification = () => {
+    axiosInstance
+      .get("/notification/list")
+      .then((res) => {
+        setNotification(res.data.notification);
+      })
+      .catch((err) => console.error(err));
+  };
   useEffect(() => {
     const interval = setInterval(() => {
-      if (socket.connected) {
-        socket.emit("notification-list", localStorage.getItem("token"));
-      }
+      getNotification();
     }, 15000);
-    socket.on("notification", (data: any) => {
-      setNotification(data);
-    });
+
     return () => {
       clearInterval(interval);
     };
-  }, [socket, setNotification]);
-
+  }, [getNotification]);
   const readNotification = () => {
     axiosInstance.get("/notification/read").catch((err) => console.error(err));
   };
 
   return {
-    notification,
+    notification: data.length > 0 ? data : notification,
     readNotification,
   };
 };
