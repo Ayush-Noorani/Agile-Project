@@ -122,12 +122,14 @@ def create_project():
     data = json.loads(request.form["data"])
 
     data['created_by'] = ObjectId(get_jwt_identity())
-    img = request.files['img']
+    # add if here
+    # if 'img' in project.keys():
+    #     img = request.files['img']
     data['members'] = [ObjectId(member['id']) for member in data['members']]
-    if (img):
-        data['img'] = True
-    else:
-        data['img'] = False
+    # if (img):
+    #     data['img'] = True
+    # else:
+    #     data['img'] = False
 
     default_columns = [
         {
@@ -143,10 +145,10 @@ def create_project():
             "value": "done"
         }
     ]
-    if isinstance(img, FileStorage):
-        data['img'] = img.stream.read()  # type: ignore
-    elif len(data['img'] > 0):
-        data['img'] = ''
+    # if isinstance(img, FileStorage):
+    #     data['img'] = img.stream.read()  # type: ignore
+    # elif len(data['img'] > 0):
+    #     data['img'] = ''
 
     data['tasks'] = {}
     for i in default_columns:

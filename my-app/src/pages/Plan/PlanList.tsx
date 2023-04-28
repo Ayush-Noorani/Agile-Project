@@ -13,9 +13,14 @@ import { PlanUtility } from "../Plan/PlanUtility";
 import { usePlan } from "./hooks/usePlan";
 import { PlanTable } from "./Components/PlanTable";
 import { useParams } from "react-router-dom";
+import { useUser } from "../../hooks/useUser";
 export const PlanList = () => {
   const { id } = useParams();
   const { getPlans, createPlan, plans, updatePlanStatus } = usePlan(id);
+  const { user } = useUser();
+
+  console.log("ye ek user hai", user.roles);
+  console.log(plans);
 
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Tasks | null>(null); // state for the task currently selected in the menu
@@ -51,20 +56,24 @@ export const PlanList = () => {
       </TableContainer>
       <PlanUtility open={open} setOpen={setOpen} />
 
-      <SpeedDial
-        ariaLabel="SpeedDial basic example"
-        sx={{ position: "absolute", bottom: 16, right: 16 }}
-        icon={<SpeedDialIcon />}
-      >
-        {actions.map((action) => (
-          <SpeedDialAction
-            key={action.name}
-            icon={action.icon}
-            onClick={() => action.onClick && action.onClick()}
-            tooltipTitle={action.name}
-          />
-        ))}
-      </SpeedDial>
+      {(user.roles.includes("admin") ||
+        user.roles.includes("lead") ||
+        user.roles.includes("manager")) && (
+        <SpeedDial
+          ariaLabel="SpeedDial basic example"
+          sx={{ position: "absolute", bottom: 16, right: 16 }}
+          icon={<SpeedDialIcon />}
+        >
+          {actions.map((action) => (
+            <SpeedDialAction
+              key={action.name}
+              icon={action.icon}
+              onClick={() => action.onClick && action.onClick()}
+              tooltipTitle={action.name}
+            />
+          ))}
+        </SpeedDial>
+      )}
     </Box>
   );
 };
