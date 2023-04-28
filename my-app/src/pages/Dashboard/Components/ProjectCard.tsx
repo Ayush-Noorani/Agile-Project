@@ -8,7 +8,7 @@ export const ProjectCard = ({ data }: { data: DashBoard | ProjectData }) => {
   const { setValue } = useProjectContext();
   const { navigate } = useCommon();
   return (
-    <Grid item xs={5} mr={2}>
+    <Grid item xs={5} mr={2} mb={3}>
       <Card
         className="growDashboardProject"
         onClick={(e: any) => {
