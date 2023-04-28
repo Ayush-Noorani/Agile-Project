@@ -4,11 +4,13 @@ import { useToastContext } from "../../../context/ToastContext";
 import { axiosInstance } from "../../../helper/axios";
 import { setFilter } from "../../../redux/reducers/filters";
 import { Plan } from "../../../types/common";
+import { useSockets } from "../../../hooks/useSockets";
 
 export const usePlan = (id: any, planId?: string) => {
   const [plans, setPlans] = useState<any[]>([]);
   const { toast, defaultValue } = useToastContext();
   const [currentPlan, setCurrentPlan] = useState<any>();
+  const { data } = useSockets("/plan-list", { id: id, status: "active" });
   const dispatch = useDispatch();
   const [form, setForm] = useState<Plan>({
     startDate: new Date(),
@@ -98,7 +100,7 @@ export const usePlan = (id: any, planId?: string) => {
   };
 
   return {
-    plans,
+    plans: data,
     form,
     currentPlan,
     setPlans,

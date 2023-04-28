@@ -11,18 +11,13 @@ import { useUser } from "../../hooks/useUser";
 
 export const ProjectsList = () => {
   const navigate = useNavigate();
-  const [show, setShow] = useState(false);
   const { user } = useUser();
-  const [pieChartProjectId, setPieChartProjectId] = useState<
-    undefined | string
-  >(undefined);
+
   const [showMyProjects, setShowMyProjects] = useState(false);
   const { projects, fetchAllProjects } = useProject();
   useEffect(() => {
     fetchAllProjects();
   }, []);
-
-  const { setValue } = useProjectContext();
 
   return (
     <Box>

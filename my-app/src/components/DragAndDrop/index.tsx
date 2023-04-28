@@ -1,5 +1,5 @@
 import produce from "immer";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { Columntype } from "../../types/common";
 import { Columnlist } from "./Components/ColumnList";
@@ -7,7 +7,7 @@ import { colors } from "../../utils/Common";
 
 interface DragAndDropProps {
   data: any;
-  order: any[] | undefined;
+  order?: any[] | undefined;
   onValueChange: (value: any) => void;
   onClick?: (value: any) => void;
   columns: Columntype[];
@@ -16,7 +16,6 @@ interface DragAndDropProps {
 }
 export const DragAndDrop = ({
   data,
-  order,
   onClick,
   columns,
   filters,
@@ -25,6 +24,7 @@ export const DragAndDrop = ({
 }: DragAndDropProps) => {
   const defaultOrder = columns;
   const [columnOrder, setColumnOrder] = useState<Columntype[]>(columns);
+  useEffect(() => {}, []);
   const onDragEnd = (result: any) => {
     if (planId) {
       return;
@@ -75,6 +75,7 @@ export const DragAndDrop = ({
     console.log("SEQUENCE CHANGE", newData);
     onValueChange(newData);
   };
+  console.log("columns", columnOrder, columns);
 
   const renderColumns = useMemo(() => {
     const done = columns.filter(
@@ -112,7 +113,7 @@ export const DragAndDrop = ({
         />
       );
     });
-  }, [columnOrder, data]);
+  }, [columns, data]);
   return (
     <div
       style={{

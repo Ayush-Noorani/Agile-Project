@@ -15,6 +15,7 @@ import {
 import { useProject } from "../../Projects/hooks/useProject";
 import { useCommon } from "../../../hooks/useCommon";
 import { usePlan } from "../../Plan/hooks/usePlan";
+import { useSockets } from "../../../hooks/useSockets";
 type Task = {
   id?: string;
   description: string;
@@ -30,9 +31,11 @@ export const useTask = (projectId?: string, planId?: string) => {
   const [tasks, setTasks] = useState<TasksRecord>({});
   const [value, setValue] = useState<any>();
   const { fetchAllProjects, projectList } = useProject();
-  const { loading, setLoaderState } = useCommon();
-  const { form, plans, createPlan, getPlans } = usePlan(projectId, planId);
+  const projects = useSelector((state: RootState) => state.project.projects);
+  const { setLoaderState } = useCommon();
 
+  const { getPlans } = usePlan(projectId, planId);
+  const { data } = useSockets("task-list", { id: projectId }, 1500);
   const [newColumn, setNewColumn] = useState<Columntype>({
     label: "",
     value: "",
@@ -48,15 +51,15 @@ export const useTask = (projectId?: string, planId?: string) => {
         status: 1,
       });
     }
-    console.log("false", projectList);
   }, []);
 
-  const currentProjectState = projectList.find(
-    (project) => project.id === projectId
+  const currentProjectState = useMemo(
+    () => projects.find((project) => project.id === projectId),
+    [projectList, projects]
   );
+
   const [currentProject, setCurrentProject] = useState(currentProjectState);
   const filters = useSelector((state: RootState) => state.filters);
-  console.log(projectList, "projectList");
 
   const [column, setColumn] = useState<Columntype[]>([]);
   const [formData, setFormData] = useState<Task>({
@@ -78,49 +81,24 @@ export const useTask = (projectId?: string, planId?: string) => {
   });
 
   useEffect(() => {
-    if (projectList.length > 0) {
+    if (projects.length > 0) {
       setCurrentProject((_prev) => {
-        const data = projectList.find((project) => project.id === projectId);
+        const data = projects.find((project) => project.id === projectId);
         setColumn(data!.columns);
         return data;
       });
     }
-  }, [projectList]);
+  }, [projectList, projects]);
 
-  // const handleDeleteForAdditionalFiles = (index: number) => {
-  //   setFormData((prev) => {
-  //     return {
-  //       ...prev,
-  //       additionalFiles:
-  //         prev.additionalFiles &&
-  //         prev.additionalFiles.filter((file, i) => i != index),
-  //     };
-  //   });
-  // };
-
+  useEffect(() => {
+    if (data) {
+      //@ts-ignore
+      setTasks(data);
+    }
+  }, [data]);
   const handleFormDataUpdate = (key: keyof Task, value: any) => {
     console.log(key, value);
     setFormData((prev) => {
-      // switch (key) {
-      //   case "additionalFiles": {
-      //     let files: File[] = [];
-      //     if (value) {
-      //       files = Array.from(value);
-      //     }
-      //     return {
-      //       ...prev,
-      //       additionalFiles:
-      //         prev.additionalFiles && prev.additionalFiles.concat(files),
-      //     };
-      //   }
-
-      //   default:
-      //     return {
-      //       ...prev,
-      //       [key]: value,
-      //     };
-      // }
-
       return {
         ...prev,
         [key]: value,
@@ -179,6 +157,7 @@ export const useTask = (projectId?: string, planId?: string) => {
         );
         console.log(res);
         setLoaderState(false);
+        fetchAllProjects();
       })
       .catch((err) => {
         console.log(err);
@@ -270,7 +249,7 @@ export const useTask = (projectId?: string, planId?: string) => {
     setLoaderState(false);
   };
 
-  const createData = async (data: any, plan: string) => {
+  const createData = async (data: any, planId: String) => {
     await axiosInstance
       .post(`/task/create/${projectId}`, data)
       .then(() => {

@@ -102,8 +102,6 @@ const TaskUtilityForm = ({
     });
   }, []);
 
-  console.log("This is form", formData);
-
   const [submitStatus, setSubmitStatus] = useState(false);
 
   useEffect(() => {

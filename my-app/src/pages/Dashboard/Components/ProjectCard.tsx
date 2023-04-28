@@ -27,11 +27,7 @@ export const ProjectCard = ({ data }: { data: DashBoard | ProjectData }) => {
         <CardMedia
           component="img"
           sx={{ width: "30%" }}
-          src={
-            typeof data.img == "string" && data.img !== ""
-              ? `data:image/png;base64,${data.img}`
-              : "https://picsum.photos/200"
-          }
+          src={"https://picsum.photos/200"}
           alt="Project img"
         />
         <Box paddingX={3} paddingY={1}>
