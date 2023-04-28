@@ -8,7 +8,7 @@ export const useUser = () => {
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
-  const fetchUserInfo = () => {
+  const fetchUserInfo = async () => {
     if (!user.userName) {
       axiosInstance
         .get("/user/info")
@@ -22,6 +22,7 @@ export const useUser = () => {
         })
         .catch((err) => {
           console.error(err);
+          dispatch(setUser({}));
         });
     }
   };

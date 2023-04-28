@@ -34,47 +34,9 @@ import { useToastContext } from "../../context/ToastContext";
 import { useNotification } from "../../hooks/useNotification";
 import { useParams } from "react-router-dom";
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  color: "black",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.black, 0.05),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.black, 0.15),
-  },
-  marginRight: theme.spacing(1),
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
-
+const handleLogout = async () => {
+  await localStorage.removeItem("token");
+};
 const navBarItems: SideBarItemProps[] = [
   {
     label: "Dashboard",
@@ -146,6 +108,7 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
   const { id } = useParams();
   const { user } = useUser();
   const { selected, setValue } = useProjectContext();
+
   const { toast, defaultValue } = useToastContext();
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -293,6 +256,16 @@ const NavBar = ({ show, setShow }: NavBarProps) => {
                 )
               )
             )}
+            <Button
+              variant="text"
+              onClick={() => {
+                handleLogout();
+                navigate("/");
+              }}
+              sx={{ color: colors.tertiary }}
+            >
+              Logout
+            </Button>
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
