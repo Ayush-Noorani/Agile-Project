@@ -67,22 +67,17 @@ export const SideBar = ({ children }: SideBarProps) => {
               zIndex: 99,
             }}
           >
-            {items.map((value) =>
-              user.roles.includes(value.role) ||
-              user.roles.includes("admin") ? (
-                <Item
-                  icon={value.icon}
-                  label={value.label}
-                  disabled={value.disabled}
-                  handleRedirect={handleRedirect}
-                  path={value.path}
-                  role={"admin"}
-                  require={value.require}
-                />
-              ) : (
-                <></>
-              )
-            )}
+            {items.map((value) => (
+              <Item
+                icon={value.icon}
+                label={value.label}
+                disabled={value.disabled}
+                handleRedirect={handleRedirect}
+                path={value.path}
+                role={"admin"}
+                require={value.require}
+              />
+            ))}
           </Box>
         ) : (
           <></>
