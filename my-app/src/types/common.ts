@@ -71,6 +71,7 @@ export type ProjectData = {
     completed_tasks: number;
     remaining_tasks: number;
   };
+  created_by?: string;
 };
 
 export type ProjectType = {

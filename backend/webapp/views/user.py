@@ -156,7 +156,14 @@ def get_user_dashboard():
     projects = list(
         db.projects.aggregate(
             [
-                {"$match": {"members": {"$in": [ObjectId(user_id)]}}},
+                {
+                    "$match": {
+                        "$or": [
+                            {"members": {"$in": [ObjectId(user_id)]}},
+                            {"created_by": ObjectId(user_id)},
+                        ]
+                    }
+                },
                 {
                     "$project": {
                         "_id": 1,
@@ -168,6 +175,7 @@ def get_user_dashboard():
                         "columns": 1,
                         "endDate": 1,
                         "img": 1,
+                        "created_by": 1,
                     }
                 },
             ]
@@ -184,9 +192,11 @@ def get_user_dashboard():
                 ]
             ),
         }
+        if "created_by" in project.keys():
+            project["created_by"] = str(project["created_by"])
         project["id"] = str(project["_id"])
         project.pop("_id")
-        if project["img"] != "" and project["img"] != None:
+        if "img" in project.keys() and project["img"] != "" and project["img"] != None:
             project["img"] = decode_base64(project["img"])
         for task_status, value in project["tasks"].items():
             if len(value) > 0:
