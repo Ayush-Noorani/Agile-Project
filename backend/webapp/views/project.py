@@ -57,6 +57,7 @@ def get_project_list():
                 "members.name": 1,
                 "members.roles": 1,
                 "members.img": 1,
+                "created_by": 1,
             }
         },
     ]
@@ -72,6 +73,7 @@ def get_project_list():
                 ]
             ),
         }
+        project["created_by"] = str(project["created_by"])
         if project["lead"] != "":
             project["lead"] = str(project["lead"])
         if "img" in project.keys() and project["img"] != "" and project["img"] != None:

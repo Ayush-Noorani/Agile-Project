@@ -2,7 +2,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 
 //Docker server url
-export const baseURL = "http://localhost:8000";
+export const baseURL = "http://localhost:5000";
 //export const baseURL = process.env.SERVER_URL || "http://localhost:8000";
 
 export const axiosInstance = axios.create({

@@ -8,12 +8,14 @@ import produce from "immer";
 import { useDispatch } from "react-redux";
 import { setData } from "../../../redux/reducers/project";
 import { useCommon } from "../../../hooks/useCommon";
+import { useToastContext } from "../../../context/ToastContext";
 
 export const useProject = (id?: string) => {
   const projects = useSelector((state: RootState) => state.project.projects);
   const [projectList, setProjectList] = useState<ProjectData[]>(projects);
   const dispatch = useDispatch();
   const { setLoaderState } = useCommon();
+  const { toast, defaultValue } = useToastContext();
 
   const [value, setValue] = useState<ProjectData>({
     id: undefined,
@@ -123,9 +125,11 @@ export const useProject = (id?: string) => {
             res.data
           );
           uploadImage(res.data.id);
+          toast.success("Project Updated Successfully", defaultValue);
         })
         .catch((err) => {
           console.log(err);
+          toast.error("Error in Updating Project", defaultValue);
         });
     } else {
       delete request.columns;
@@ -139,10 +143,13 @@ export const useProject = (id?: string) => {
             `background:green; color: white;  font-weight: bold;`,
             res.data
           );
+          toast.success("Project Created Successfully", defaultValue);
+
           console.log(res.data);
         })
         .catch((err) => {
           console.log(err);
+          toast.error("Error in Creating Project", defaultValue);
         });
     }
     setLoaderState(false);

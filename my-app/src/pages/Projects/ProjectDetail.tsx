@@ -47,7 +47,7 @@ export const ProjectDetail = () => {
   const reader = new FileReader();
   const { members, searchUser } = useCommon();
   const { user } = useUser();
-
+  const { navigate } = useCommon();
   const { value, updateState, fetchExistingData, submitData } = useProject(id);
   const [state, setState] = useState<any[]>([
     {
@@ -344,7 +344,10 @@ export const ProjectDetail = () => {
             <Button
               variant="contained"
               className="margin"
-              onClick={submitData}
+              onClick={() => {
+                submitData();
+                navigate("/projects");
+              }}
               style={{
                 width: "80px",
                 alignSelf: "center",
