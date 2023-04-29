@@ -36,8 +36,10 @@ def create_notification(user_ids, message, type, creator_id, reference):
     }
     for user_id in user_ids:
         notification["user_id"] = user_id
-
-        collection.insert_one(notification)
+        try:
+            collection.insert_one(notification)
+        except:
+            pass
 
 
 def get_notfication(id):

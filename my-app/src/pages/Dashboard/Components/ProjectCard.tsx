@@ -3,16 +3,29 @@ import { Grid, Card, CardMedia, Box, Typography } from "@mui/material";
 import { useProjectContext } from "../../../context/ProjectContext";
 import { useCommon } from "../../../hooks/useCommon";
 import { DashBoard, ProjectData } from "../../../types/common";
+import { useUser } from "../../../hooks/useUser";
+import { useToastContext } from "../../../context/ToastContext";
 
 export const ProjectCard = ({ data }: { data: DashBoard | ProjectData }) => {
   const { setValue } = useProjectContext();
   const { navigate } = useCommon();
+  const { toast, defaultValue } = useToastContext();
+  const { user } = useUser();
+  console.log(data.members, data.created_by, user?.id);
+  const isPartOftheProject =
+    (data.members &&
+      data.members.findIndex((value) => value.id === user?.id) !== -1) ||
+    data.created_by === user?.id;
   return (
-    <Grid item xs={5} mr={2}>
+    <Grid item xs={5} m={1}>
       <Card
         className="growDashboardProject"
         onClick={(e: any) => {
-          navigate("/project/tasks/" + data.id);
+          if (isPartOftheProject) {
+            navigate("/project/tasks/" + data.id);
+          } else {
+            toast.warning("You are not apart of this project", defaultValue);
+          }
         }}
         elevation={8}
         sx={{
