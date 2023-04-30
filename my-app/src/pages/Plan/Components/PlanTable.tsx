@@ -18,6 +18,7 @@ import { Plan } from "../../../types/common";
 import { useTable } from "../../../hooks/useTable";
 import { useUser } from "../../../hooks/useUser";
 import { useTask } from "../../Task/hooks/useTask";
+import { useLocation } from "react-router-dom";
 
 interface PlanTableProps {
   plans: Plan[];
@@ -27,6 +28,7 @@ interface PlanTableProps {
 export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
   const { navigate } = useCommon();
   const { currentProject } = useTask();
+  const location = useLocation();
   const { user } = useUser();
   const isProjectLead = currentProject?.lead === user?.id;
   const {
@@ -141,7 +143,13 @@ export const PlanTable = ({ plans, onClick }: PlanTableProps) => {
                       disabled={row.status === "0"}
                       onClick={() => {
                         navigate(
-                          "/project/tasks/" + row.project + "/" + row.id
+                          "/project/" +
+                            (location.pathname.includes("retrospection")
+                              ? "retrospective-tasks/"
+                              : "tasks/") +
+                            row.project +
+                            "/" +
+                            row.id
                         );
                       }}
                     >
