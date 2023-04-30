@@ -88,6 +88,7 @@ export const usePlan = (id: any, planId?: string) => {
           );
           setLoaderState(false);
         }
+        else setLoaderState(false);
       })
       .catch((err) => {
         console.error(err);

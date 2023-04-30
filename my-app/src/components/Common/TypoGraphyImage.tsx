@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { getNameAcronym } from "../../helper/common";
+import { getNameAcronym } from "../../utils/Common";
 
 interface TypoGraphyImageProps {
   name: string;

@@ -16,7 +16,7 @@ import { useProject } from "../../Projects/hooks/useProject";
 import { useCommon } from "../../../hooks/useCommon";
 import { usePlan } from "../../Plan/hooks/usePlan";
 import { useSockets } from "../../../hooks/useSockets";
-type Task = {
+export type Task = {
   id?: string;
   description: string;
   summary: string;
@@ -106,6 +106,19 @@ export const useTask = (projectId?: string, planId?: string) => {
     });
   };
 
+  const clearFormData = () => {
+    setFormData({
+      id: undefined,
+      description: "",
+      summary: "",
+      taskName: "",
+      assignedTo: [],
+      reportTo: [],
+      status: "toDo",
+      priority: "minor",
+    });
+  };
+
   const validateFormData = () => {
     setValidFields((prev) => {
       return {
@@ -164,16 +177,45 @@ export const useTask = (projectId?: string, planId?: string) => {
         setLoaderState(false);
       });
   };
-  const getRetroRespectiveTasks = () => {
+  const getRetroRespectiveTasks = (data?: string, taskId?: string) => {
     setLoaderState(true);
     console.log(
       `%c FETCH RETRORESPECTIVE \n`,
       `background:green; color: white;  font-weight: bold;`
     );
     axiosInstance
-      .get(`/plan/retroSpection/${planId}`)
+      .get(`/plan/retroSpection/${data ? data : planId}`)
       .then((res) => {
-        console.log(res.data);
+        const data = res.data;
+        if (taskId) {
+          console.log(data.tasks);
+          console.log(
+            Object.values(data.tasks).flatMap((value) => value),
+            taskId
+          );
+          console.log(
+            Object.values(data.tasks)
+              .flatMap((value) => value)
+              .find((item: any) => item.id === taskId),
+            "xz"
+          );
+          const selectedTask: Task = Object.values(data.tasks)
+            .flatMap((value) => value)
+            .find((item: any) => item.id === taskId) as unknown as Task;
+          setFormData({
+            id: selectedTask.id,
+            description: selectedTask.description,
+            summary: selectedTask.summary,
+            taskName: selectedTask.taskName,
+            //@ts-ignore
+            assignedTo: selectedTask.assignee || [],
+            reportTo: selectedTask.reportTo || [],
+            // additionalFiles: value.additionalFiles,
+            status: selectedTask.status,
+            priority: selectedTask.priority,
+          });
+          //@ts-ignore
+        }
         setTasks(res.data.tasks);
         setColumn(res.data.columns);
         setLoaderState(false);
@@ -196,6 +238,7 @@ export const useTask = (projectId?: string, planId?: string) => {
         .then((res) => {
           setTasks(res.data);
           if (TaskId) {
+            console.log(res.data, "res");
             const value: Task = Object.values(res.data)
               .flatMap((value) => value)
               .find((task: any) => task.id === TaskId) as unknown as Task;
@@ -213,8 +256,6 @@ export const useTask = (projectId?: string, planId?: string) => {
             });
           }
           setLoaderState(false);
-
-          console.log(res.data);
         })
         .catch((err) => {
           setLoaderState(false);
@@ -325,10 +366,12 @@ export const useTask = (projectId?: string, planId?: string) => {
     updateSequence,
     getExistingTaskData,
     submitFormData,
+    setFormData,
     // handleDeleteForAdditionalFiles,
     handleFormDataUpdate,
     getRetroRespectiveTasks,
     setColumn,
     validateFormData,
+    clearFormData,
   };
 };

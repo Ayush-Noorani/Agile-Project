@@ -21,9 +21,9 @@ import { Typography } from "@mui/material";
 import { CloseOutlined, FileUpload } from "@mui/icons-material";
 import ReactQuill from "react-quill";
 import { useParams } from "react-router";
-import { useTask } from "./hooks/useTask";
+import { Task, useTask } from "./hooks/useTask";
 import { useCommon } from "../../hooks/useCommon";
-import { Priority } from "../../types/common";
+import { Priority, Tasks } from "../../types/common";
 import { TaskPriorityIcon } from "../../components/Common/TaskPriorityIcon";
 import { usePlan } from "../Plan/hooks/usePlan";
 import Select from "react-select";
@@ -32,7 +32,7 @@ import { colors } from "../../utils/Common";
 import { ReactComponent as CreateTask } from "../../assets/create.svg";
 import { ReactComponent as DesignComponents } from "../../assets/design_components_9vy6.svg";
 import { useToastContext } from "../../context/ToastContext";
-
+import { useLocation } from "react-router-dom";
 const animatedComponents = makeAnimated();
 
 type PriorityOptionsType = {
@@ -75,11 +75,13 @@ const TaskUtilityForm = ({
   open: boolean;
   selectedTaskId?: string | undefined;
 }) => {
-  const { id: ProjectId } = useParams();
-  const { members, searchUser } = useCommon();
+  const { id: ProjectId, planId } = useParams();
+  const { navigate } = useCommon();
   const { currentPlan, getPlans } = usePlan(ProjectId);
   const { toast, defaultValue } = useToastContext();
   const [initialWarn, setInitialWarn] = useState(false);
+  const location = useLocation();
+  //const previousLocation = location.state.from.includes("retrospection");
   const {
     getTasks,
     currentProject,
@@ -89,21 +91,26 @@ const TaskUtilityForm = ({
     validateFormData,
     validFields,
     setValidFields,
+    tasks,
     formData,
+    clearFormData,
+    setFormData,
+    getRetroRespectiveTasks,
   } = useTask(ProjectId);
 
   useEffect(() => {
-    if (taskId) {
-      console.log("TaskId", taskId);
+    if (location.pathname?.includes("retrospective") && taskId && planId) {
+      getRetroRespectiveTasks(planId, taskId);
+    } else if (taskId) {
       getTasks(taskId, ProjectId);
     }
     getPlans({
       status: "1",
     });
-  }, []);
+  }, [taskId]);
 
+  console.log("utility form data", formData);
   const [submitStatus, setSubmitStatus] = useState(false);
-
   useEffect(() => {
     if (Object.values(validFields).every((v) => v === true) && submitStatus) {
       if (!currentPlan?.id && !initialWarn) {
@@ -141,10 +148,15 @@ const TaskUtilityForm = ({
           justifyContent="space-between"
         >
           <Typography fontSize={20} fontWeight={"bold"}>
-            {selectedTaskId ? "Update task" : "Create task"}
+            {taskId ? "Update task" : "Create task"}
           </Typography>
 
-          <IconButton onClick={() => setOpen(false)}>
+          <IconButton
+            onClick={() => {
+              clearFormData();
+              setOpen(false);
+            }}
+          >
             <CloseOutlined color="error" />
           </IconButton>
         </Stack>

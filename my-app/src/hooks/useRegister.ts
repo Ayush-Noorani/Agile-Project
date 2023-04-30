@@ -4,7 +4,7 @@ import { axiosInstance } from "../helper/axios";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/reducers/user";
 import { useToastContext } from "../context/ToastContext";
-import { generateRandomColor } from "../helper/common";
+import { generateRandomColor } from "../utils/Common";
 
 export const useRegister = () => {
   const navigate = useNavigate();
