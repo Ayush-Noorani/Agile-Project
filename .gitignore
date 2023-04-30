@@ -6,3 +6,4 @@ backend/webapp/__pycache__
 backend/webapp/views/__pycache__
 my-app/build
 backend/webapp/helpers/__pycache__
+backend/config.py
