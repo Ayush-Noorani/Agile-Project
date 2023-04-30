@@ -11,7 +11,12 @@ import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { ToastContextProvider } from "./context/ToastContext";
 import { ProjectContextProvider } from "./context/ProjectContext";
+import SplashScreen from "./components/SplashScreen";
 function App() {
+  const data = setTimeout(() => {
+    return <SplashScreen />;
+  }, 5000);
+  clearTimeout(data);
   return (
     <Provider store={store}>
       <LocalizationProvider dateAdapter={AdapterMoment}>
