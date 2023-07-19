@@ -1,4 +1,4 @@
-# each folder has an Readme related to that folder
+# each folder has a Readme related to that folder
 
 # start project
 
