@@ -29,7 +29,7 @@ git rebase master
 
 # docker logs gets last 20 records
 
-sudo docker logs -f --tail 20 databas
+sudo docker logs -f --tail 20 database
 
 # backend
 
